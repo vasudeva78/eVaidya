@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.aj.evaidya.parent</groupId>
+	<artifactId>evaidya-parent</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+	<name>Apache Maven</name>
+
+	<modules>
+		<module>evaidya-main</module>
+	</modules>
+	<!-- scm> <connection> scm:svn:http://svn.apache.org/repos/asf/maven/maven-3/trunk 
+		</connection> <developerConnection> scm:svn:https://svn.apache.org/repos/asf/maven/maven-3/trunk 
+		</developerConnection> <url>http://svn.apache.org/viewvc/maven/maven-3/trunk</url> 
+		</scm -->
+	<!-- issueManagement> <system>jira</system> <url>http://jira.codehaus.org/browse/MNG</url> 
+		</issueManagement> <ciManagement> <system>Jenkins</system> <url>https://builds.apache.org/job/maven-3.0.x/</url> 
+		</ciManagement> <distributionManagement> <site> <id>apache.website</id> <url>${siteDeployUrl}</url> 
+		</site> </distributionManagement -->
+	<dependencies>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>javafx-runtime</artifactId>
+			<version>2.2.3</version>
+			<scope>system</scope>
+			<systemPath>C:\Program Files\Java\jdk1.7.0_09\jre\lib\jfxrt.jar</systemPath>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
