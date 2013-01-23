@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+
+<GridPane alignment="center" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
+  <children>
+    <Label styleClass="navigation" alignment="center" style="-fx-text-fill: red;-fx-background-color: white;-fx-background-radius: 70px; -fx-padding: 0.833333em 7em 0.833333em 0.833333em ;" text="" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+  </children>
+  <rowConstraints>
+    <RowConstraints prefHeight="55.0" />
+  </rowConstraints>
+</GridPane>

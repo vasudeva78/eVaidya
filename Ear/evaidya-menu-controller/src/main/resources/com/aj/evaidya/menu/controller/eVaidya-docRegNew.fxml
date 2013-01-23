@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" style="-fx-background-color: white;-fx-background-radius: 70px;" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="35.0" fx:controller="com.aj.evaidya.docreg.controller.DocRegController">
+  <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+  <children>
+    <Label alignment="center" text="staasdssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssstus" GridPane.rowIndex="0" GridPane.columnSpan="2" fx:id="statusLabel" />
+  	<Label alignment="center" text="Name : *" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="gridPaneLabel" style="-fx-text-fill: red "/>
+	<TextField GridPane.columnIndex="1" GridPane.rowIndex="1"  prefHeight="35.0" fx:id="nameTextField"/>
+	<Label alignment="center" text="Address : " GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="gridPaneLabel"  />
+	<TextField GridPane.columnIndex="1" GridPane.rowIndex="2" prefHeight="35.0" />
+	<TextField GridPane.columnIndex="1" GridPane.rowIndex="3" prefHeight="35.0" />
+	<TextField GridPane.columnIndex="1" GridPane.rowIndex="4" prefHeight="35.0"/>
+	<Label alignment="center" text="State : " GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="gridPaneLabel"  />
+	<ChoiceBox GridPane.columnIndex="1" GridPane.rowIndex="5"  prefHeight="35.0" prefWidth="770.0" fx:id="stateChoiceBox" />
+	<Label alignment="center" text="Tel : *" GridPane.columnIndex="0" GridPane.rowIndex="6" style="-fx-text-fill: red;" styleClass="gridPaneLabel"  />
+	<TextField GridPane.columnIndex="1" GridPane.rowIndex="6"  prefHeight="35.0" />
+	<TextField GridPane.columnIndex="1" GridPane.rowIndex="7"  prefHeight="35.0" />
+	<HBox alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.columnSpan="2">
+		<AnchorPane>
+			<Button alignment="center" text="Save" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="15.0" onAction="#saveAction"/>
+			<Button alignment="center" text="Reset" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="15.0"/>
+		</AnchorPane>
+	</HBox>	
+  </children>
+  <columnConstraints>
+    <ColumnConstraints prefWidth="100.0" />
+    <ColumnConstraints prefWidth="800.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints prefHeight="60.0" />
+    <RowConstraints prefHeight="50.0" />
+    <RowConstraints prefHeight="50.0" />
+    <RowConstraints prefHeight="50.0" />
+    <RowConstraints prefHeight="50.0" />
+    <RowConstraints prefHeight="50.0" />
+    <RowConstraints prefHeight="50.0" />
+    <RowConstraints prefHeight="50.0" />
+    <RowConstraints prefHeight="70.0" />
+  </rowConstraints>
+</GridPane>
