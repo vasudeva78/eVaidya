@@ -1,10 +1,10 @@
 package com.aj.evaidya.main;
 
 import javafx.application.Application;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -19,11 +19,18 @@ public class EVaidyaMain extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 
-		Label label = LabelBuilder.create().text("Maven + JavaFX = true")
-				.alignment(Pos.CENTER).build();
-
-		Scene scene = new Scene(label, 200, 100);
-		stage.setScene(scene);
+		stage.setTitle("EVaidya-1.0");
+		
+		Scene scene = (Scene)FXMLLoader.load(getClass().getResource("main.fxml"));
+		
+		Rectangle2D dimension = Screen.getPrimary().getVisualBounds();	
+		stage.setWidth( dimension.getWidth() - 10 );
+		stage.setHeight( dimension.getHeight() - 10 );
+		
+		stage.setResizable(false);
+		
+		stage.setScene ( scene );
+        
 		stage.show();
 	}
 }

@@ -8,8 +8,13 @@
 	<name>Apache Maven</name>
 
 	<modules>
+		<module>evaidya-dep</module>
 		<module>evaidya-main</module>
+		<module>evaidya-menu-controller</module>
+		<module>evaidya-common</module>
+		<module>evaidya-doc-reg</module>
 	</modules>
+	
 	<!-- scm> <connection> scm:svn:http://svn.apache.org/repos/asf/maven/maven-3/trunk 
 		</connection> <developerConnection> scm:svn:https://svn.apache.org/repos/asf/maven/maven-3/trunk 
 		</developerConnection> <url>http://svn.apache.org/viewvc/maven/maven-3/trunk</url> 
@@ -18,16 +23,6 @@
 		</issueManagement> <ciManagement> <system>Jenkins</system> <url>https://builds.apache.org/job/maven-3.0.x/</url> 
 		</ciManagement> <distributionManagement> <site> <id>apache.website</id> <url>${siteDeployUrl}</url> 
 		</site> </distributionManagement -->
-	<dependencies>
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>javafx-runtime</artifactId>
-			<version>2.2.3</version>
-			<scope>system</scope>
-			<systemPath>C:\Program Files\Java\jdk1.7.0_09\jre\lib\jfxrt.jar</systemPath>
-		</dependency>
-	</dependencies>
-
 	<build>
 		<pluginManagement>
 			<plugins>
