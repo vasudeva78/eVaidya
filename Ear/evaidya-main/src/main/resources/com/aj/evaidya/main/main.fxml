@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+
+<Scene width="550" height="550" xmlns:fx="http://javafx.com/fxml" fx:controller="com.aj.evaidya.menu.controller.MenuController">
+	  <BorderPane fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml">
+	  <center>
+	    <VBox fx:id="rootVbox">
+	      <children>
+	        <AnchorPane>
+	        	<children>
+	        		<MenuBar prefHeight="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0">
+	                  <menus>
+	                    <Menu mnemonicParsing="false" text="  Doctor  ">
+	                      <items>
+	                        <Menu text="Registration">
+	                          <items>
+	                            <MenuItem mnemonicParsing="false" text="   New     " onAction="#menuClicked" fx:id="docRegNew" />
+	                            <SeparatorMenuItem mnemonicParsing="false" />
+	                            <MenuItem mnemonicParsing="false" text="  Edit     " onAction="#menuClicked" fx:id="docRegEdit"/>
+	                          </items>
+	                        </Menu>
+	                      </items>
+	                    </Menu>
+	                    <Menu mnemonicParsing="false" text="  Patient  ">
+	                      <items>
+	                        <MenuItem mnemonicParsing="false" text="[ New ]" />
+	                        <MenuItem mnemonicParsing="false" text="BB - 2" />
+	                      </items>
+	                    </Menu>
+	                    <Menu mnemonicParsing="false" text="  Help  ">
+	                      <items>
+	                        <MenuItem mnemonicParsing="false" text="About" />
+	                      </items>
+	                    </Menu>
+	                  </menus>
+	                </MenuBar>
+	        	</children>
+	        </AnchorPane>
+	        <AnchorPane fx:id="navigationPane" minHeight="0.0" minWidth="0.0" prefHeight="50.0" />
+	        <AnchorPane fx:id="menuFieldsPane" minHeight="0.0" minWidth="0.0" prefHeight="500.0" />
+	      </children>
+	      <BorderPane.margin>
+	        <Insets left="150.0" right="150.0" />
+	      </BorderPane.margin>
+	    </VBox>
+	  </center>
+	  <stylesheets>
+	    <URL value="@main.css" />
+	  </stylesheets>
+	</BorderPane>
+</Scene>

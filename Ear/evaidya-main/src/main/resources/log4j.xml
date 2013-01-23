@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration PUBLIC "-//log4j/log4j Configuration//EN" "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+       <layout class="org.apache.log4j.PatternLayout"> 
+          <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss} %-5p %c.%M:%L - %m%n"/> 
+       </layout> 
+    </appender>
+    
+
+	<appender name="ROLLING_FILE" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="./evaidya.log" />
+		<!-- <param name="maxFileSize" value="10000KB" />
+		<param name="maxBackupIndex" value="25" /> -->
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss} %-5p %c.%M:%L - %m%n"/> 
+		</layout>
+	</appender>    
+ 
+  	<!-- logger name="org.springframework">
+    	<level value="DEBUG" />
+    </logger -->
+    
+    <root>
+        <priority value="DEBUG"/> 
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ROLLING_FILE" />  
+    </root> 
+    
+</log4j:configuration> 
