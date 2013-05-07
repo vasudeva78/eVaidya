@@ -8,12 +8,49 @@
 	<name>Apache Maven</name>
 
 	<modules>
-		<module>evaidya-dep</module>
 		<module>evaidya-main</module>
-		<module>evaidya-menu-controller</module>
+		<module>evaidya-menu</module>
 		<module>evaidya-common</module>
 		<module>evaidya-doc-reg</module>
+		<module>evaidya-pat-reg</module>
 	</modules>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>javafx-runtime</artifactId>
+			<version>2.2.3</version>
+			<scope>system</scope>
+			<systemPath>C:\Program Files\Java\jdk1.7.0_09\jre\lib\jfxrt.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+			<type>jar</type>
+		</dependency>
+		<!-- dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.0.11</version>
+		</dependency -->
+		<!-- dependency>
+			<groupId>com.aj.db</groupId>
+			<artifactId>mysql</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+		</dependency -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.170</version>
+		</dependency>
+		<!-- dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0-rc1</version>
+		</dependency -->
+	</dependencies>
 	
 	<!-- scm> <connection> scm:svn:http://svn.apache.org/repos/asf/maven/maven-3/trunk 
 		</connection> <developerConnection> scm:svn:https://svn.apache.org/repos/asf/maven/maven-3/trunk 

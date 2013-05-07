@@ -22,13 +22,13 @@ public class CommonBo {
 		this.commonDao = commonDao;
 	}
 
-	public void getStateDropDownList(final ChoiceBox stateChoiceBox){
+	public void getStateDropDownList(final String connUrl , final String uName ,final String pwd , final ChoiceBox stateChoiceBox , final List<String> stateList , final List<String> stateIdList){
 		logger.debug( "inside getStateDropDownList" );
 						
-		final Task<Map<String, List<String>>> choiceListTask = new Task<Map<String, List<String>>>() {
-	         @Override protected Map<String, List<String>> call() throws Exception {
+		final Task<Map<String, String>> choiceListTask = new Task<Map<String, String>>() {
+	         @Override protected Map<String, String> call() throws Exception {
 	        	 
-	        	 return commonDao.getStateDropDownList(); 
+	        	 return commonDao.getStateDropDownList( connUrl , uName , pwd ); 
 	        	 
 	         }
 	         
@@ -40,11 +40,16 @@ public class CommonBo {
 			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
 				if (newState == State.SUCCEEDED) {
 					
-					Map<String, List<String>> stateListMap = choiceListTask.getValue();
+					Map<String, String> stateListMap = choiceListTask.getValue();
 					
-					stateChoiceBox.getItems().addAll( stateListMap.values() );
+					stateIdList.addAll( stateListMap.keySet() );
+					stateList.addAll( stateListMap.values()  );
+					
+					stateChoiceBox.getItems().addAll( stateList );
 					
 					stateChoiceBox.setDisable(false);
+					
+					stateChoiceBox.setValue("-- Select --");
 					
 				}
 				

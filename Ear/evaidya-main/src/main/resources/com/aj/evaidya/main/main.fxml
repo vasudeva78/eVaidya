@@ -10,7 +10,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.*?>
 
-<Scene width="550" height="550" xmlns:fx="http://javafx.com/fxml" fx:controller="com.aj.evaidya.menu.controller.MenuController">
+<Scene xmlns:fx="http://javafx.com/fxml" fx:controller="com.aj.evaidya.menu.controller.MenuController">
 	  <BorderPane fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml">
 	  <center>
 	    <VBox fx:id="rootVbox">
@@ -32,8 +32,13 @@
 	                    </Menu>
 	                    <Menu mnemonicParsing="false" text="  Patient  ">
 	                      <items>
-	                        <MenuItem mnemonicParsing="false" text="[ New ]" />
-	                        <MenuItem mnemonicParsing="false" text="BB - 2" />
+	                        <Menu text="Registration">
+	                          <items>
+	                            <MenuItem mnemonicParsing="false" text="   New     " onAction="#menuClicked" fx:id="patRegNew" />
+	                            <SeparatorMenuItem mnemonicParsing="false" />
+	                            <MenuItem mnemonicParsing="false" text="  Edit     " onAction="#menuClicked" fx:id="patRegEdit"/>
+	                          </items>
+	                        </Menu>
 	                      </items>
 	                    </Menu>
 	                    <Menu mnemonicParsing="false" text="  Help  ">
@@ -45,7 +50,7 @@
 	                </MenuBar>
 	        	</children>
 	        </AnchorPane>
-	        <AnchorPane fx:id="navigationPane" minHeight="0.0" minWidth="0.0" prefHeight="50.0" />
+	        <!-- AnchorPane fx:id="navigationPane" minHeight="0.0" minWidth="0.0" prefHeight="50.0" / -->
 	        <AnchorPane fx:id="menuFieldsPane" minHeight="0.0" minWidth="0.0" prefHeight="500.0" />
 	      </children>
 	      <BorderPane.margin>

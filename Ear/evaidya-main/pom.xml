@@ -26,7 +26,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.aj.evaidya.controller</groupId>
-			<artifactId>evaidya-menu-controller</artifactId>
+			<artifactId>evaidya-menu</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
@@ -38,6 +38,16 @@
 			<groupId>com.aj.evaidya.docreg</groupId>
 			<artifactId>evaidya-doc-reg</artifactId>
 			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.aj.evaidya.patreg</groupId>
+			<artifactId>evaidya-pat-reg</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.0.11</version>
 		</dependency>
 	</dependencies>
 
