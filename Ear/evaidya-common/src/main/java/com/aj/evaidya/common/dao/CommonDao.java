@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
@@ -21,13 +20,10 @@ public class CommonDao {
 		
 		logger.debug("inside CommonDao");
 		
-		Connection dbConn = null;
 		Map<String, String> stateListMap = null ;
 					
-		try {
-						
-			dbConn = DriverManager.getConnection(connUrl, uName , pwd );
-			
+		try ( Connection dbConn = DriverManager.getConnection(connUrl, uName , pwd ) ){
+
 			logger.debug("after getting db Conn => "+dbConn);
 			
 			QueryRunner qRunner = new QueryRunner();
@@ -52,10 +48,9 @@ public class CommonDao {
 		}  catch(Exception e) {
 			
 			logger.error("Error fetching Column lists " ,e);
+			
 			stateListMap = new HashMap<String, String>();
 			
-		} finally {
-			DbUtils.closeQuietly(dbConn);
 		}
 		
 		logger.debug("stateListMap size => "+stateListMap.size());
