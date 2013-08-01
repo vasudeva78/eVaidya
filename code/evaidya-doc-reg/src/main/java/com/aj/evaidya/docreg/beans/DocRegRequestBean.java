@@ -14,9 +14,6 @@ public class DocRegRequestBean {
 	private String tel2Text;
 	private String nameId;
 	private String email;
-	private String dbUrl;
-	private String dbUsername;
-	private String dbPwd;
 	
 	
 	public String getQualiText() {
@@ -85,46 +82,19 @@ public class DocRegRequestBean {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	public String getDbUrl() {
-		return dbUrl;
-	}
-	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-	public String getDbUsername() {
-		return dbUsername;
-	}
-	public void setDbUsername(String dbUsername) {
-		this.dbUsername = dbUsername;
-	}
-	public String getDbPwd() {
-		return dbPwd;
-	}
-	public void setDbPwd(String dbPwd) {
-		this.dbPwd = dbPwd;
-	}
 	@Override
 	public String toString() {
-		return "DocRegRequestBean ["
-				+ (nameText != null ? "nameText=" + nameText + ", " : "")
-				+ (qualiText != null ? "qualiText=" + qualiText + ", " : "")
-				+ (address1Text != null ? "address1Text=" + address1Text + ", "
-						: "")
-				+ (address2Text != null ? "address2Text=" + address2Text + ", "
-						: "")
-				+ (address3Text != null ? "address3Text=" + address3Text + ", "
-						: "")
-				+ (stateId != null ? "stateId=" + stateId + ", " : "")
-				+ (pincode != null ? "pincode=" + pincode + ", " : "")
-				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
-				+ (tel2Text != null ? "tel2Text=" + tel2Text + ", " : "")
-				+ (nameId != null ? "nameId=" + nameId + ", " : "")
-				+ (email != null ? "email=" + email + ", " : "")
-				+ (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
-				+ (dbUsername != null ? "dbUsername=" + dbUsername + ", " : "")
-				+ (dbPwd != null ? "dbPwd=" + dbPwd : "") + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("DocRegRequestBean [nameText=").append(nameText)
+				.append(", qualiText=").append(qualiText)
+				.append(", address1Text=").append(address1Text)
+				.append(", address2Text=").append(address2Text)
+				.append(", address3Text=").append(address3Text)
+				.append(", stateId=").append(stateId).append(", pincode=")
+				.append(pincode).append(", tel1Text=").append(tel1Text)
+				.append(", tel2Text=").append(tel2Text).append(", nameId=")
+				.append(nameId).append(", email=").append(email).append("]");
+		return builder.toString();
 	}
-	
 	
 }

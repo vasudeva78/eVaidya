@@ -19,8 +19,6 @@ import com.aj.evaidya.common.bo.CommonBo;
 import com.aj.evaidya.common.bo.CommonControlsBo;
 import com.aj.evaidya.common.dao.CommonDao;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public abstract class AbstractDocRegController implements Initializable {
 	
@@ -28,36 +26,9 @@ public abstract class AbstractDocRegController implements Initializable {
 	
 	private static final Logger logger = Logger.getLogger( AbstractDocRegController.class );
 	
-	protected String dbUrl;
-	protected String dbUsername;
-	protected String dbPwd;
-	
-	public String getDbUrl() {
-		return dbUrl;
-	}
-
-	@Inject
-	public void setDbUrl(@Named("dbUrl") String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-
-	public String getDbUsername() {
-		return dbUsername;
-	}
-
-	@Inject
-	public void setDbUsername(@Named("dbUsername") String dbUsername) {
-		this.dbUsername = dbUsername;
-	}
-
-	public String getDbPwd() {
-		return dbPwd;
-	}
-
-	@Inject
-	public void setDbPwd(@Named("dbPwd") String dbPwd) {
-		this.dbPwd = dbPwd;
-	}
+	protected static final String CONN_URL = "jdbc:h2:file:D:/AJ/projects/eVaidya/data/evaidya";
+	protected static final String CONN_UNAME = "ASDs!@DSFDS55";
+	protected static final String CONN_PWD = "SDXytytWQE!31 GHGFHytyy!#@^d";
 	
 	private static final String EMAIL_PATTERN = 
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -119,7 +90,7 @@ public abstract class AbstractDocRegController implements Initializable {
 		stateList = new ArrayList<String>();
 		stateIdList = new ArrayList<String>();
 		
-		commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd , stateChoiceBox, stateList , stateIdList);
+		commonBo.getStateDropDownList(CONN_URL , CONN_UNAME , CONN_PWD , stateChoiceBox, stateList , stateIdList);
 		
 		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
 			new ChangeListener<Number>() {

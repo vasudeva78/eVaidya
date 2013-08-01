@@ -1,4 +1,4 @@
-/*package com.aj.evaidya.docreg.controller;
+package com.aj.evaidya.docreg.controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -485,4 +485,3 @@ public class DocRegEditController extends AbstractDocRegController {
 
 	
 }
-*/

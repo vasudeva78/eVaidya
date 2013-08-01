@@ -1,45 +1,27 @@
 package com.aj.evaidya.docreg.controller;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
 
+import org.apache.commons.dbutils.DbUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 
 import com.aj.evaidya.common.bo.CommonControlsBo;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.beans.DocRegResponseBean;
-import com.aj.evaidya.docreg.bo.DocRegBo;
-import com.aj.evaidya.docreg.dao.DocRegDao;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public class DocRegNewController extends AbstractDocRegController {
 	
 	private static final Logger logger = Logger.getLogger( DocRegNewController.class );
-	
-	private DocRegBo docRegBo;
-	
-	public DocRegBo getDocRegBo() {
-		return docRegBo;
-	}
-
-	@Inject
-	public void setDocRegBo(DocRegBo docRegBo) {
-		this.docRegBo = docRegBo;
-	}
-	
-	private DocRegDao docRegDao;
-	
-	public DocRegDao getDocRegDao() {
-		return docRegDao;
-	}
-
-	@Inject
-	public void setDocRegDao(DocRegDao docRegDao) {
-		this.docRegDao = docRegDao;
-	}
 	
 	protected void populateFieldsOnIinit() {			
 		super.populateStateField();
@@ -59,10 +41,6 @@ public class DocRegNewController extends AbstractDocRegController {
 		docReqBean.setTel2Text( tel2TextField.getText().substring(0, Math.min(100, tel2TextField.getText().trim().length() )) );
 		docReqBean.setEmail( emailTextField.getText().substring(0, Math.min(200, emailTextField.getText().trim().length())) );
 		
-		docReqBean.setDbUrl(dbUrl);
-		docReqBean.setDbUsername(dbUsername);
-		docReqBean.setDbPwd(dbPwd);
-		
 		return docReqBean;
 		
 	}
@@ -72,21 +50,68 @@ public class DocRegNewController extends AbstractDocRegController {
 		final Task<DocRegResponseBean> saveTask = new Task<DocRegResponseBean>() { 
 			
 	         @Override protected DocRegResponseBean call() throws Exception {     		
-  					
+	     		Connection dbConn = null;
+    					
 	     		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
 	     		
 	     		try {
 	     						
-	     			docRegResponseBean = docRegBo.saveDbTask(docRegDao , docReqBean);
+	     			dbConn = DriverManager.getConnection( CONN_URL, CONN_UNAME , CONN_PWD );
+	     			
+	     			logger.debug("after getting db Conn => "+dbConn);
+	     			
+	     			dbConn.setAutoCommit(false);
+	     			
+	     			QueryRunner qRunner = new QueryRunner();
+	     			
+	     			int docNameExistsRowcount = qRunner.query(dbConn , "select count(*) from EV_DOC where EV_DOC_NAME='" + docReqBean.getNameText() + "'" , 
+	    					new ResultSetHandler<Integer>(){
+
+	    						public Integer handle(ResultSet resultSet) throws SQLException {
+    							
+	    							resultSet.next();
+	    							
+	    							return Integer.valueOf( resultSet.getInt(1) );
+	    						}
+	    				});
+	     			
+	     			logger.debug("docNameExistsRowcount => "+docNameExistsRowcount);
+	     			
+	     			if(docNameExistsRowcount > 0){
+	     				
+	     				docRegResponseBean.setStatus("errorNameExists");
+		     			docRegResponseBean.setMessage("Name already Exists ...");
+		     			
+		     			return docRegResponseBean;
+	     			}
+	     			
+	     			qRunner.update(dbConn , 
+	     					"insert into EV_DOC(EV_DOC_NAME,EV_DOC_QUALI,EV_DOC_ADDR1,EV_DOC_ADDR2,EV_DOC_STATE,EV_DOC_PIN_CODE,EV_DOC_TEL1,EV_DOC_TEL2,EV_DOC_EMAIL) values ( ?,?,?,?,?,?,?,?,? ) "  , 
+	     					new Object[]{docReqBean.getNameText() , docReqBean.getQualiText() , docReqBean.getAddress1Text() , docReqBean.getAddress2Text() , docReqBean.getStateId() , docReqBean.getPincode() ,docReqBean.getTel1Text() , docReqBean.getTel2Text() , docReqBean.getEmail() });
+	     			
+	     			docRegResponseBean.setStatus("success");
+	     			docRegResponseBean.setMessage("Saved ...");
+	     			
+	     			dbConn.commit();
 	     			
 	     		}  catch(Exception e) {
+	     			
+	     			if ( dbConn != null) {
+	     				dbConn.rollback();
+	     			}
+	     			
+	     			logger.error("Error saving doc details lists " ,e);
 	     			
 	     			docRegResponseBean.setStatus("error");
 	     			docRegResponseBean.setMessage("Not Saved ...");
 	     			
+	     		} finally {
+	     			     				
+	     			logger.debug("releasing connection");
+	     			DbUtils.closeQuietly(dbConn);
 	     		}
-	     		
-	        	return docRegResponseBean;
+	        	 
+	        	 return docRegResponseBean;
 	         }
 	         
 	     };
@@ -116,7 +141,7 @@ public class DocRegNewController extends AbstractDocRegController {
 	     });
 	     
 		new Thread( saveTask ).start();
-		
+	     
 	}
 
 	@Override

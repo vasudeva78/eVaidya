@@ -1,8 +1,11 @@
 package com.aj.evaidya.docreg.bo;
 
-public class DocRegBo {
+import com.aj.evaidya.docreg.beans.DocRegRequestBean;
+import com.aj.evaidya.docreg.beans.DocRegResponseBean;
+import com.aj.evaidya.docreg.dao.DocRegDao;
 
-	public void saveDocRegDtls(){
+public interface DocRegBo {
+
+	public DocRegResponseBean saveDbTask(DocRegDao docRegDao ,DocRegRequestBean docRegRequestBean);
 		
-	}
 }
