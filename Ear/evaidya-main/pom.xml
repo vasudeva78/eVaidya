@@ -11,7 +11,6 @@
 
 	<groupId>com.aj.evaidya.main</groupId>
 	<artifactId>evaidya-main</artifactId>
-	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>evaidya-main</name>
@@ -20,34 +19,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<!-- <dependencies> <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
-		<version>3.8.1</version> <scope>test</scope> </dependency> </dependencies> -->
-
 	<dependencies>
 		<dependency>
 			<groupId>com.aj.evaidya.controller</groupId>
 			<artifactId>evaidya-menu</artifactId>
 			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.aj.evaidya.common</groupId>
-			<artifactId>evaidya-common</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.aj.evaidya.docreg</groupId>
-			<artifactId>evaidya-doc-reg</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.aj.evaidya.patreg</groupId>
-			<artifactId>evaidya-pat-reg</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.0.11</version>
 		</dependency>
 	</dependencies>
 

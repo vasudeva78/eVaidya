@@ -15,9 +15,10 @@ public class EVaidyaMain extends Application {
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
-
+	
 	@Override
 	public void start(Stage stage) throws Exception {
+		
 
 		stage.setTitle("EVaidya-1.0");
 		
@@ -32,5 +33,6 @@ public class EVaidyaMain extends Application {
 		stage.setScene ( scene );
         
 		stage.show();
+		
 	}
 }
