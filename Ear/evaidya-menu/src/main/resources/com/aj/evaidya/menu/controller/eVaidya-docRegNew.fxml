@@ -12,7 +12,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5" style="-fx-background-color: white;-fx-background-radius: 70px;"  AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0" fx:controller="com.aj.evaidya.docreg.controller.DocRegNewController">
+<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5" style="-fx-background-color: white;-fx-background-radius: 70px;"  AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
   <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
   <children>
     <VBox prefHeight="80.0" GridPane.columnIndex="0" GridPane.rowIndex="0">

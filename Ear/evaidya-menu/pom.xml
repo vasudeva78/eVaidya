@@ -13,4 +13,17 @@
 	<version>1.0</version>
 	<name>evaidya-menu-controller</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.aj.evaidya.common</groupId>
+			<artifactId>evaidya-common</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.aj.evaidya.docreg</groupId>
+			<artifactId>evaidya-doc-reg</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	
 </project>
