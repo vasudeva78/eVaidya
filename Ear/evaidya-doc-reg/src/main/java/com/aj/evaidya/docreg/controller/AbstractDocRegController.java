@@ -3,10 +3,13 @@ package com.aj.evaidya.docreg.controller;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -15,18 +18,42 @@ import javafx.scene.control.TextField;
 
 import org.apache.log4j.Logger;
 
-import com.aj.evaidya.common.bo.CommonBo;
-import com.aj.evaidya.common.bo.CommonControlsBo;
-import com.aj.evaidya.common.dao.CommonDao;
+import com.aj.evaidya.common.bo.impl.CommonBoImpl;
+import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
+import com.aj.evaidya.common.dao.impl.CommonDaoImpl;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
+import com.aj.evaidya.docreg.bo.DocRegBo;
+import com.aj.evaidya.docreg.dao.DocRegDao;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 public abstract class AbstractDocRegController implements Initializable {
 	
-	protected CommonBo commonBo;
+	protected CommonBoImpl commonBoImpl;
 	
 	private static final Logger logger = Logger.getLogger( AbstractDocRegController.class );
+	
+	protected DocRegBo docRegBo;
+	
+	public DocRegBo getDocRegBo() {
+		return docRegBo;
+	}
+
+	@Inject
+	public void setDocRegBo(DocRegBo docRegBo) {
+		this.docRegBo = docRegBo;
+	}
+	
+	protected DocRegDao docRegDao;
+	
+	public DocRegDao getDocRegDao() {
+		return docRegDao;
+	}
+
+	@Inject
+	public void setDocRegDao(DocRegDao docRegDao) {
+		this.docRegDao = docRegDao;
+	}
 	
 	protected String dbUrl;
 	protected String dbUsername;
@@ -79,7 +106,7 @@ public abstract class AbstractDocRegController implements Initializable {
 	protected TextField address2TextField;
 	
 	@FXML
-	protected ChoiceBox stateChoiceBox;
+	protected ChoiceBox<String> stateChoiceBox;
 	
 	@FXML
 	protected TextField pincodeTextField;
@@ -105,8 +132,8 @@ public abstract class AbstractDocRegController implements Initializable {
 	
 	public final void initialize(URL url, ResourceBundle bundle) {
 		
-		CommonDao commonDao =  new CommonDao();
-		commonBo = new CommonBo(commonDao);
+		CommonDaoImpl commonDaoImpl =  new CommonDaoImpl();
+		commonBoImpl = new CommonBoImpl(commonDaoImpl);
 		
 		// populate other control fields
 		populateFieldsOnIinit();
@@ -119,7 +146,41 @@ public abstract class AbstractDocRegController implements Initializable {
 		stateList = new ArrayList<String>();
 		stateIdList = new ArrayList<String>();
 		
-		commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd , stateChoiceBox, stateList , stateIdList);
+		// commonBoImpl.getStateDropDownList(dbUrl , dbUsername , dbPwd , stateChoiceBox, stateList , stateIdList);
+		
+		final Task<Map<String, String>> choiceListTask = new Task<Map<String, String>>() {
+	         @Override protected Map<String, String> call() throws Exception {
+	        	 
+	        	 return commonBoImpl.getStateDropDownList( dbUrl , dbUsername , dbPwd ); 
+	        	 
+	         }
+	         
+	     };
+	     
+	     choiceListTask.stateProperty().addListener(new ChangeListener<State>(){
+
+			@Override
+			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
+				if (newState == State.SUCCEEDED) {
+					
+					Map<String, String> stateListMap = choiceListTask.getValue();
+					
+					stateIdList.addAll( stateListMap.keySet() );
+					stateList.addAll( stateListMap.values()  );
+					
+					stateChoiceBox.getItems().addAll( stateList );
+					
+					stateChoiceBox.setDisable(false);
+					
+					stateChoiceBox.setValue("-- Select --");
+					
+				}
+				
+			}	 
+	     });
+	     
+	     new Thread(choiceListTask).start();
+	     
 		
 		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
 			new ChangeListener<Number>() {
@@ -142,55 +203,55 @@ public abstract class AbstractDocRegController implements Initializable {
 	
 	public final void saveAction(){
 		
-		if ( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, nameTextField , "Empty Name ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, nameTextField , "Empty Name ...") ) {
 			return;
 		};
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, nameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, nameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
 			return;
 		}
 
-		if ( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, qualiTextField , "Empty Qualification ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, qualiTextField , "Empty Qualification ...") ) {
 			return;
 		};
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, qualiTextField , "[a-zA-Z -().]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, qualiTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, address1TextField , "Empty Address ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, address1TextField , "Empty Address ...") ) {
 			return;
 		}
 		
-		if( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, address1TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address1TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
 
-		if( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, address2TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address2TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
 				
-		if( !CommonControlsBo.checkSelectionBox(statusLabel, stateChoiceBox , "Select State ...") ){
+		if( !CommonControlsBoImpl.checkSelectionBox(statusLabel, stateChoiceBox , "Select State ...") ){
 			return;
 		}
 
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, pincodeTextField , "[0-9]*" , "Only Digits allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, pincodeTextField , "[0-9]*" , "Only Digits allowed ...") ) {
 			return;
 		}
 		
-		if( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, tel1TextField , "Empty Tel ...") ) {
+		if( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, tel1TextField , "Empty Tel ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, tel1TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, tel1TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, tel2TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, tel2TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, emailTextField , EMAIL_PATTERN , "Valid Email Id allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, emailTextField , EMAIL_PATTERN , "Valid Email Id allowed ...") ) {
 			return;
 		}
 		

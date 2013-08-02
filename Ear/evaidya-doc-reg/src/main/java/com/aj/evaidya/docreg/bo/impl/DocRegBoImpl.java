@@ -1,5 +1,8 @@
 package com.aj.evaidya.docreg.bo.impl;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
@@ -12,16 +15,13 @@ public class DocRegBoImpl implements DocRegBo{
 	private static final Logger logger = Logger.getLogger(DocRegBoImpl.class);
 
 	@Override
-	public DocRegResponseBean saveDbTask(DocRegDao docRegDao , final DocRegRequestBean docRegRequestBean) {
+	public DocRegResponseBean saveDocDtls(DocRegDao docRegDao , final DocRegRequestBean docRegRequestBean) {
 		
 		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
 		
-		docRegResponseBean.setStatus("success");
-		docRegResponseBean.setMessage("Saved ...");
-		
 		try {
 				
- 			docRegResponseBean = docRegDao.insertDocRegDtls(docRegRequestBean);
+ 			docRegResponseBean = docRegDao.saveDocDtls(docRegRequestBean);
  			
  		}  catch(Exception e) {
  			
@@ -33,6 +33,62 @@ public class DocRegBoImpl implements DocRegBo{
 		
 		return docRegResponseBean;
 			
+	}
+
+	@Override
+	public Map<String, String> getDocNames(DocRegDao docRegDao, DocRegRequestBean docRegRequestBean) {
+		
+		Map<String,String> docNameListMap = new LinkedHashMap<String,String>();
+		
+		try {
+				
+			docNameListMap = docRegDao.getDocNameDtls(docRegRequestBean);
+ 			
+ 		}  catch(Exception e) {
+ 			
+ 			logger.error("Error while saving ",e);
+ 			
+ 		} 
+		
+		return docNameListMap;
+	}
+
+	@Override
+	public DocRegResponseBean getDocDtls(DocRegDao docRegDao,DocRegRequestBean docRegRequestBean) {
+		
+		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
+		
+		try {
+				
+ 			docRegResponseBean = docRegDao.getDocDtls(docRegRequestBean);
+ 			
+ 		}  catch(Exception e) {
+ 			
+ 			logger.error("Error while fetching doc dtls ",e);
+ 			
+ 		} 
+		
+		return docRegResponseBean;
+	}
+
+	@Override
+	public DocRegResponseBean updateDocDtls(DocRegDao docRegDao, DocRegRequestBean docRegRequestBean) {
+		
+		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
+		
+		try {
+				
+ 			docRegResponseBean = docRegDao.updateDocDtls(docRegRequestBean);
+ 			
+ 		}  catch(Exception e) {
+ 			
+ 			logger.error("Error while saving ",e);
+ 			docRegResponseBean.setStatus("error");
+ 			docRegResponseBean.setMessage("Not Saved ...");
+ 			
+ 		} 
+		
+		return docRegResponseBean;
 	}
 
 }

@@ -1,12 +1,6 @@
-/*package com.aj.evaidya.docreg.controller;
+package com.aj.evaidya.docreg.controller;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,27 +11,21 @@ import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 
-import org.apache.commons.dbutils.DbUtils;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
-
-import com.aj.evaidya.common.bo.CommonControlsBo;
+import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.beans.DocRegResponseBean;
 
 public class DocRegEditController extends AbstractDocRegController {
 
-	private static final Logger logger = Logger.getLogger( DocRegEditController.class );
+	// private static final Logger logger = Logger.getLogger( DocRegEditController.class );
 	
 	@FXML
-	private ChoiceBox nameChoiceBox;
+	private ChoiceBox<String> nameChoiceBox;
 	
 	private String nameId;
 	private List<String> nameList;
 	private List<String> nameIdList;
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void populateFieldsOnIinit() {
 		
@@ -57,9 +45,7 @@ public class DocRegEditController extends AbstractDocRegController {
 
 				@Override
 				public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-					
-					logger.debug("inside chnaged");
-					
+									
 					if (newValue.intValue() == -1){
 						return;
 					}
@@ -82,15 +68,13 @@ public class DocRegEditController extends AbstractDocRegController {
 					
 					nameId = nameIdList.get( newValue.intValue() );
 					
-					logger.debug("nameId => "+nameId);
-
 					populateAllFields(nameId);
 												
 				}
 		});
 
 		// populate name Choice box. Not called until name state box has completed loading
-		 final Task nameChoiceBoxTask = namesTask();
+		 final Task<Map<String, String>> nameChoiceBoxTask = namesTask();
 			
 		 nameChoiceBoxTask.stateProperty().addListener(new ChangeListener<State>(){
 
@@ -100,8 +84,8 @@ public class DocRegEditController extends AbstractDocRegController {
 					
 					Map<String, String> nameListMap = (Map<String, String>) nameChoiceBoxTask.getValue();
 					
-					nameList = new ArrayList ( nameListMap.values() );
-					nameIdList = new ArrayList ( nameListMap.keySet() ); 
+					nameList = new ArrayList<String> ( nameListMap.values() );
+					nameIdList = new ArrayList<String> ( nameListMap.keySet() ); 
 
 					nameChoiceBox.getItems().addAll( nameList );
 					
@@ -113,7 +97,7 @@ public class DocRegEditController extends AbstractDocRegController {
 	     });
 				 
 		// populate name State box
-		final Task stateTask = stateTask();
+		final Task<Map<String, String>> stateTask = stateTask();
 		
 		stateTask.stateProperty().addListener(new ChangeListener<State>(){
 
@@ -123,8 +107,8 @@ public class DocRegEditController extends AbstractDocRegController {
 					
 					Map<String, String> stateListMap = (Map<String, String>) stateTask.getValue();
 					
-					stateIdList = new ArrayList( stateListMap.keySet() );
-					stateList = new ArrayList( stateListMap.values()  );
+					stateIdList = new ArrayList<String>( stateListMap.keySet() );
+					stateList = new ArrayList<String>( stateListMap.values()  );
 					
 					stateChoiceBox.getItems().addAll( stateList );
 					
@@ -147,44 +131,7 @@ public class DocRegEditController extends AbstractDocRegController {
 		return new Task<Map<String, String>>() {
 	         @Override protected Map<String, String> call() throws Exception {
 	        	 
-	        	 Connection dbConn = null;
-	     		Map<String, String> stateListMap = null ;
-	     					
-	     		try {
-	     						
-	     			dbConn = DriverManager.getConnection( CONN_URL, CONN_UNAME , CONN_PWD );
-	     			
-	     			logger.debug("after getting db Conn => "+dbConn);
-	     			
-	     			QueryRunner qRunner = new QueryRunner();
-	     			
-	     			stateListMap = qRunner.query(dbConn , "select EV_ID , EV_GRP_COD , EV_GRP_VAL from EV_MASTER order by EV_ID" , 
-	     					new ResultSetHandler<Map<String, String>>(){
-
-	     						public Map<String, String> handle(ResultSet resultSet) throws SQLException {
-	     							
-	     							Map<String, String> stateListMap = new LinkedHashMap<String, String>() ;
-	     							
-	     							stateListMap.put("--","-- Select --");
-	     							
-	     							while( resultSet.next() ){
-	     								stateListMap.put( resultSet.getString("EV_GRP_COD") , resultSet.getString("EV_GRP_VAL") );
-	     							}
-	     							
-	     							return stateListMap;
-	     						}
-	     				});
-	     				     			
-	     		}  catch(Exception e) {
-	     			
-	     			logger.error("Error fetching Column lists " ,e);
-	     			stateListMap = new HashMap<String, String>();
-	     			
-	     		} finally {
-	     			DbUtils.closeQuietly(dbConn);
-	     		}
-				
-	     		return stateListMap;
+	        	 return commonBoImpl.getStateDropDownList( dbUrl , dbUsername , dbPwd ); 
 	        	 
 	         }
 	         
@@ -197,46 +144,12 @@ public class DocRegEditController extends AbstractDocRegController {
 		return new Task<Map<String, String>>() {
 	         @Override protected Map<String, String> call() throws Exception {
 	        	 
-	        	Connection dbConn = null;
-	        	
-	        	Map<String,String> docNameListMap = new LinkedHashMap<String,String>();
-	     					
-	     		try {
-						
-	     			dbConn = DriverManager.getConnection( CONN_URL, CONN_UNAME , CONN_PWD );
-	     			
-	     			logger.debug("after getting db Conn => "+dbConn);
-	     			
-	     			QueryRunner qRunner = new QueryRunner();
-	     			
-	     			docNameListMap = qRunner.query(dbConn , "select EV_DOC_ID , EV_DOC_NAME from EV_DOC order by EV_DOC_NAME" , 
-	    					new ResultSetHandler<Map<String, String>>(){
-
-	    						public Map<String, String> handle(ResultSet resultSet) throws SQLException {
-	    							
-	    							Map<String, String> nameListMap = new LinkedHashMap<String, String>() ;
-	    							
-	    							nameListMap.put("--","-- Select --");
-	    							
-	    							while( resultSet.next() ){
-	    								nameListMap.put( resultSet.getString("EV_DOC_ID") , resultSet.getString("EV_DOC_NAME") );
-	    							}
-	    							
-	    							return nameListMap;
-	    						}
-	    				});
-	     			
-	     		}  catch(Exception e) {
-	     			
-	     			logger.error("Error saving doc details lists " ,e);
-	     			
-	     		} finally {
-
-	     			DbUtils.closeQuietly(dbConn);
-	     		}
-	     		
-	     		return docNameListMap;
-	        	 
+	        	 DocRegRequestBean docReqBean = new DocRegRequestBean();
+	        	 docReqBean.setDbUrl(dbUrl);
+	     		 docReqBean.setDbUsername(dbUsername);
+	     		 docReqBean.setDbPwd(dbPwd);
+	     			        	 
+	        	 return docRegBo.getDocNames( docRegDao , docReqBean);	        	 
 	         }
 	         
 	     };
@@ -247,56 +160,16 @@ public class DocRegEditController extends AbstractDocRegController {
 
 		final Task <DocRegResponseBean> populateAllFieldsTask = new Task <DocRegResponseBean>() { 
 			
-	         @Override protected DocRegResponseBean call() throws Exception {     		
-	     		Connection dbConn = null;
-   					
-	     		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
+	         @Override protected DocRegResponseBean call() throws Exception {   
+        	    
+	        	DocRegRequestBean docReqBean = new DocRegRequestBean();
+        	    
+        	    docReqBean.setDbUrl(dbUrl);
+	     		docReqBean.setDbUsername(dbUsername);
+	     		docReqBean.setDbPwd(dbPwd);
+	     		docReqBean.setNameId(nameId);
 	     		
-	     		if (nameId.equalsIgnoreCase("--")){
-	     			return docRegResponseBean;
-	     		}
-	     		
-	     		try {
-	     						
-	     			dbConn = DriverManager.getConnection( CONN_URL, CONN_UNAME , CONN_PWD );
-	     			
-	     			logger.debug("after getting db Conn => "+dbConn);
-	     			
-	     			QueryRunner qRunner = new QueryRunner();
-	     			
-	     			docRegResponseBean = qRunner.query(dbConn , "select EV_DOC_ID , EV_DOC_NAME , EV_DOC_QUALI , EV_DOC_ADDR1, EV_DOC_ADDR2 , EV_DOC_STATE , EV_DOC_PIN_CODE , EV_DOC_TEL1 , EV_DOC_TEL2 , EV_DOC_EMAIL from EV_DOC where EV_DOC_ID = '"+nameId+"'" , 
-	    					new ResultSetHandler<DocRegResponseBean>(){
-
-	    						public DocRegResponseBean handle(ResultSet resultSet) throws SQLException {
-	    							
-	    							DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
-	    							
-	    							resultSet.next();
-	    							docRegResponseBean.setNameText(resultSet.getString("EV_DOC_NAME"));
-	    							docRegResponseBean.setQualiText(resultSet.getString("EV_DOC_QUALI"));
-	    							docRegResponseBean.setAddress1Text(resultSet.getString("EV_DOC_ADDR1"));
-	    							docRegResponseBean.setAddress2Text(resultSet.getString("EV_DOC_ADDR2"));
-	    							docRegResponseBean.setStateId(resultSet.getString("EV_DOC_STATE"));
-	    							docRegResponseBean.setPincode(resultSet.getString("EV_DOC_PIN_CODE"));
-	    							docRegResponseBean.setTel1Text(resultSet.getString("EV_DOC_TEL1"));
-	    							docRegResponseBean.setTel2Text(resultSet.getString("EV_DOC_TEL2"));
-	    							docRegResponseBean.setEmail(resultSet.getString("EV_DOC_EMAIL"));
-	    							
-	    							return docRegResponseBean;
-	    						}
-	    				});
-	     			
-	     		}  catch(Exception e) {
-	     			
-	     			logger.error("Error fetching doc details " ,e);
-	     			
-	     		} finally {
-	     			     				
-	     			logger.debug("releasing connection");
-	     			DbUtils.closeQuietly(dbConn);
-	     		}
-	        	 
-	        	 return docRegResponseBean;
+	     		return docRegBo.getDocDtls(docRegDao, docReqBean);
 	         }
 	         
 	     };
@@ -324,8 +197,6 @@ public class DocRegEditController extends AbstractDocRegController {
 					tel2TextField.setText(docRegResponseBean.getTel2Text());
 					
 					emailTextField.setText(docRegResponseBean.getEmail());
-					
-					logger.debug("stateIdIndx => "+stateIdIndx);
 					
 					if (stateIdIndx != -1){
 											
@@ -388,48 +259,13 @@ public class DocRegEditController extends AbstractDocRegController {
 		
 		final Task<DocRegResponseBean> saveTask = new Task<DocRegResponseBean>() { 
 			
-	         @Override protected DocRegResponseBean call() throws Exception {     		
-	     		Connection dbConn = null;
-   					
-	     		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
-	     		
-	     		try {
-	     						
-	     			dbConn = DriverManager.getConnection( CONN_URL, CONN_UNAME , CONN_PWD );
-	     			
-	     			logger.debug("after getting db Conn => "+dbConn);
-	     			
-	     			dbConn.setAutoCommit(false);
-	     			
-	     			QueryRunner qRunner = new QueryRunner();
-	     			     			
-	     			qRunner.update(dbConn , 
-	     					"update EV_DOC set EV_DOC_NAME = ? , EV_DOC_QUALI = ? , EV_DOC_ADDR1 = ? ,EV_DOC_ADDR2 = ? , EV_DOC_STATE = ? , EV_DOC_PIN_CODE = ? ,EV_DOC_TEL1 = ? ,EV_DOC_TEL2 = ? , EV_DOC_EMAIL = ? , EV_ENTRY_TIME = ( select now() ) where EV_DOC_ID = ? "  , 
-	     					new Object[]{docRegRequestBean.getNameText() ,  docRegRequestBean.getQualiText(), docRegRequestBean.getAddress1Text() , docRegRequestBean.getAddress2Text() , docRegRequestBean.getStateId() , docRegRequestBean.getPincode() ,docRegRequestBean.getTel1Text() , docRegRequestBean.getTel2Text() , docRegRequestBean.getEmail() , docRegRequestBean.getNameId() });
-	     			
-	     			docRegResponseBean.setStatus("success");
-	     			docRegResponseBean.setMessage("Saved ...");
-	     			
-	     			dbConn.commit();
-	     			
-	     		}  catch(Exception e) {
-	     			
-	     			if ( dbConn != null) {
-	     				dbConn.rollback();
-	     			}
-	     			
-	     			logger.error("Error saving doc details lists " ,e);
-	     			
-	     			docRegResponseBean.setStatus("error");
-	     			docRegResponseBean.setMessage("Not Saved ...");
-	     			
-	     		} finally {
-	     			     				
-	     			logger.debug("releasing connection");
-	     			DbUtils.closeQuietly(dbConn);
-	     		}
+	         @Override protected DocRegResponseBean call() throws Exception { 
 	        	 
-	        	 return docRegResponseBean;
+	        	 docRegRequestBean.setDbUrl(dbUrl);
+	        	 docRegRequestBean.setDbUsername(dbUsername);
+	        	 docRegRequestBean.setDbPwd(dbPwd);
+	        	 
+	     		return docRegBo.updateDocDtls(docRegDao, docRegRequestBean);
 	         }
 	         
 	     };
@@ -443,7 +279,7 @@ public class DocRegEditController extends AbstractDocRegController {
 					DocRegResponseBean docRegResponseBean = saveTask.getValue();
 					
 					if( "success".equals(docRegResponseBean.getStatus() ) ){
-						CommonControlsBo.showFinalSuccessStatus( statusLabel , docRegResponseBean.getMessage() );
+						CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , docRegResponseBean.getMessage() );
 						
 						int indxToReplace = nameIdList.indexOf( nameId ) ;
 								
@@ -451,10 +287,10 @@ public class DocRegEditController extends AbstractDocRegController {
 					
 					} else if( "errorNameExists".equals(docRegResponseBean.getStatus() ) ){
 						//CommonControlsBo.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
-						CommonControlsBo.showErrorMessage(statusLabel, nameTextField, docRegResponseBean.getMessage());
+						CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField, docRegResponseBean.getMessage());
 					
 					} else {
-						CommonControlsBo.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
+						CommonControlsBoImpl.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
 					}
 					
 				}
@@ -485,4 +321,3 @@ public class DocRegEditController extends AbstractDocRegController {
 
 	
 }
-*/

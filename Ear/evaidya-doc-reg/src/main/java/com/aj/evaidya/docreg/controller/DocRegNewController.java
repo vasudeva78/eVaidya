@@ -5,41 +5,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
 
-import org.apache.log4j.Logger;
-
-import com.aj.evaidya.common.bo.CommonControlsBo;
+import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.beans.DocRegResponseBean;
-import com.aj.evaidya.docreg.bo.DocRegBo;
-import com.aj.evaidya.docreg.dao.DocRegDao;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public class DocRegNewController extends AbstractDocRegController {
-	
-	private static final Logger logger = Logger.getLogger( DocRegNewController.class );
-	
-	private DocRegBo docRegBo;
-	
-	public DocRegBo getDocRegBo() {
-		return docRegBo;
-	}
-
-	@Inject
-	public void setDocRegBo(DocRegBo docRegBo) {
-		this.docRegBo = docRegBo;
-	}
-	
-	private DocRegDao docRegDao;
-	
-	public DocRegDao getDocRegDao() {
-		return docRegDao;
-	}
-
-	@Inject
-	public void setDocRegDao(DocRegDao docRegDao) {
-		this.docRegDao = docRegDao;
-	}
 	
 	protected void populateFieldsOnIinit() {			
 		super.populateStateField();
@@ -77,7 +47,7 @@ public class DocRegNewController extends AbstractDocRegController {
 	     		
 	     		try {
 	     						
-	     			docRegResponseBean = docRegBo.saveDbTask(docRegDao , docReqBean);
+	     			docRegResponseBean = docRegBo.saveDocDtls(docRegDao , docReqBean);
 	     			
 	     		}  catch(Exception e) {
 	     			
@@ -100,14 +70,14 @@ public class DocRegNewController extends AbstractDocRegController {
 					DocRegResponseBean docRegResponseBean = saveTask.getValue();
 					
 					if( "success".equals(docRegResponseBean.getStatus() ) ){
-						CommonControlsBo.showFinalSuccessStatus( statusLabel , docRegResponseBean.getMessage() );
+						CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , docRegResponseBean.getMessage() );
 					
 					} else if( "errorNameExists".equals(docRegResponseBean.getStatus() ) ){
 						//CommonControlsBo.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
-						CommonControlsBo.showErrorMessage(statusLabel, nameTextField, docRegResponseBean.getMessage());
+						CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField, docRegResponseBean.getMessage());
 					
 					} else {
-						CommonControlsBo.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
+						CommonControlsBoImpl.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
 					}
 							
 				}

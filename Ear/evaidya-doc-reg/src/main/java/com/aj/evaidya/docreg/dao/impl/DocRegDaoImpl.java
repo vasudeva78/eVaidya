@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -18,9 +20,12 @@ public class DocRegDaoImpl implements DocRegDao{
 	private static final Logger logger = Logger.getLogger(DocRegDaoImpl.class);
 
 	@Override
-	public DocRegResponseBean insertDocRegDtls(DocRegRequestBean docRegRequestBean) throws Exception {
+	public DocRegResponseBean saveDocDtls(DocRegRequestBean docRegRequestBean) throws Exception {
 		
 		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
+		
+		docRegResponseBean.setStatus("success");
+		docRegResponseBean.setMessage("Saved ...");
 		
 		try(Connection dbConn = DriverManager.getConnection( docRegRequestBean.getDbUrl(), docRegRequestBean.getDbUsername() , docRegRequestBean.getDbPwd() )){
 			
@@ -57,10 +62,120 @@ public class DocRegDaoImpl implements DocRegDao{
 		
 		} catch(Exception e ){
  			
-			throw e;	
+			throw e;
 		}
 		
 		return docRegResponseBean;
 	}
+
+	@Override
+	public Map<String, String> getDocNameDtls(DocRegRequestBean docRegRequestBean) throws Exception {
+		
+		Map<String,String> docNameListMap = new LinkedHashMap<String,String>();
+		
+		try(Connection dbConn = DriverManager.getConnection( docRegRequestBean.getDbUrl(), docRegRequestBean.getDbUsername() , docRegRequestBean.getDbPwd() )){
+						
+			QueryRunner qRunner = new QueryRunner();
+ 			
+ 			docNameListMap = qRunner.query(dbConn , "select EV_DOC_ID , EV_DOC_NAME from EV_DOC order by EV_DOC_NAME" , 
+					new ResultSetHandler<Map<String, String>>(){
+
+						public Map<String, String> handle(ResultSet resultSet) throws SQLException {
+							
+							Map<String, String> nameListMap = new LinkedHashMap<String, String>() ;
+							
+							nameListMap.put("--","-- Select --");
+							
+							while( resultSet.next() ){
+								nameListMap.put( resultSet.getString("EV_DOC_ID") , resultSet.getString("EV_DOC_NAME") );
+							}
+							
+							return nameListMap;
+						}
+				});
+		
+		} catch(Exception e ){
+ 			
+			throw e;
+		}
+		
+		return docNameListMap;
+	}
+
+	@Override
+	public DocRegResponseBean getDocDtls(DocRegRequestBean docRegRequestBean) throws Exception {
+ 		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
+ 		
+ 		String nameId = docRegRequestBean.getNameId();
+ 		if (nameId.equalsIgnoreCase("--")){
+ 			return docRegResponseBean;
+ 		}
+ 		
+ 		try(Connection dbConn = DriverManager.getConnection( docRegRequestBean.getDbUrl(), docRegRequestBean.getDbUsername() , docRegRequestBean.getDbPwd() )){
+ 									
+ 			QueryRunner qRunner = new QueryRunner();
+ 			
+ 			docRegResponseBean = qRunner.query(dbConn , "select EV_DOC_ID , EV_DOC_NAME , EV_DOC_QUALI , EV_DOC_ADDR1, EV_DOC_ADDR2 , EV_DOC_STATE , EV_DOC_PIN_CODE , EV_DOC_TEL1 , EV_DOC_TEL2 , EV_DOC_EMAIL from EV_DOC where EV_DOC_ID = '"+nameId+"'" , 
+					new ResultSetHandler<DocRegResponseBean>(){
+
+						public DocRegResponseBean handle(ResultSet resultSet) throws SQLException {
+							
+							DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
+							
+							resultSet.next();
+							docRegResponseBean.setNameText(resultSet.getString("EV_DOC_NAME"));
+							docRegResponseBean.setQualiText(resultSet.getString("EV_DOC_QUALI"));
+							docRegResponseBean.setAddress1Text(resultSet.getString("EV_DOC_ADDR1"));
+							docRegResponseBean.setAddress2Text(resultSet.getString("EV_DOC_ADDR2"));
+							docRegResponseBean.setStateId(resultSet.getString("EV_DOC_STATE"));
+							docRegResponseBean.setPincode(resultSet.getString("EV_DOC_PIN_CODE"));
+							docRegResponseBean.setTel1Text(resultSet.getString("EV_DOC_TEL1"));
+							docRegResponseBean.setTel2Text(resultSet.getString("EV_DOC_TEL2"));
+							docRegResponseBean.setEmail(resultSet.getString("EV_DOC_EMAIL"));
+							
+							return docRegResponseBean;
+						}
+				});
+ 			
+ 		}  catch(Exception e) {
+ 			
+ 			throw e;
+ 			
+ 		} 
+    	 
+    	return docRegResponseBean;
+	}
+
+	@Override
+	public DocRegResponseBean updateDocDtls(DocRegRequestBean docRegRequestBean) throws Exception {
+
+		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
+		
+		docRegResponseBean.setStatus("success");
+		docRegResponseBean.setMessage("Saved ...");
+			
+		try(Connection dbConn = DriverManager.getConnection( docRegRequestBean.getDbUrl(), docRegRequestBean.getDbUsername() , docRegRequestBean.getDbPwd() )){
+ 			
+ 			dbConn.setAutoCommit(false);
+ 			
+ 			QueryRunner qRunner = new QueryRunner();
+ 			     			
+ 			qRunner.update(dbConn , 
+ 					"update EV_DOC set EV_DOC_NAME = ? , EV_DOC_QUALI = ? , EV_DOC_ADDR1 = ? ,EV_DOC_ADDR2 = ? , EV_DOC_STATE = ? , EV_DOC_PIN_CODE = ? ,EV_DOC_TEL1 = ? ,EV_DOC_TEL2 = ? , EV_DOC_EMAIL = ? , EV_ENTRY_TIME = ( select now() ) where EV_DOC_ID = ? "  , 
+ 					new Object[]{docRegRequestBean.getNameText() ,  docRegRequestBean.getQualiText(), docRegRequestBean.getAddress1Text() , docRegRequestBean.getAddress2Text() , docRegRequestBean.getStateId() , docRegRequestBean.getPincode() ,docRegRequestBean.getTel1Text() , docRegRequestBean.getTel2Text() , docRegRequestBean.getEmail() , docRegRequestBean.getNameId() });
+ 			
+ 			docRegResponseBean.setStatus("success");
+ 			docRegResponseBean.setMessage("Saved ...");
+ 			
+ 			dbConn.commit();
+ 			
+ 		}  catch(Exception e) {
+ 			
+ 			throw e;
+ 			
+ 		}     	 
+    	
+		return docRegResponseBean;
+     }
 
 }
