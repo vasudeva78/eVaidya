@@ -1,4 +1,4 @@
-package com.aj.evaidya.common.bo;
+package com.aj.evaidya.common.bo.impl;
 
 import java.util.Calendar;
 import java.util.regex.Pattern;
@@ -17,9 +17,9 @@ import javafx.util.Duration;
 
 import org.apache.log4j.Logger;
 
-public final class CommonControlsBo {
+public final class CommonControlsBoImpl {
 
-	private static final Logger logger = Logger.getLogger(CommonControlsBo.class);
+	private static final Logger logger = Logger.getLogger(CommonControlsBoImpl.class);
 	
 	private static final Calendar now;
 	
@@ -28,12 +28,12 @@ public final class CommonControlsBo {
 		now.setLenient(false);
 	}
 	
-	private CommonControlsBo(){}
+	private CommonControlsBoImpl(){}
 	
 	public static boolean checkTextFieldForEmptyString (Label statusLabel,TextField textField,String errMessage) {
 		
 		if ( textField.getText().trim().isEmpty() ){
-			CommonControlsBo.showErrorMessage(statusLabel, textField , errMessage );
+			CommonControlsBoImpl.showErrorMessage(statusLabel, textField , errMessage );
 			
 			return false;
 		}
@@ -44,7 +44,7 @@ public final class CommonControlsBo {
 
    public static void showFinalSuccessStatus (Label statusLabel , String errMessage) {
 		
-		if ( !errMessage.trim().isEmpty() ){
+		if ( null != errMessage && !errMessage.trim().isEmpty() ){
 			
 			statusLabel.setText( errMessage );
 			statusLabel.setTextFill(Color.GREEN);
@@ -63,7 +63,7 @@ public final class CommonControlsBo {
 
    public static void showFinalFailureStatus (Label statusLabel , String errMessage) {
 		
-		if ( !errMessage.trim().isEmpty() ){
+		if ( null != errMessage && !errMessage.trim().isEmpty() ){
 			
 			statusLabel.setText( errMessage );
 			statusLabel.setTextFill(Color.RED);
@@ -83,7 +83,7 @@ public final class CommonControlsBo {
 	public static boolean checkTextFieldForInvalidLetters (Label statusLabel, TextField textField ,String regExp ,String errMessage) {
 		
 		if ( !Pattern.compile( regExp ).matcher( textField.getText().trim() ).matches() ){
-			CommonControlsBo.showErrorMessage(statusLabel, textField , errMessage );
+			CommonControlsBoImpl.showErrorMessage(statusLabel, textField , errMessage );
 			
 			return false;
 		}
@@ -91,12 +91,12 @@ public final class CommonControlsBo {
 		return true;
 	}
 	
-	public static boolean checkSelectionBox (Label statusLabel, ChoiceBox choiceBox , String errMessage) {
+	public static boolean checkSelectionBox (Label statusLabel, ChoiceBox<String> choiceBox , String errMessage) {
 		
 		logger.debug("choiceBox value => "+choiceBox.getValue());
 		
 		if ( choiceBox.getValue().toString().trim().equals( "-- Select --" ) || choiceBox.getValue().toString().trim().equals( "--" ) ){
-			CommonControlsBo.showErrorMessage(statusLabel, choiceBox , errMessage );
+			CommonControlsBoImpl.showErrorMessage(statusLabel, choiceBox , errMessage );
 			
 			return false;
 		}
@@ -104,7 +104,7 @@ public final class CommonControlsBo {
 		return true;
 	}
 	
-   public static boolean checkForValidDate (Label statusLabel, TextField dateTextField ,ChoiceBox monthChoiceBox , TextField yearTextField) {
+   public static boolean checkForValidDate (Label statusLabel, TextField dateTextField ,ChoiceBox<String> monthChoiceBox , TextField yearTextField) {
 	
 		try{
 			
@@ -116,11 +116,11 @@ public final class CommonControlsBo {
 		}catch(Exception e){
 			
 			if (e.getMessage().equals("YEAR")){
-				CommonControlsBo.showErrorMessage(statusLabel, yearTextField , "Invalid Year." );
+				CommonControlsBoImpl.showErrorMessage(statusLabel, yearTextField , "Invalid Year." );
 			} else if (e.getMessage().equals("MONTH")){
-				CommonControlsBo.showErrorMessage(statusLabel, monthChoiceBox , "Invalid Month." );
+				CommonControlsBoImpl.showErrorMessage(statusLabel, monthChoiceBox , "Invalid Month." );
 			} else {
-				CommonControlsBo.showErrorMessage(statusLabel, dateTextField , "Invalid Date." );
+				CommonControlsBoImpl.showErrorMessage(statusLabel, dateTextField , "Invalid Date." );
 			}
 				
 			return false;

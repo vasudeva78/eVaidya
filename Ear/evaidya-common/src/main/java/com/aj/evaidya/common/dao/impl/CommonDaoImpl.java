@@ -1,4 +1,4 @@
-package com.aj.evaidya.common.dao;
+package com.aj.evaidya.common.dao.impl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,9 +12,9 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 
-public class CommonDao {
+public class CommonDaoImpl {
 	
-	private static final Logger logger = Logger.getLogger(CommonDao.class);
+	private static final Logger logger = Logger.getLogger(CommonDaoImpl.class);
 	
 	public Map<String, String> getStateDropDownList(String connUrl , String uName , String pwd) {
 		
