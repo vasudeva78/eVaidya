@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import com.aj.evaidya.config.EvaidyaBindings;
+import com.aj.evaidya.docreg.controller.DocRegEditController;
 import com.aj.evaidya.docreg.controller.DocRegNewController;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -39,9 +40,11 @@ public class MenuController implements Initializable {
 		
 		Injector injector = Guice.createInjector(new EvaidyaBindings());
 		DocRegNewController docRegNewController = injector.getInstance(DocRegNewController.class);
+		DocRegEditController docRegEditController = injector.getInstance(DocRegEditController.class);
 		
 		menuControllerKeys = new HashMap<String, Initializable>();
 		menuControllerKeys.put("docRegNew", docRegNewController);
+		menuControllerKeys.put("docRegEdit", docRegEditController);
 		
 	}
 	
