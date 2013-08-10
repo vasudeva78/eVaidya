@@ -18,6 +18,8 @@ import javafx.scene.layout.VBox;
 import com.aj.evaidya.config.EvaidyaBindings;
 import com.aj.evaidya.docreg.controller.DocRegEditController;
 import com.aj.evaidya.docreg.controller.DocRegNewController;
+import com.aj.evaidya.patreg.controller.PatRegEditController;
+import com.aj.evaidya.patreg.controller.PatRegNewController;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -39,12 +41,18 @@ public class MenuController implements Initializable {
 		// Load All dependencies
 		
 		Injector injector = Guice.createInjector(new EvaidyaBindings());
+		
 		DocRegNewController docRegNewController = injector.getInstance(DocRegNewController.class);
 		DocRegEditController docRegEditController = injector.getInstance(DocRegEditController.class);
+		
+		PatRegNewController patRegNewController = injector.getInstance(PatRegNewController.class);
+		PatRegEditController patRegEditController = injector.getInstance(PatRegEditController.class);
 		
 		menuControllerKeys = new HashMap<String, Initializable>();
 		menuControllerKeys.put("docRegNew", docRegNewController);
 		menuControllerKeys.put("docRegEdit", docRegEditController);
+		menuControllerKeys.put("patRegNew", patRegNewController);
+		menuControllerKeys.put("patRegEdit", patRegEditController);
 		
 	}
 	

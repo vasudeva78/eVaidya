@@ -12,7 +12,8 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.aj.evaidya.patreg.controller.PatRegNewController">
+<GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
+  <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
   <children>
     <VBox prefHeight="80.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
@@ -45,9 +46,9 @@
                     <Insets right="5.0" fx:id="x1" />
                   </HBox.margin>
                 </Label>
-                <TextField fx:id="dateTextField" prefHeight="35.0" prefWidth="45.0" />
+                <TextField prefHeight="35.0" prefWidth="45.0" fx:id="dateTextField" />
                 <Label alignment="CENTER_RIGHT" maxWidth="-Infinity" prefHeight="35.0" prefWidth="70.0" style="-fx-text-fill: #ff4500" text="Month" HBox.margin="$x1" />
-                <ChoiceBox fx:id="monthChoiceBox" maxWidth="-Infinity" prefHeight="35.0" prefWidth="65.0" value="--">
+                <ChoiceBox maxWidth="-Infinity" prefHeight="35.0" prefWidth="80.0" fx:id="monthChoiceBox" >
                   <items>
                     <FXCollections fx:factory="observableArrayList">
                       <String fx:value="--" />
@@ -65,9 +66,12 @@
                       <String fx:value="DEC" />
                     </FXCollections>
                   </items>
+                   <value>
+				        <String fx:value="--" />
+				   </value>
                 </ChoiceBox>
-                <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="65.0" style="-fx-text-fill: #ff4500" text="Year" HBox.margin="$x1" />
-                <TextField fx:id="yearTextField" prefHeight="40.0" prefWidth="50.0" />
+                <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="60.0" style="-fx-text-fill: #ff4500" text="Year" HBox.margin="$x1" />
+                <TextField prefHeight="40.0" prefWidth="50.0" fx:id="yearTextField" />
               </children>
             </HBox>
           </children>
@@ -137,9 +141,6 @@
   <columnConstraints>
     <ColumnConstraints prefWidth="1000.0" />
   </columnConstraints>
-  <padding>
-    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-  </padding>
   <rowConstraints>
     <RowConstraints />
     <RowConstraints />

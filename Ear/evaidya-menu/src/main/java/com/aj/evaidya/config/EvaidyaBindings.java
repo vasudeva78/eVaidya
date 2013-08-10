@@ -4,6 +4,10 @@ import com.aj.evaidya.docreg.bo.DocRegBo;
 import com.aj.evaidya.docreg.bo.impl.DocRegBoImpl;
 import com.aj.evaidya.docreg.dao.DocRegDao;
 import com.aj.evaidya.docreg.dao.impl.DocRegDaoImpl;
+import com.aj.evaidya.patreg.bo.PatRegBo;
+import com.aj.evaidya.patreg.bo.impl.PatRegBoImpl;
+import com.aj.evaidya.patreg.dao.PatRegDao;
+import com.aj.evaidya.patreg.dao.impl.PatRegDaoImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
@@ -18,6 +22,9 @@ public class EvaidyaBindings extends AbstractModule{
 		
 		bind(DocRegBo.class).to(DocRegBoImpl.class);
 		bind(DocRegDao.class).to(DocRegDaoImpl.class);
+		
+		bind(PatRegBo.class).to(PatRegBoImpl.class);
+		bind(PatRegDao.class).to(PatRegDaoImpl.class);
 		
 	}
 
