@@ -46,7 +46,7 @@ public class DocRegBoImpl implements DocRegBo{
  			
  		}  catch(Exception e) {
  			
- 			logger.error("Error while saving ",e);
+ 			logger.error("Error while fetching ",e);
  			
  		} 
 		
