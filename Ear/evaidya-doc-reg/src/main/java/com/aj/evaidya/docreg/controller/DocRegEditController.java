@@ -131,7 +131,7 @@ public class DocRegEditController extends AbstractDocRegController {
 		return new Task<Map<String, String>>() {
 	         @Override protected Map<String, String> call() throws Exception {
 	        	 
-	        	 return commonBoImpl.getStateDropDownList( dbUrl , dbUsername , dbPwd ); 
+	        	 return commonBo.getStateDropDownList( commonDao,dbUrl , dbUsername , dbPwd ); 
 	        	 
 	         }
 	         

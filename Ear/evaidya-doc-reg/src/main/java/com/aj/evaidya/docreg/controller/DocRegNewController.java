@@ -12,7 +12,7 @@ import com.aj.evaidya.docreg.beans.DocRegResponseBean;
 public class DocRegNewController extends AbstractDocRegController {
 	
 	protected void populateFieldsOnIinit() {			
-		super.populateStateField();
+		super.populateStateField( false );
 	}
 	
 	protected DocRegRequestBean populateDocRegRequestBean(){

@@ -18,9 +18,9 @@ import javafx.scene.control.TextField;
 
 import org.apache.log4j.Logger;
 
-import com.aj.evaidya.common.bo.impl.CommonBoImpl;
+import com.aj.evaidya.common.bo.CommonBo;
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
-import com.aj.evaidya.common.dao.impl.CommonDaoImpl;
+import com.aj.evaidya.common.dao.CommonDao;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.bo.DocRegBo;
 import com.aj.evaidya.docreg.dao.DocRegDao;
@@ -29,8 +29,28 @@ import com.google.inject.name.Named;
 
 public abstract class AbstractDocRegController implements Initializable {
 	
-	protected CommonBoImpl commonBoImpl;
+	protected CommonBo commonBo;
 	
+	public CommonBo getCommonBo() {
+		return commonBo;
+	}
+
+	@Inject
+	public void setCommonBo(CommonBo commonBo) {
+		this.commonBo = commonBo;
+	}
+
+	protected CommonDao commonDao;
+	
+	public CommonDao getCommonDao() {
+		return commonDao;
+	}
+
+	@Inject
+	public void setCommonDao(CommonDao commonDao) {
+		this.commonDao = commonDao;
+	}
+
 	private static final Logger logger = Logger.getLogger( AbstractDocRegController.class );
 	
 	protected DocRegBo docRegBo;
@@ -132,15 +152,13 @@ public abstract class AbstractDocRegController implements Initializable {
 	
 	public final void initialize(URL url, ResourceBundle bundle) {
 		
-		CommonDaoImpl commonDaoImpl =  new CommonDaoImpl();
-		commonBoImpl = new CommonBoImpl(commonDaoImpl);
-		
 		// populate other control fields
 		populateFieldsOnIinit();
 		
+		System.out.println("inside initialise");
 	}
 	
-	protected final void populateStateField() {
+	protected final void populateStateField(final boolean isStateFieldDisabled) {
 		stateChoiceBox.setDisable(true);
 		
 		stateList = new ArrayList<String>();
@@ -151,7 +169,7 @@ public abstract class AbstractDocRegController implements Initializable {
 		final Task<Map<String, String>> choiceListTask = new Task<Map<String, String>>() {
 	         @Override protected Map<String, String> call() throws Exception {
 	        	 
-	        	 return commonBoImpl.getStateDropDownList( dbUrl , dbUsername , dbPwd ); 
+	        	 return commonBo.getStateDropDownList(commonDao, dbUrl , dbUsername , dbPwd ); 
 	        	 
 	         }
 	         
@@ -170,7 +188,7 @@ public abstract class AbstractDocRegController implements Initializable {
 					
 					stateChoiceBox.getItems().addAll( stateList );
 					
-					stateChoiceBox.setDisable(false);
+					stateChoiceBox.setDisable( isStateFieldDisabled );
 					
 					stateChoiceBox.setValue("-- Select --");
 					
