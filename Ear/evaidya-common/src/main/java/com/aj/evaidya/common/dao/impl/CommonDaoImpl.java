@@ -12,19 +12,16 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 
-public class CommonDaoImpl {
-	
-	private static final Logger logger = Logger.getLogger(CommonDaoImpl.class);
+import com.aj.evaidya.common.dao.CommonDao;
+
+public class CommonDaoImpl implements CommonDao {
+	private Logger logger = Logger.getLogger(CommonDaoImpl.class);
 	
 	public Map<String, String> getStateDropDownList(String connUrl , String uName , String pwd) {
-		
-		logger.debug("inside CommonDao");
 		
 		Map<String, String> stateListMap = null ;
 					
 		try ( Connection dbConn = DriverManager.getConnection(connUrl, uName , pwd ) ){
-
-			logger.debug("after getting db Conn => "+dbConn);
 			
 			QueryRunner qRunner = new QueryRunner();
 			
@@ -47,13 +44,11 @@ public class CommonDaoImpl {
 			
 		}  catch(Exception e) {
 			
-			logger.error("Error fetching Column lists " ,e);
-			
 			stateListMap = new HashMap<String, String>();
 			
+			logger.error("Exception fetching State Lists" , e);
+			
 		}
-		
-		logger.debug("stateListMap size => "+stateListMap.size());
 		
 		return stateListMap;
 	}
