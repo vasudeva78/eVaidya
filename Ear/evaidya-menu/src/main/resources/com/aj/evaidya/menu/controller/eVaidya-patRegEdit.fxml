@@ -12,7 +12,8 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml">
+<GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
+  <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
   <children>
     <VBox prefHeight="80.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
@@ -133,21 +134,18 @@
       </children>
     </HBox>
     <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="6">
-      <Button mnemonicParsing="false" prefHeight="33.0" text="Search">
+      <Button mnemonicParsing="false" prefHeight="33.0" text="Search" onAction="#searchAction">
         <HBox.margin>
           <Insets left="20.0" right="20.0" fx:id="x2" />
         </HBox.margin>
       </Button>
-      <Button mnemonicParsing="false" prefHeight="33.0" text="Save" HBox.margin="$x2" />
-      <Button mnemonicParsing="false" prefHeight="32.9998779296875" text="Reset" HBox.margin="$x2" />
+      <Button mnemonicParsing="false" prefHeight="33.0" text="Save" HBox.margin="$x2" onAction="#saveAction" />
+      <Button mnemonicParsing="false" prefHeight="32.9998779296875" text="Reset" HBox.margin="$x2" onAction="#resetAction"/>
     </HBox>
   </children>
   <columnConstraints>
     <ColumnConstraints prefWidth="1000.0" />
   </columnConstraints>
-  <padding>
-    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-  </padding>
   <rowConstraints>
     <RowConstraints />
     <RowConstraints />

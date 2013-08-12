@@ -1,5 +1,9 @@
 package com.aj.evaidya.config;
 
+import com.aj.evaidya.common.bo.CommonBo;
+import com.aj.evaidya.common.bo.impl.CommonBoImpl;
+import com.aj.evaidya.common.dao.CommonDao;
+import com.aj.evaidya.common.dao.impl.CommonDaoImpl;
 import com.aj.evaidya.docreg.bo.DocRegBo;
 import com.aj.evaidya.docreg.bo.impl.DocRegBoImpl;
 import com.aj.evaidya.docreg.dao.DocRegDao;
@@ -19,6 +23,9 @@ public class EvaidyaBindings extends AbstractModule{
 		bind(String.class).annotatedWith(Names.named("dbUrl")).toInstance("jdbc:h2:file:D:/projects/eVaidya/data/evaidya");
 		bind(String.class).annotatedWith(Names.named("dbUsername")).toInstance("ajay");
 		bind(String.class).annotatedWith(Names.named("dbPwd")).toInstance("ajaypwd");
+		
+		bind(CommonBo.class).to(CommonBoImpl.class);
+		bind(CommonDao.class).to(CommonDaoImpl.class);
 		
 		bind(DocRegBo.class).to(DocRegBoImpl.class);
 		bind(DocRegDao.class).to(DocRegDaoImpl.class);
