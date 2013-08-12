@@ -3,33 +3,105 @@ package com.aj.evaidya.patreg.controller;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import org.apache.log4j.Logger;
-
 import com.aj.evaidya.common.bo.CommonBo;
-import com.aj.evaidya.common.bo.CommonControlsBo;
+import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.common.dao.CommonDao;
 import com.aj.evaidya.patreg.beans.PatRegRequestBean;
+import com.aj.evaidya.patreg.bo.PatRegBo;
+import com.aj.evaidya.patreg.dao.PatRegDao;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 
 public abstract class AbstractPatRegController implements Initializable {
 	
 	protected CommonBo commonBo;
+
+	public CommonBo getCommonBo() {
+		return commonBo;
+	}
+
+	@Inject
+	public void setCommonBo(CommonBo commonBo) {
+		this.commonBo = commonBo;
+	}
+
+	protected CommonDao commonDao;
 	
-	private static final Logger logger = Logger.getLogger( AbstractPatRegController.class );
+	public CommonDao getCommonDao() {
+		return commonDao;
+	}
+
+	@Inject
+	public void setCommonDao(CommonDao commonDao) {
+		this.commonDao = commonDao;
+	}
+
+	protected PatRegBo patRegBo;
 	
-	protected static final String CONN_URL = "jdbc:h2:file:D:/AJ/projects/eVaidya/data/evaidya";
-	protected static final String CONN_UNAME = "ASDs!@DSFDS55";
-	protected static final String CONN_PWD = "SDXytytWQE!31 GHGFHytyy!#@^d";
+	public PatRegBo getPatRegBo() {
+		return patRegBo;
+	}
+
+	@Inject
+	public void setPatRegBo(PatRegBo patRegBo) {
+		this.patRegBo = patRegBo;
+	}
+
+	protected PatRegDao patRegDao;
+	
+	public PatRegDao getPatRegDao() {
+		return patRegDao;
+	}
+
+	@Inject
+	public void setPatRegDao(PatRegDao patRegDao) {
+		this.patRegDao = patRegDao;
+	}
+
+	protected String dbUrl;
+	protected String dbUsername;
+	protected String dbPwd;
+	
+	public String getDbUrl() {
+		return dbUrl;
+	}
+
+	@Inject
+	public void setDbUrl(@Named("dbUrl") String dbUrl) {
+		this.dbUrl = dbUrl;
+	}
+
+	public String getDbUsername() {
+		return dbUsername;
+	}
+
+	@Inject
+	public void setDbUsername(@Named("dbUsername") String dbUsername) {
+		this.dbUsername = dbUsername;
+	}
+
+	public String getDbPwd() {
+		return dbPwd;
+	}
+
+	@Inject
+	public void setDbPwd(@Named("dbPwd") String dbPwd) {
+		this.dbPwd = dbPwd;
+	}
 	
 	@FXML
 	protected Label statusLabel;
@@ -41,7 +113,7 @@ public abstract class AbstractPatRegController implements Initializable {
 	protected TextField dateTextField;
 
 	@FXML
-	protected ChoiceBox monthChoiceBox;
+	protected ChoiceBox<String> monthChoiceBox;
 
 	@FXML
 	protected TextField yearTextField;
@@ -53,7 +125,7 @@ public abstract class AbstractPatRegController implements Initializable {
 	protected TextField address2TextField;
 	
 	@FXML
-	protected ChoiceBox stateChoiceBox;
+	protected ChoiceBox<String> stateChoiceBox;
 	
 	@FXML
 	protected TextField pincodeTextField;
@@ -75,22 +147,53 @@ public abstract class AbstractPatRegController implements Initializable {
 	protected abstract void abstractResetFields();
 	
 	public final void initialize(URL url, ResourceBundle bundle) {
-		
-		CommonDao commonDao =  new CommonDao();
-		commonBo = new CommonBo(commonDao);
-		
+	
 		// populate other control fields
 		populateFieldsOnIinit();
 		
 	}
 	
-	protected final void populateStateField() {
+	protected final void populateStateField(final boolean isStateChoiceBoxDisabled) {
 		stateChoiceBox.setDisable(true);
 		
 		stateList = new ArrayList<String>();
 		stateIdList = new ArrayList<String>();
 		
-		commonBo.getStateDropDownList(CONN_URL , CONN_UNAME , CONN_PWD , stateChoiceBox, stateList , stateIdList);
+		// commonBoImpl.getStateDropDownList(dbUrl , dbUsername , dbPwd , stateChoiceBox, stateList , stateIdList);
+		
+		final Task<Map<String, String>> choiceListTask = new Task<Map<String, String>>() {
+	         @Override protected Map<String, String> call() throws Exception {
+	        	 
+	        	 return commonBo.getStateDropDownList( commonDao, dbUrl , dbUsername , dbPwd ); 
+	        	 
+	         }
+	         
+	     };
+	     
+	     choiceListTask.stateProperty().addListener(new ChangeListener<State>(){
+
+			@Override
+			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
+				if (newState == State.SUCCEEDED) {
+					
+					Map<String, String> stateListMap = choiceListTask.getValue();
+					
+					stateIdList.addAll( stateListMap.keySet() );
+					stateList.addAll( stateListMap.values()  );
+					
+					stateChoiceBox.getItems().addAll( stateList );
+					
+					stateChoiceBox.setDisable( isStateChoiceBoxDisabled );
+					
+					stateChoiceBox.setValue("-- Select --");
+					
+				}
+				
+			}	 
+	     });
+	     
+	     new Thread(choiceListTask).start();
+	     
 		
 		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
 			new ChangeListener<Number>() {
@@ -98,8 +201,6 @@ public abstract class AbstractPatRegController implements Initializable {
 				@Override
 				public void changed(ObservableValue<? extends Number> ov,
 						Number oldValue, Number newValue) {
-					
-					logger.debug("inside chnaged");
 					
 					if (newValue.intValue() == -1){
 						return;
@@ -113,75 +214,75 @@ public abstract class AbstractPatRegController implements Initializable {
 	
 	public final void saveAction(){
 		
-		if ( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, nameTextField , "Empty Name ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, nameTextField , "Empty Name ...") ) {
 			return;
 		};
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, nameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, nameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
 			return;
 		}
 
-		if ( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, dateTextField , "Empty Date ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, dateTextField , "Empty Date ...") ) {
 			return;
 		};
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, dateTextField , "[0-9]*" , "Only Digits allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, dateTextField , "[0-9]*" , "Only Digits allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, dateTextField , "\\d{2}" , "Only 2 Digits allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, dateTextField , "\\d{2}" , "Only 2 Digits allowed ...") ) {
 			return;
 		}
 		
-		if( !CommonControlsBo.checkSelectionBox(statusLabel, monthChoiceBox , "Select Month ...") ){
+		if( !CommonControlsBoImpl.checkSelectionBox(statusLabel, monthChoiceBox , "Select Month ...") ){
 			return;
 		}
 
-		if ( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, yearTextField , "Empty Year ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, yearTextField , "Empty Year ...") ) {
 			return;
 		}
 		
-		if( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, yearTextField , "[0-9]*" , "Only Digits allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, yearTextField , "[0-9]*" , "Only Digits allowed ...") ){
 			return;
 		}
 		
-		if( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, yearTextField , "\\d{4}" , "Only 4 Digits allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, yearTextField , "\\d{4}" , "Only 4 Digits allowed ...") ){
 			return;
 		}
 
-		if( !CommonControlsBo.checkForValidDate(statusLabel, dateTextField , monthChoiceBox ,  yearTextField ) ){
+		if( !CommonControlsBoImpl.checkForValidDate(statusLabel, dateTextField , monthChoiceBox ,  yearTextField ) ){
 			return;
 		}
 		
-		if ( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, address1TextField , "Empty Address ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, address1TextField , "Empty Address ...") ) {
 			return;
 		}
 		
-		if( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, address1TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address1TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
 		
-		if( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, address2TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address2TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
 				
-		if( !CommonControlsBo.checkSelectionBox(statusLabel, stateChoiceBox , "Select State ...") ){
+		if( !CommonControlsBoImpl.checkSelectionBox(statusLabel, stateChoiceBox , "Select State ...") ){
 			return;
 		}
 
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, pincodeTextField , "[0-9]*" , "Only Digits allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, pincodeTextField , "[0-9]*" , "Only Digits allowed ...") ) {
 			return;
 		}
 		
-		if( !CommonControlsBo.checkTextFieldForEmptyString(statusLabel, tel1TextField , "Empty Tel ...") ) {
+		if( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, tel1TextField , "Empty Tel ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, tel1TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, tel1TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBo.checkTextFieldForInvalidLetters(statusLabel, tel2TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, tel2TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
 			return;
 		}
 		

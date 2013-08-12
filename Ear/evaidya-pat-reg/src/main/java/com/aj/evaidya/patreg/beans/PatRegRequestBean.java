@@ -14,6 +14,28 @@ public class PatRegRequestBean {
 	private String tel1Text;
 	private String tel2Text;
 	private String nameId;
+	private String dbUrl;
+	private String dbUsername;
+	private String dbPwd;
+	
+	public String getDbUrl() {
+		return dbUrl;
+	}
+	public void setDbUrl(String dbUrl) {
+		this.dbUrl = dbUrl;
+	}
+	public String getDbUsername() {
+		return dbUsername;
+	}
+	public void setDbUsername(String dbUsername) {
+		this.dbUsername = dbUsername;
+	}
+	public String getDbPwd() {
+		return dbPwd;
+	}
+	public void setDbPwd(String dbPwd) {
+		this.dbPwd = dbPwd;
+	}
 	public String getNameText() {
 		return nameText;
 	}
@@ -80,20 +102,25 @@ public class PatRegRequestBean {
 	public void setNameId(String nameId) {
 		this.nameId = nameId;
 	}
-	
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("PatRegRequestBean [nameText=").append(nameText)
-				.append(", dateText=").append(dateText).append(", monthText=")
-				.append(monthText).append(", yearText=").append(yearText)
-				.append(", address1Text=").append(address1Text)
-				.append(", address2Text=").append(address2Text)
-				.append(", stateId=").append(stateId).append(", pincode=")
-				.append(pincode).append(", tel1Text=").append(tel1Text)
-				.append(", tel2Text=").append(tel2Text).append(", nameId=")
-				.append(nameId).append("]");
-		return builder.toString();
+		return "PatRegRequestBean ["
+				+ (nameText != null ? "nameText=" + nameText + ", " : "")
+				+ (dateText != null ? "dateText=" + dateText + ", " : "")
+				+ (monthText != null ? "monthText=" + monthText + ", " : "")
+				+ (yearText != null ? "yearText=" + yearText + ", " : "")
+				+ (address1Text != null ? "address1Text=" + address1Text + ", "
+						: "")
+				+ (address2Text != null ? "address2Text=" + address2Text + ", "
+						: "")
+				+ (stateId != null ? "stateId=" + stateId + ", " : "")
+				+ (pincode != null ? "pincode=" + pincode + ", " : "")
+				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
+				+ (tel2Text != null ? "tel2Text=" + tel2Text + ", " : "")
+				+ (nameId != null ? "nameId=" + nameId + ", " : "")
+				+ (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
+				+ (dbUsername != null ? "dbUsername=" + dbUsername + ", " : "")
+				+ (dbPwd != null ? "dbPwd=" + dbPwd : "") + "]";
 	}
-
+	
 }

@@ -13,6 +13,9 @@ public class PatRegResponseBean {
 	private String tel1Text;
 	private String tel2Text;
 	private String email;
+	private String patDay;
+	private String patMon;
+	private String patYear;
 	
 	
 	public String getQualiText() {
@@ -88,16 +91,47 @@ public class PatRegResponseBean {
 		this.message = message;
 	}
 	
-	@Override
-	public String toString() {
-		return "DocRegResponseBean [status=" + status + ", message=" + message
-				+ ", nameText=" + nameText + ", qualiText=" + qualiText
-				+ ", address1Text=" + address1Text + ", address2Text="
-				+ address2Text + ", address3Text=" + address3Text
-				+ ", stateId=" + stateId + ", pincode=" + pincode
-				+ ", tel1Text=" + tel1Text + ", tel2Text=" + tel2Text
-				+ ", email=" + email + "]";
+	public String getPatDay() {
+		return patDay;
+	}
+	public void setPatDay(String patDay) {
+		this.patDay = patDay;
+	}
+	public String getPatMon() {
+		return patMon;
+	}
+	public void setPatMon(String patMon) {
+		this.patMon = patMon;
+	}
+	public String getPatYear() {
+		return patYear;
+	}
+	public void setPatYear(String patYear) {
+		this.patYear = patYear;
 	}
 	
+	@Override
+	public String toString() {
+		return "PatRegResponseBean ["
+				+ (status != null ? "status=" + status + ", " : "")
+				+ (message != null ? "message=" + message + ", " : "")
+				+ (nameText != null ? "nameText=" + nameText + ", " : "")
+				+ (qualiText != null ? "qualiText=" + qualiText + ", " : "")
+				+ (address1Text != null ? "address1Text=" + address1Text + ", "
+						: "")
+				+ (address2Text != null ? "address2Text=" + address2Text + ", "
+						: "")
+				+ (address3Text != null ? "address3Text=" + address3Text + ", "
+						: "")
+				+ (stateId != null ? "stateId=" + stateId + ", " : "")
+				+ (pincode != null ? "pincode=" + pincode + ", " : "")
+				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
+				+ (tel2Text != null ? "tel2Text=" + tel2Text + ", " : "")
+				+ (email != null ? "email=" + email + ", " : "")
+				+ (patDay != null ? "patDay=" + patDay + ", " : "")
+				+ (patMon != null ? "patMon=" + patMon + ", " : "")
+				+ (patYear != null ? "patYear=" + patYear : "") + "]";
+	}
+		
 	
 }
