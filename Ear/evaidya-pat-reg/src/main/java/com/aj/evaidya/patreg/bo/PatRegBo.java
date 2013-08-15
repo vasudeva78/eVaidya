@@ -10,4 +10,5 @@ public interface PatRegBo {
 	public Map<String, String> getPatNames(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean);
 	public PatRegResponseBean getPatDtls(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean);
 	public PatRegResponseBean savePatDtls(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean);
+	public PatRegResponseBean updatePatDtls(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean);
 }

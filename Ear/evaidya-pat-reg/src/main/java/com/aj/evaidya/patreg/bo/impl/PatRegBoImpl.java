@@ -43,7 +43,7 @@ public class PatRegBoImpl implements PatRegBo {
 		Map<String,String> patNameListMap = new LinkedHashMap<String,String>();
 		
 		try {
-				
+			
 			patNameListMap = patRegDao.getPatNameDtls(patRegRequestBean);
  			
  		}  catch(Exception e) {
@@ -69,6 +69,27 @@ public class PatRegBoImpl implements PatRegBo {
  			
  			logger.error("Error while fetching ",e);
  			
+ 		} 
+		
+		return patRegResponseBean;
+	}
+
+
+	@Override
+	public PatRegResponseBean updatePatDtls(PatRegDao patRegDao, PatRegRequestBean patRegRequestBean) {
+		
+		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
+		
+		try {
+			
+			patRegResponseBean = patRegDao.updatePatDtls(patRegRequestBean);
+ 			
+ 		}  catch(Exception e) {
+ 			
+ 			logger.error("Error while fetching ",e);
+ 			
+ 			patRegResponseBean.setStatus("error");
+ 			patRegResponseBean.setMessage("Not Saved ...");
  		} 
 		
 		return patRegResponseBean;

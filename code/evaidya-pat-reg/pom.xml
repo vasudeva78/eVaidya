@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.aj.evaidya.parent</groupId>
+		<artifactId>evaidya-parent</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<groupId>com.aj.evaidya.patreg</groupId>
+	<artifactId>evaidya-pat-reg</artifactId>
+	<version>1.0</version>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.aj.evaidya.common</groupId>
+			<artifactId>evaidya-common</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	
+</project>

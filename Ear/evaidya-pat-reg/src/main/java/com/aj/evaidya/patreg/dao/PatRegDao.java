@@ -9,4 +9,5 @@ public interface PatRegDao {
 	public Map<String, String> getPatNameDtls(PatRegRequestBean PatRegRequestBean) throws Exception;
 	public PatRegResponseBean getPatDtls(PatRegRequestBean patRegRequestBean) throws Exception;
 	public PatRegResponseBean savePatDtls(PatRegRequestBean patRegRequestBean) throws Exception;
+	public PatRegResponseBean updatePatDtls(PatRegRequestBean patRegRequestBean) throws Exception;
 }

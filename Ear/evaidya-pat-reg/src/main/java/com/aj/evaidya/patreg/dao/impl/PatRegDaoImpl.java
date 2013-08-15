@@ -142,6 +142,35 @@ public class PatRegDaoImpl implements PatRegDao {
 		return patRegResponseBean;
 		
 	}
+
+	@Override
+	public PatRegResponseBean updatePatDtls(PatRegRequestBean patRegRequestBean) throws Exception {
+		
+		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
+ 		
+ 		try(Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() )){
+ 					 			
+ 			dbConn.setAutoCommit(false);
+ 			
+ 			QueryRunner qRunner = new QueryRunner();
+ 			 			
+ 			qRunner.update(dbConn , 
+ 					"update EV_PAT set EV_PAT_NAME = ?,EV_PAT_DOB=?,EV_PAT_ADDR1=?,EV_PAT_ADDR2=?,EV_PAT_STATE=?,EV_PAT_PIN_CODE=?,EV_PAT_TEL1=?,EV_PAT_TEL2 = ? where EV_PAT_ID = ? "  , 
+ 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateId() , patRegRequestBean.getPincode() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text() , patRegRequestBean.getNameId() });
+ 			
+ 			patRegResponseBean.setStatus("success");
+ 			patRegResponseBean.setMessage("Saved ...");
+ 			
+ 			dbConn.commit();
+ 			
+ 		}  catch(Exception e) {
+ 			
+ 			throw e;
+ 			 			
+ 		} 
+ 		
+    	return patRegResponseBean;
+	}
 	
 }
 

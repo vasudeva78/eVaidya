@@ -20,14 +20,56 @@ public class PatRegEditController extends AbstractPatRegController {
 	@FXML
 	private ChoiceBox<String> patNameChoiceBox;
 
-//	private String patNameId;
-//	private List<String> patNameList;
-//	private List<String> patNameIdList;
+	private String patNameId;
+	private List<String> patNameList;
+	private List<String> patNameIdList;
 
 	protected void populateFieldsOnIinit() {
 		super.populateStateField( true );
 		
 		abstractResetFields();
+		
+		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
+			new ChangeListener<Number>() {
+
+				@Override
+				public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+					
+					if (newValue.intValue() == -1){
+						return;
+					}
+					
+					stateCode = stateIdList.get( newValue.intValue() );
+										
+				}
+		});
+		
+		patNameChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
+				new ChangeListener<Number>() {
+		
+					@Override
+					public void changed(ObservableValue<? extends Number> ov,
+							Number oldValue, Number newValue) {
+						
+						if ( newValue.intValue() == -1 ){
+							return;
+						}
+						
+						patNameId = patNameIdList.get( newValue.intValue() );
+						
+						if("--".equalsIgnoreCase( patNameId )){
+							
+							resetAction();
+							nameTextField.requestFocus();
+							
+							return;
+							
+						}
+
+						populateAllFields(patNameId);
+													
+					}
+			});
 	}
 
 	@Override
@@ -54,14 +96,65 @@ public class PatRegEditController extends AbstractPatRegController {
 
 	@Override
 	protected PatRegRequestBean populatePatRegRequestBean() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		PatRegRequestBean patRegRequestBean = new PatRegRequestBean();
+		
+		patRegRequestBean.setNameId(patNameId);
+		patRegRequestBean.setNameText( nameTextField.getText().trim().substring(0, Math.min(100, nameTextField.getText().trim().length() )) );
+		patRegRequestBean.setDateText( dateTextField.getText().trim() );
+		
+		int monthIndx = monthChoiceBox.getSelectionModel().getSelectedIndex();
+		patRegRequestBean.setMonthText( monthIndx  < 10 ? "0"+monthIndx : monthIndx+"" );
+		
+		patRegRequestBean.setYearText( yearTextField.getText().trim() );
+		patRegRequestBean.setAddress1Text( address1TextField.getText().substring(0, Math.min(2000, address1TextField.getText().trim().length())) );
+		patRegRequestBean.setAddress2Text( address2TextField.getText().substring(0, Math.min(2000, address2TextField.getText().trim().length() )) );
+		patRegRequestBean.setStateId( stateCode );
+		patRegRequestBean.setPincode( pincodeTextField.getText().substring(0, Math.min(10, pincodeTextField.getText().trim().length())) );
+		patRegRequestBean.setTel1Text( tel1TextField.getText().substring(0, Math.min(100, tel1TextField.getText().trim().length() )) );
+		patRegRequestBean.setTel2Text( tel2TextField.getText().substring(0, Math.min(100, tel2TextField.getText().trim().length() )) );
+
+   	 	patRegRequestBean.setDbUrl(dbUrl);
+		patRegRequestBean.setDbUsername(dbUsername);
+		patRegRequestBean.setDbPwd(dbPwd);
+		 
+		return patRegRequestBean;
 	}
 
 
 	@Override
-	protected void saveDbTask(PatRegRequestBean patRegRequestBean) {
-		// TODO Auto-generated method stub
+	protected void saveDbTask(final PatRegRequestBean patRegRequestBean) {
+		
+		System.out.println("inisde saveDbTask ");
+		
+		final Task<PatRegResponseBean> saveTask = new Task<PatRegResponseBean>() { 
+			
+	         @Override protected PatRegResponseBean call() throws Exception {			
+	        	 return patRegBo.updatePatDtls(patRegDao, patRegRequestBean);
+	         }
+		};     
+		
+		saveTask.stateProperty().addListener(new ChangeListener<State>(){
+
+			@Override
+			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
+				if (newState == State.SUCCEEDED) {
+					
+					PatRegResponseBean patRegResponseBean = saveTask.getValue();
+					
+					if( "success".equals(patRegResponseBean.getStatus() ) ){
+						CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , patRegResponseBean.getMessage() );
+					
+					}  else {
+						CommonControlsBoImpl.showFinalFailureStatus( statusLabel , patRegResponseBean.getMessage() );
+					}
+							
+				}
+				
+			}	 
+	     });
+	     
+		new Thread( saveTask ).start();
 		
 	}
 	
@@ -79,10 +172,7 @@ public class PatRegEditController extends AbstractPatRegController {
 			CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField , "At least 3 characters ..." );
 			return;
 		}
-				
-		// Reset All fields
-		abstractResetFields();
-		
+						
 		final Task <Map<String, String>> getPatNamesListTask = new Task <Map<String, String>>() {
 
 			@Override
@@ -107,13 +197,35 @@ public class PatRegEditController extends AbstractPatRegController {
 					
 					Map<String, String> patNamesMap = getPatNamesListTask.getValue();
 					
-					if (patNamesMap.size() == 2) {
-						List<String> patNameList = new ArrayList<String>( patNamesMap.keySet() );
-						populateAllFields( patNameList.get(1) );
-					}
-					else { // More pat names
+					// Reset All fields
+					resetAction();
+					
+					switch( patNamesMap.size() ){
+						case 1:
+							// No pat name found
+							CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField , "No Patient Details Found ..." );
+							nameTextField.requestFocus();
+							break;
 						
+						case 2:
+							// One pat Name
+							List<String> patNameList = new ArrayList<String>( patNamesMap.keySet() );
+							patNameId = patNameList.get(1) ;
+							
+							populateAllFields( patNameId );
+							break;
 						
+						default:
+							
+							// More pat names. Hence populate in drop down
+							
+							patNameList = new ArrayList<String> ( patNamesMap.values() );
+							patNameIdList = new ArrayList<String> ( patNamesMap.keySet() ); 
+
+							patNameChoiceBox.getItems().clear();
+							patNameChoiceBox.getItems().addAll( patNameList );
+							
+							patNameChoiceBox.setDisable(false);
 					}
 				}
 			}	
@@ -183,7 +295,7 @@ public class PatRegEditController extends AbstractPatRegController {
 						
 					} else {
 						
-						abstractResetFields();
+						resetAction();
 						
 					}
 					 
