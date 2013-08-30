@@ -20,6 +20,7 @@ import com.aj.evaidya.docreg.controller.DocRegEditController;
 import com.aj.evaidya.docreg.controller.DocRegNewController;
 import com.aj.evaidya.patreg.controller.PatRegEditController;
 import com.aj.evaidya.patreg.controller.PatRegNewController;
+import com.aj.evaidya.patreg.controller.PatRegUploadController;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -47,12 +48,14 @@ public class MenuController implements Initializable {
 		
 		PatRegNewController patRegNewController = injector.getInstance(PatRegNewController.class);
 		PatRegEditController patRegEditController = injector.getInstance(PatRegEditController.class);
+		PatRegUploadController patRegUploadController = injector.getInstance(PatRegUploadController.class);
 		
 		menuControllerKeys = new HashMap<String, Initializable>();
 		menuControllerKeys.put("docRegNew", docRegNewController);
 		menuControllerKeys.put("docRegEdit", docRegEditController);
 		menuControllerKeys.put("patRegNew", patRegNewController);
 		menuControllerKeys.put("patRegEdit", patRegEditController);
+		menuControllerKeys.put("patRegUpload", patRegUploadController);
 		
 	}
 	
@@ -74,7 +77,7 @@ public class MenuController implements Initializable {
         	
         	menuFieldsPane.getChildren().clear();
         	
-        	FXMLLoader loader = new FXMLLoader( getClass().getResource( "eVaidya-"+menuItemId+".fxml" ) );
+        	FXMLLoader loader = new FXMLLoader( getClass().getResource( menuItemId.concat(".fxml")) );
         	loader.setController( menuControllerKeys.get(menuItemId) );
         	
 			GridPane includeGridPane = (GridPane) loader.load();
