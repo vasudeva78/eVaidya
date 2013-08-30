@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -15,6 +16,12 @@ public class EVaidyaMain extends Application {
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
+	
+	@Override
+	public void init(){	
+		Font.loadFont("/com/aj/evaidya/main/font/OpenSans-Regular.ttf", 10);
+	}
+	
 	
 	@Override
 	public void start(Stage stage) throws Exception {

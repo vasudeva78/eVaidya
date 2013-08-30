@@ -37,6 +37,8 @@
 	                            <MenuItem mnemonicParsing="false" text="   New     " onAction="#menuClicked" fx:id="patRegNew" />
 	                            <SeparatorMenuItem mnemonicParsing="false" />
 	                            <MenuItem mnemonicParsing="false" text="  Edit     " onAction="#menuClicked" fx:id="patRegEdit"/>
+	                            <SeparatorMenuItem mnemonicParsing="false" />
+	                            <MenuItem mnemonicParsing="false" text="  Upload     " onAction="#menuClicked" fx:id="patRegUpload"/>
 	                          </items>
 	                        </Menu>
 	                      </items>

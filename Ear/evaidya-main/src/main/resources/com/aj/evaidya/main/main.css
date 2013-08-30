@@ -474,7 +474,8 @@
 .label {
     -fx-skin: "com.sun.javafx.scene.control.skin.LabelSkin";
     -fx-text-fill: -fx-text-background-color;
-    -fx-font-family: Verdana;
+    -fx-font-size: 18px;
+	-fx-font-style: normal;
 }
 
 .label:disabled {
@@ -1396,7 +1397,9 @@
     -fx-text-fill: blue	;
     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
     -fx-cursor: text;
-    -fx-padding: 3px;
+    -fx-font-size: 20px;
+	-fx-font-style: normal;
+	-fx-padding:2px;
 }
 
 .text-field:focused {
@@ -3517,6 +3520,7 @@ Only the properties with values that are different from the TextBox are specifie
 #rootVbox{
 	 -fx-background-color: #BBDBFF;
 	 -fx-background-radius: 70px;
+	 -fx-font-family: "Open Sans";
 }
 
 #tabGridPane{
@@ -3527,46 +3531,28 @@ Only the properties with values that are different from the TextBox are specifie
 
 .navigation .text {
 	-fx-font-size: 1.5em;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Open Sans";
 	-fx-effect: dropshadow( one-pass-box ,  #808080  , 3 , 0.5 , 1 ,1 );	
 }
 
 #statusLabel{
-    -fx-font-family: Georgia;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
 	-fx-font-weight: normal;
 	-fx-text-fill: red;    
 	-fx-padding: 3px;
 }
 
 .headerGridpane{
-	-fx-font-family: Georgia;
     -fx-font-size: 24px;
 	-fx-font-weight: normal;
 }
 
-.docRegNewVBox {
+.eVBox {
 	-fx-background-color: white;	
 	-fx-background-radius: 8;
-	-fx-font-family: Georgia;
-    -fx-font-size: 16px;
-	-fx-font-style: normal;
 }
 
-.docRegNewVBox:hover {
-	-fx-background-color: #EEF6FE;	
-	-fx-cursor: hand;
-}
-
-.patRegNewVBox {
-	-fx-background-color: white;	
-	-fx-background-radius: 8;
-	-fx-font-family: Georgia;
-    -fx-font-size: 16px;
-	-fx-font-style: normal;
-}
-
-.patRegNewVBox:hover {
+.eVBox:hover {
 	-fx-background-color: #EEF6FE;	
 	-fx-cursor: hand;
 }
