@@ -17,6 +17,8 @@ public class PatRegRequestBean {
 	private String dbUrl;
 	private String dbUsername;
 	private String dbPwd;
+	private String xlFilePath;
+	private String excelRowNum;
 	
 	public String getDbUrl() {
 		return dbUrl;
@@ -102,6 +104,20 @@ public class PatRegRequestBean {
 	public void setNameId(String nameId) {
 		this.nameId = nameId;
 	}
+	
+	public String getXlFilePath() {
+		return xlFilePath;
+	}
+	public void setXlFilePath(String xlFilePath) {
+		this.xlFilePath = xlFilePath;
+	}
+	
+	public String getExcelRowNum() {
+		return excelRowNum;
+	}
+	public void setExcelRowNum(String excelRowNum) {
+		this.excelRowNum = excelRowNum;
+	}
 	@Override
 	public String toString() {
 		return "PatRegRequestBean ["
@@ -120,7 +136,11 @@ public class PatRegRequestBean {
 				+ (nameId != null ? "nameId=" + nameId + ", " : "")
 				+ (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
 				+ (dbUsername != null ? "dbUsername=" + dbUsername + ", " : "")
-				+ (dbPwd != null ? "dbPwd=" + dbPwd : "") + "]";
+				+ (dbPwd != null ? "dbPwd=" + dbPwd + ", " : "")
+				+ (xlFilePath != null ? "xlFilePath=" + xlFilePath + ", " : "")
+				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum : "")
+				+ "]";
 	}
+		
 	
 }

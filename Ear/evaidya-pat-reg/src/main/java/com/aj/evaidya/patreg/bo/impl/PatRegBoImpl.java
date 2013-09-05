@@ -95,4 +95,48 @@ public class PatRegBoImpl implements PatRegBo {
 		return patRegResponseBean;
 	}
 
+
+	@Override
+	public PatRegResponseBean uploadPatDtls(PatRegDao patRegDao,PatRegRequestBean patRegRequestBean,int rowNum,int maxRowNum) {
+		
+		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
+		
+		try {
+			
+			patRegResponseBean = patRegDao.uploadPatDtls(patRegRequestBean,rowNum,maxRowNum);
+ 			
+ 		}  catch(Exception e) {
+ 			
+ 			logger.error("Error while uploading ",e);
+ 			
+ 			patRegResponseBean.setStatus("error");
+ 			patRegResponseBean.setMessage("Not Saved ...");
+ 		} 
+		
+		return patRegResponseBean;
+	}
+
+
+	@Override
+	public PatRegResponseBean getExcelRowsOnUpload(PatRegDao patRegDao,	PatRegRequestBean patRegRequestBean) {
+		
+		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
+		
+		try {
+			
+			patRegResponseBean = patRegDao.getExcelRowsOnUpload(patRegRequestBean);
+ 			
+			patRegResponseBean.setStatus("success");
+			
+ 		}  catch(Exception e) {
+ 			
+ 			logger.error("Error fetching row num ",e);
+ 			
+ 			patRegResponseBean.setStatus("error");
+ 			patRegResponseBean.setMessage("Error Fetching Row Count ...");
+ 		} 
+		
+		return patRegResponseBean;
+	}
+
 }

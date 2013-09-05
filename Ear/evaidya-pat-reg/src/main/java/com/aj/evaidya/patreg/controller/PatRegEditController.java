@@ -27,6 +27,9 @@ public class PatRegEditController extends AbstractPatRegController {
 	protected void populateFieldsOnIinit() {
 		super.populateStateField( true );
 		
+		dateTextField.setPromptText("dd");
+		yearTextField.setPromptText("yyyy");
+		
 		abstractResetFields();
 		
 		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(

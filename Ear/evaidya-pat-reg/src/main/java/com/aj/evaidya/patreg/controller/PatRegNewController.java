@@ -13,6 +13,9 @@ public class PatRegNewController extends AbstractPatRegController {
 	
 	protected void populateFieldsOnIinit() {			
 		super.populateStateField(false);
+		
+		dateTextField.setPromptText("dd");
+		yearTextField.setPromptText("yyyy");
 	}
 	
 	protected PatRegRequestBean populatePatRegRequestBean(){

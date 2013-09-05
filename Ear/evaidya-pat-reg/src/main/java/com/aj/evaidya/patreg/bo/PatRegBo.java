@@ -11,4 +11,6 @@ public interface PatRegBo {
 	public PatRegResponseBean getPatDtls(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean);
 	public PatRegResponseBean savePatDtls(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean);
 	public PatRegResponseBean updatePatDtls(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean);
+	public PatRegResponseBean uploadPatDtls(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean , int rowNum , int maxRowNum);
+	public PatRegResponseBean getExcelRowsOnUpload(PatRegDao patRegDao ,PatRegRequestBean patRegRequestBean);
 }

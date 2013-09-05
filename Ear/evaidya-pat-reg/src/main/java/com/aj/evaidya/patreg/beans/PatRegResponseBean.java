@@ -16,7 +16,8 @@ public class PatRegResponseBean {
 	private String patDay;
 	private String patMon;
 	private String patYear;
-	
+	private String excelRowNum;
+		
 	
 	public String getQualiText() {
 		return qualiText;
@@ -110,6 +111,13 @@ public class PatRegResponseBean {
 		this.patYear = patYear;
 	}
 	
+	public String getExcelRowNum() {
+		return excelRowNum;
+	}
+	public void setExcelRowNum(String excelRowNum) {
+		this.excelRowNum = excelRowNum;
+	}
+	
 	@Override
 	public String toString() {
 		return "PatRegResponseBean ["
@@ -130,8 +138,10 @@ public class PatRegResponseBean {
 				+ (email != null ? "email=" + email + ", " : "")
 				+ (patDay != null ? "patDay=" + patDay + ", " : "")
 				+ (patMon != null ? "patMon=" + patMon + ", " : "")
-				+ (patYear != null ? "patYear=" + patYear : "") + "]";
+				+ (patYear != null ? "patYear=" + patYear + ", " : "")
+				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum : "")
+				+ "]";
 	}
-		
+			
 	
 }
