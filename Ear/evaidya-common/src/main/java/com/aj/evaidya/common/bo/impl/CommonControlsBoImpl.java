@@ -41,6 +41,18 @@ public final class CommonControlsBoImpl {
 		return true;
 		
 	}
+	
+	public static boolean checkLabelForEmptyString (Label statusLabel,Label label,String errMessage) {
+		
+		if ( label.getText().trim().isEmpty() ){
+			CommonControlsBoImpl.showErrorMessage(statusLabel, label , errMessage );
+			
+			return false;
+		}
+		
+		return true;
+		
+	}
 
    public static void showFinalSuccessStatus (Label statusLabel , String errMessage) {
 		
