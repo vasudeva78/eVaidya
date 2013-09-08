@@ -7,7 +7,6 @@ import java.util.Map;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 
@@ -72,77 +71,11 @@ public class DocRegEditController extends AbstractDocRegController {
 												
 				}
 		});
-
+		
 		// populate name Choice box. Not called until name state box has completed loading
-		 final Task<Map<String, String>> nameChoiceBoxTask = namesTask();
-			
-		 nameChoiceBoxTask.stateProperty().addListener(new ChangeListener<State>(){
+		final Thread namesChoiceThread =  new Thread(new Task<Map<String, String>>() {
 
-			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
-					
-					Map<String, String> nameListMap = (Map<String, String>) nameChoiceBoxTask.getValue();
-					
-					nameList = new ArrayList<String> ( nameListMap.values() );
-					nameIdList = new ArrayList<String> ( nameListMap.keySet() ); 
-
-					nameChoiceBox.getItems().addAll( nameList );
-					
-					nameChoiceBox.setDisable(false);
-					
-				}
-				
-			}	 
-	     });
-				 
-		// populate name State box
-		final Task<Map<String, String>> stateTask = stateTask();
-		
-		stateTask.stateProperty().addListener(new ChangeListener<State>(){
-
-			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
-					
-					Map<String, String> stateListMap = (Map<String, String>) stateTask.getValue();
-					
-					stateIdList = new ArrayList<String>( stateListMap.keySet() );
-					stateList = new ArrayList<String>( stateListMap.values()  );
-					
-					stateChoiceBox.getItems().addAll( stateList );
-					
-					stateChoiceBox.setValue("-- Select --");
-					
-					// start populating Name choice box
-					
-					new Thread( nameChoiceBoxTask ).start();
-				}
-				
-			}	 
-	     });
-		     
-		 new Thread(stateTask).start();
-		
-	}
-   
-	private Task<Map<String, String>> stateTask(){
-		
-		return new Task<Map<String, String>>() {
-	         @Override protected Map<String, String> call() throws Exception {
-	        	 
-	        	 return commonBo.getStateDropDownList( commonDao,dbUrl , dbUsername , dbPwd ); 
-	        	 
-	         }
-	         
-	     };
-	     
-	}
-	
-   private Task<Map<String, String>> namesTask(){
-		
-		return new Task<Map<String, String>>() {
-	         @Override protected Map<String, String> call() throws Exception {
+			@Override protected Map<String, String> call() throws Exception {
 	        	 
 	        	 DocRegRequestBean docReqBean = new DocRegRequestBean();
 	        	 docReqBean.setDbUrl(dbUrl);
@@ -151,18 +84,61 @@ public class DocRegEditController extends AbstractDocRegController {
 	     			        	 
 	        	 return docRegBo.getDocNames( docRegDao , docReqBean);	        	 
 	         }
-	         
-	     };
-	     
-	}
-
-	private void populateAllFields(final String nameId){
-
-		final Task <DocRegResponseBean> populateAllFieldsTask = new Task <DocRegResponseBean>() { 
 			
-	         @Override protected DocRegResponseBean call() throws Exception {   
-        	    
-	        	DocRegRequestBean docReqBean = new DocRegRequestBean();
+			@Override
+			protected void succeeded(){
+				Map<String, String> nameListMap = (Map<String, String>) getValue();
+				
+				nameList = new ArrayList<String> ( nameListMap.values() );
+				nameIdList = new ArrayList<String> ( nameListMap.keySet() ); 
+
+				nameChoiceBox.getItems().addAll( nameList );
+				
+				nameChoiceBox.setDisable(false);
+			}
+				
+		});
+		
+		// populate name Choice box. Not called until name state box has completed loading		 
+		// populate State box
+		 
+		 new Thread(new Task<Map<String, String>>() {
+
+			@Override protected Map<String, String> call() throws Exception {
+	        	 
+	        	 return commonBo.getStateDropDownList( commonDao,dbUrl , dbUsername , dbPwd ); 
+	        	 
+	         }
+			
+			@Override
+			protected void succeeded(){
+				Map<String, String> stateListMap = (Map<String, String>) getValue();
+				
+				stateIdList = new ArrayList<String>( stateListMap.keySet() );
+				stateList = new ArrayList<String>( stateListMap.values()  );
+				
+				stateChoiceBox.getItems().addAll( stateList );
+				
+				stateChoiceBox.setValue("-- Select --");
+				
+				// start populating Name choice box
+				
+				namesChoiceThread.start();
+			}
+				
+		}).start();
+		 
+		
+	}
+   	
+	private void populateAllFields(final String nameId){
+		
+		new Thread(new Task <DocRegResponseBean>() {
+
+			@Override
+			protected DocRegResponseBean call() throws Exception {
+				
+				DocRegRequestBean docReqBean = new DocRegRequestBean();
         	    
         	    docReqBean.setDbUrl(dbUrl);
 	     		docReqBean.setDbUsername(dbUsername);
@@ -170,68 +146,58 @@ public class DocRegEditController extends AbstractDocRegController {
 	     		docReqBean.setNameId(nameId);
 	     		
 	     		return docRegBo.getDocDtls(docRegDao, docReqBean);
-	         }
-	         
-	     };
-		
-	     populateAllFieldsTask.stateProperty().addListener(new ChangeListener<State>(){
-
-			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
-					
-					DocRegResponseBean docRegResponseBean = populateAllFieldsTask.getValue();
-					
-					nameTextField.setText(docRegResponseBean.getNameText());
-					qualiTextField.setText(docRegResponseBean.getQualiText());
-					address1TextField.setText(docRegResponseBean.getAddress1Text());
-					address2TextField.setText(docRegResponseBean.getAddress2Text());
-									
-					int stateIdIndx = stateIdList.indexOf( docRegResponseBean.getStateId() );
-					
-					stateChoiceBox.setValue( stateIdIndx == -1 ? "-- Select --" : stateList.get(stateIdIndx)  );
-					
-					pincodeTextField.setText(docRegResponseBean.getPincode());
+			}
 			
-					tel1TextField.setText(docRegResponseBean.getTel1Text());
-					tel2TextField.setText(docRegResponseBean.getTel2Text());
-					
-					emailTextField.setText(docRegResponseBean.getEmail());
-					
-					if (stateIdIndx != -1){
-											
-						nameTextField.setEditable(true);
-						qualiTextField.setEditable(true);
-						address1TextField.setEditable(true);
-						address2TextField.setEditable(true);
-						stateChoiceBox.setDisable(false);
-						pincodeTextField.setEditable(true);
-						emailTextField.setEditable(true);
-						tel1TextField.setEditable(true);
-						tel2TextField.setEditable(true);
-						
-						nameTextField.requestFocus();
-						
-					} else {
-						
-						nameTextField.setEditable(false);
-						qualiTextField.setEditable(false);
-						address1TextField.setEditable(false);
-						address2TextField.setEditable(false);
-						stateChoiceBox.setDisable(true);
-						pincodeTextField.setEditable(false);
-						emailTextField.setEditable(false);
-						tel1TextField.setEditable(false);
-						tel2TextField.setEditable(false);
-						
-					}
-					 
-				}
+			@Override
+			protected void succeeded(){
+				DocRegResponseBean docRegResponseBean = getValue();
 				
-			}	 
-	     });
-	     
-		new Thread( populateAllFieldsTask ).start();
+				nameTextField.setText(docRegResponseBean.getNameText());
+				qualiTextField.setText(docRegResponseBean.getQualiText());
+				address1TextField.setText(docRegResponseBean.getAddress1Text());
+				address2TextField.setText(docRegResponseBean.getAddress2Text());
+								
+				int stateIdIndx = stateIdList.indexOf( docRegResponseBean.getStateId() );
+				
+				stateChoiceBox.setValue( stateIdIndx == -1 ? "-- Select --" : stateList.get(stateIdIndx)  );
+				
+				pincodeTextField.setText(docRegResponseBean.getPincode());
+		
+				tel1TextField.setText(docRegResponseBean.getTel1Text());
+				tel2TextField.setText(docRegResponseBean.getTel2Text());
+				
+				emailTextField.setText(docRegResponseBean.getEmail());
+				
+				if (stateIdIndx != -1){
+										
+					nameTextField.setEditable(true);
+					qualiTextField.setEditable(true);
+					address1TextField.setEditable(true);
+					address2TextField.setEditable(true);
+					stateChoiceBox.setDisable(false);
+					pincodeTextField.setEditable(true);
+					emailTextField.setEditable(true);
+					tel1TextField.setEditable(true);
+					tel2TextField.setEditable(true);
+					
+					nameTextField.requestFocus();
+					
+				} else {
+					
+					nameTextField.setEditable(false);
+					qualiTextField.setEditable(false);
+					address1TextField.setEditable(false);
+					address2TextField.setEditable(false);
+					stateChoiceBox.setDisable(true);
+					pincodeTextField.setEditable(false);
+					emailTextField.setEditable(false);
+					tel1TextField.setEditable(false);
+					tel2TextField.setEditable(false);
+					
+				}
+			}
+				
+		}).start();
 		
 	}
 
@@ -257,48 +223,38 @@ public class DocRegEditController extends AbstractDocRegController {
 	@Override
 	protected void saveDbTask(final DocRegRequestBean docRegRequestBean) {
 		
-		final Task<DocRegResponseBean> saveTask = new Task<DocRegResponseBean>() { 
-			
-	         @Override protected DocRegResponseBean call() throws Exception { 
-	        	 
-	        	 docRegRequestBean.setDbUrl(dbUrl);
+		new Thread(new Task<DocRegResponseBean>() {
+
+			@Override
+			protected DocRegResponseBean call() throws Exception {
+				 docRegRequestBean.setDbUrl(dbUrl);
 	        	 docRegRequestBean.setDbUsername(dbUsername);
 	        	 docRegRequestBean.setDbPwd(dbPwd);
 	        	 
 	     		return docRegBo.updateDocDtls(docRegDao, docRegRequestBean);
-	         }
-	         
-	     };
-		
-	     saveTask.stateProperty().addListener(new ChangeListener<State>(){
-
+			}
+			
 			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
-					
-					DocRegResponseBean docRegResponseBean = saveTask.getValue();
-					
-					if( "success".equals(docRegResponseBean.getStatus() ) ){
-						CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , docRegResponseBean.getMessage() );
-						
-						int indxToReplace = nameIdList.indexOf( nameId ) ;
-								
-						nameChoiceBox.getItems().set(indxToReplace , docRegRequestBean.getNameText());
-					
-					} else if( "errorNameExists".equals(docRegResponseBean.getStatus() ) ){
-						//CommonControlsBo.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
-						CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField, docRegResponseBean.getMessage());
-					
-					} else {
-						CommonControlsBoImpl.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
-					}
-					
-				}
+			protected void succeeded(){
+				DocRegResponseBean docRegResponseBean = getValue();
 				
-			}	 
-	     });
-	     
-		new Thread( saveTask ).start();
+				if( "success".equals(docRegResponseBean.getStatus() ) ){
+					CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , docRegResponseBean.getMessage() );
+					
+					int indxToReplace = nameIdList.indexOf( nameId ) ;
+							
+					nameChoiceBox.getItems().set(indxToReplace , docRegRequestBean.getNameText());
+				
+				} else if( "errorNameExists".equals(docRegResponseBean.getStatus() ) ){
+					//CommonControlsBo.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
+					CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField, docRegResponseBean.getMessage());
+				
+				} else {
+					CommonControlsBoImpl.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
+				}
+			}
+				
+		}).start();
 		
 	}
 

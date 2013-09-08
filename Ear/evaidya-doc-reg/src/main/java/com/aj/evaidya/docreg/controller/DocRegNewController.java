@@ -1,9 +1,6 @@
 package com.aj.evaidya.docreg.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker.State;
 
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
@@ -39,11 +36,12 @@ public class DocRegNewController extends AbstractDocRegController {
 	
 	protected void saveDbTask(final DocRegRequestBean docReqBean){
 		
-		final Task<DocRegResponseBean> saveTask = new Task<DocRegResponseBean>() { 
-			
-	         @Override protected DocRegResponseBean call() throws Exception {     		
-  					
-	     		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
+		new Thread(new Task<DocRegResponseBean>() {
+
+			@Override
+			protected DocRegResponseBean call() throws Exception {
+				
+				DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
 	     		
 	     		try {
 	     						
@@ -57,35 +55,25 @@ public class DocRegNewController extends AbstractDocRegController {
 	     		}
 	     		
 	        	return docRegResponseBean;
-	         }
-	         
-	     };
-		
-	     saveTask.stateProperty().addListener(new ChangeListener<State>(){
-
+			}
+			
 			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
-					
-					DocRegResponseBean docRegResponseBean = saveTask.getValue();
-					
-					if( "success".equals(docRegResponseBean.getStatus() ) ){
-						CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , docRegResponseBean.getMessage() );
-					
-					} else if( "errorNameExists".equals(docRegResponseBean.getStatus() ) ){
-						//CommonControlsBo.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
-						CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField, docRegResponseBean.getMessage());
-					
-					} else {
-						CommonControlsBoImpl.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
-					}
-							
-				}
+			protected void succeeded(){
+				DocRegResponseBean docRegResponseBean = getValue();
 				
-			}	 
-	     });
-	     
-		new Thread( saveTask ).start();
+				if( "success".equals(docRegResponseBean.getStatus() ) ){
+					CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , docRegResponseBean.getMessage() );
+				
+				} else if( "errorNameExists".equals(docRegResponseBean.getStatus() ) ){
+					//CommonControlsBo.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
+					CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField, docRegResponseBean.getMessage());
+				
+				} else {
+					CommonControlsBoImpl.showFinalFailureStatus( statusLabel , docRegResponseBean.getMessage() );
+				}
+			}
+				
+		}).start();
 		
 	}
 

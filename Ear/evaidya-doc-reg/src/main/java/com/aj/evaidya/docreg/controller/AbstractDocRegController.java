@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -164,41 +163,28 @@ public abstract class AbstractDocRegController implements Initializable {
 		stateList = new ArrayList<String>();
 		stateIdList = new ArrayList<String>();
 		
-		// commonBoImpl.getStateDropDownList(dbUrl , dbUsername , dbPwd , stateChoiceBox, stateList , stateIdList);
-		
-		final Task<Map<String, String>> choiceListTask = new Task<Map<String, String>>() {
-	         @Override protected Map<String, String> call() throws Exception {
-	        	 
-	        	 return commonBo.getStateDropDownList(commonDao, dbUrl , dbUsername , dbPwd ); 
-	        	 
-	         }
-	         
-	     };
-	     
-	     choiceListTask.stateProperty().addListener(new ChangeListener<State>(){
+		new Thread(new Task<Map<String, String>>() {
 
 			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
-					
-					Map<String, String> stateListMap = choiceListTask.getValue();
-					
-					stateIdList.addAll( stateListMap.keySet() );
-					stateList.addAll( stateListMap.values()  );
-					
-					stateChoiceBox.getItems().addAll( stateList );
-					
-					stateChoiceBox.setDisable( isStateFieldDisabled );
-					
-					stateChoiceBox.setValue("-- Select --");
-					
-				}
+			protected Map<String, String> call() throws Exception {
+				return commonBo.getStateDropDownList(commonDao, dbUrl , dbUsername , dbPwd ); 
+			}
+			
+			@Override
+			protected void succeeded(){
+				Map<String, String> stateListMap = getValue();
 				
-			}	 
-	     });
-	     
-	     new Thread(choiceListTask).start();
-	     
+				stateIdList.addAll( stateListMap.keySet() );
+				stateList.addAll( stateListMap.values()  );
+				
+				stateChoiceBox.getItems().addAll( stateList );
+				
+				stateChoiceBox.setDisable( isStateFieldDisabled );
+				
+				stateChoiceBox.setValue("-- Select --");
+			}
+				
+		}).start(); 
 		
 		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
 			new ChangeListener<Number>() {
