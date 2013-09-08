@@ -1,9 +1,6 @@
 package com.aj.evaidya.patreg.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker.State;
 
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.patreg.beans.PatRegRequestBean;
@@ -44,39 +41,31 @@ public class PatRegNewController extends AbstractPatRegController {
 	
 	protected void saveDbTask(final PatRegRequestBean patRegRequestBean){
 		
-		final Task<PatRegResponseBean> saveTask = new Task<PatRegResponseBean>() { 
-			
-	         @Override protected PatRegResponseBean call() throws Exception {     		
-	     		return patRegBo.savePatDtls(patRegDao, patRegRequestBean);
-	         }
-	     };
-		
-	     saveTask.stateProperty().addListener(new ChangeListener<State>(){
+		new Thread(new Task<PatRegResponseBean>() {
 
 			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
-					
-					PatRegResponseBean patRegResponseBean = saveTask.getValue();
-					
-					if( "success".equals(patRegResponseBean.getStatus() ) ){
-						CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , patRegResponseBean.getMessage() );
-					
-					} else if( "errorNameExists".equals(patRegResponseBean.getStatus() ) ){
-						//CommonControlsBo.showFinalFailureStatus( statusLabel , patRegResponseBean.getMessage() );
-						CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField, patRegResponseBean.getMessage());
-					
-					} else {
-						CommonControlsBoImpl.showFinalFailureStatus( statusLabel , patRegResponseBean.getMessage() );
-					}
-							
-				}
+			protected PatRegResponseBean call() throws Exception {
+				return patRegBo.savePatDtls(patRegDao, patRegRequestBean);
+			}
+			
+			@Override
+			protected void succeeded(){
+				PatRegResponseBean patRegResponseBean = getValue();
 				
-			}	 
-	     });
-	     
-		new Thread( saveTask ).start();
-	     
+				if( "success".equals(patRegResponseBean.getStatus() ) ){
+					CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , patRegResponseBean.getMessage() );
+				
+				} else if( "errorNameExists".equals(patRegResponseBean.getStatus() ) ){
+					//CommonControlsBo.showFinalFailureStatus( statusLabel , patRegResponseBean.getMessage() );
+					CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField, patRegResponseBean.getMessage());
+				
+				} else {
+					CommonControlsBoImpl.showFinalFailureStatus( statusLabel , patRegResponseBean.getMessage() );
+				}
+			}
+				
+		}).start();
+		
 	}
 
 	@Override

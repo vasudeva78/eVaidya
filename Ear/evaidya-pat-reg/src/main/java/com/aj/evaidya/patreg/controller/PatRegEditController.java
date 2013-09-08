@@ -175,11 +175,12 @@ public class PatRegEditController extends AbstractPatRegController {
 			CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField , "At least 3 characters ..." );
 			return;
 		}
-						
-		final Task <Map<String, String>> getPatNamesListTask = new Task <Map<String, String>>() {
+					
+		new Thread(new Task <Map<String, String>>() {
 
 			@Override
 			protected Map<String, String> call() throws Exception {
+				
 				PatRegRequestBean patRegRequestBean = new PatRegRequestBean();
 				
 				patRegRequestBean.setNameText( nameTextField.getText().trim() );
@@ -188,62 +189,58 @@ public class PatRegEditController extends AbstractPatRegController {
 				patRegRequestBean.setDbPwd(dbPwd);
 				
 				return patRegBo.getPatNames(patRegDao, patRegRequestBean);
-			} 
+				
+			}
 			
-		};
-		
-		getPatNamesListTask.stateProperty().addListener(new ChangeListener<State>(){
-
 			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
+			protected void succeeded(){
+				
+				Map<String, String> patNamesMap = getValue();
+				
+				// Reset All fields
+				resetAction();
+				
+				switch( patNamesMap.size() ){
+					case 1:
+						// No pat name found
+						CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField , "No Patient Details Found ..." );
+						nameTextField.requestFocus();
+						break;
 					
-					Map<String, String> patNamesMap = getPatNamesListTask.getValue();
-					
-					// Reset All fields
-					resetAction();
-					
-					switch( patNamesMap.size() ){
-						case 1:
-							// No pat name found
-							CommonControlsBoImpl.showErrorMessage(statusLabel, nameTextField , "No Patient Details Found ..." );
-							nameTextField.requestFocus();
-							break;
+					case 2:
+						// One pat Name
+						List<String> patNameList = new ArrayList<String>( patNamesMap.keySet() );
+						patNameId = patNameList.get(1) ;
 						
-						case 2:
-							// One pat Name
-							List<String> patNameList = new ArrayList<String>( patNamesMap.keySet() );
-							patNameId = patNameList.get(1) ;
-							
-							populateAllFields( patNameId );
-							break;
+						populateAllFields( patNameId );
+						break;
+					
+					default:
 						
-						default:
-							
-							// More pat names. Hence populate in drop down
-							
-							patNameList = new ArrayList<String> ( patNamesMap.values() );
-							patNameIdList = new ArrayList<String> ( patNamesMap.keySet() ); 
+						// More pat names. Hence populate in drop down
+						
+						patNameList = new ArrayList<String> ( patNamesMap.values() );
+						patNameIdList = new ArrayList<String> ( patNamesMap.keySet() ); 
 
-							patNameChoiceBox.getItems().clear();
-							patNameChoiceBox.getItems().addAll( patNameList );
-							
-							patNameChoiceBox.setDisable(false);
-					}
+						patNameChoiceBox.getItems().clear();
+						patNameChoiceBox.getItems().addAll( patNameList );
+						
+						patNameChoiceBox.setDisable(false);
 				}
-			}	
-		});
-
-		new Thread( getPatNamesListTask ).start();
+			}
+				
+		}).start();
+		
 	}
 	
 	private void populateAllFields(final String patNameId){
+		
+		new Thread(new Task<PatRegResponseBean>() {
 
-		final Task <PatRegResponseBean> populateAllFieldsTask = new Task <PatRegResponseBean>() { 
-			
-	         @Override protected PatRegResponseBean call() throws Exception {
-	        	 
-	        	PatRegRequestBean patRegRequestBean = new PatRegRequestBean();
+			@Override
+			protected PatRegResponseBean call() throws Exception {
+				
+				PatRegRequestBean patRegRequestBean = new PatRegRequestBean();
 	        	
 	        	patRegRequestBean.setNameId(patNameId);
 	    		patRegRequestBean.setDbUrl(dbUrl);
@@ -251,63 +248,53 @@ public class PatRegEditController extends AbstractPatRegController {
 	    		patRegRequestBean.setDbPwd(dbPwd);
 	        	
 	     		return patRegBo.getPatDtls(patRegDao, patRegRequestBean);
-	         }
-	         
-	     };
-		
-	     populateAllFieldsTask.stateProperty().addListener(new ChangeListener<State>(){
-
-			@Override
-			public void changed(ObservableValue<? extends State> ov, State t, State newState) {
-				if (newState == State.SUCCEEDED) {
-					
-					PatRegResponseBean patRegResponseBean = populateAllFieldsTask.getValue();
-					
-					nameTextField.setText(patRegResponseBean.getNameText());
-					
-					dateTextField.setText(patRegResponseBean.getPatDay());
-					monthChoiceBox.setValue(patRegResponseBean.getPatMon());
-					yearTextField.setText(patRegResponseBean.getPatYear());
-					
-					address1TextField.setText(patRegResponseBean.getAddress1Text());
-					address2TextField.setText(patRegResponseBean.getAddress2Text());
-									
-					int stateIdIndx = stateIdList.indexOf( patRegResponseBean.getStateId() );
-					
-					stateChoiceBox.setValue( stateIdIndx == -1 ? "-- Select --" : stateList.get(stateIdIndx)  );
-					
-					pincodeTextField.setText(patRegResponseBean.getPincode());
+			}
 			
-					tel1TextField.setText(patRegResponseBean.getTel1Text());
-					tel2TextField.setText(patRegResponseBean.getTel2Text());
-					
-					if (stateIdIndx != -1){
-											
-						nameTextField.setEditable(true);
-						dateTextField.setEditable(true);
-						monthChoiceBox.setDisable(false);
-						yearTextField.setEditable(true);
-						address1TextField.setEditable(true);
-						address2TextField.setEditable(true);
-						stateChoiceBox.setDisable(false);
-						pincodeTextField.setEditable(true);
-						tel1TextField.setEditable(true);
-						tel2TextField.setEditable(true);
-						
-						nameTextField.requestFocus();
-						
-					} else {
-						
-						resetAction();
-						
-					}
-					 
-				}
+			@Override
+			protected void succeeded(){
+				PatRegResponseBean patRegResponseBean = getValue();
 				
-			}	 
-	     });
-	     
-		new Thread( populateAllFieldsTask ).start();
+				nameTextField.setText(patRegResponseBean.getNameText());
+				
+				dateTextField.setText(patRegResponseBean.getPatDay());
+				monthChoiceBox.setValue(patRegResponseBean.getPatMon());
+				yearTextField.setText(patRegResponseBean.getPatYear());
+				
+				address1TextField.setText(patRegResponseBean.getAddress1Text());
+				address2TextField.setText(patRegResponseBean.getAddress2Text());
+								
+				int stateIdIndx = stateIdList.indexOf( patRegResponseBean.getStateId() );
+				
+				stateChoiceBox.setValue( stateIdIndx == -1 ? "-- Select --" : stateList.get(stateIdIndx)  );
+				
+				pincodeTextField.setText(patRegResponseBean.getPincode());
 		
+				tel1TextField.setText(patRegResponseBean.getTel1Text());
+				tel2TextField.setText(patRegResponseBean.getTel2Text());
+				
+				if (stateIdIndx != -1){
+										
+					nameTextField.setEditable(true);
+					dateTextField.setEditable(true);
+					monthChoiceBox.setDisable(false);
+					yearTextField.setEditable(true);
+					address1TextField.setEditable(true);
+					address2TextField.setEditable(true);
+					stateChoiceBox.setDisable(false);
+					pincodeTextField.setEditable(true);
+					tel1TextField.setEditable(true);
+					tel2TextField.setEditable(true);
+					
+					nameTextField.requestFocus();
+					
+				} else {
+					
+					resetAction();
+					
+				}
+			}
+				
+		}).start();
+
 	}
 }
