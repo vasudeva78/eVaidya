@@ -45,7 +45,7 @@ public class PatRegNewController extends AbstractPatRegController {
 
 			@Override
 			protected PatRegResponseBean call() throws Exception {
-				return patRegBo.savePatDtls(patRegDao, patRegRequestBean);
+				return patRegBo.savePatDtls(patRegRequestBean);
 			}
 			
 			@Override

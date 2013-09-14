@@ -9,14 +9,24 @@ import com.aj.evaidya.patreg.beans.PatRegRequestBean;
 import com.aj.evaidya.patreg.beans.PatRegResponseBean;
 import com.aj.evaidya.patreg.bo.PatRegBo;
 import com.aj.evaidya.patreg.dao.PatRegDao;
+import com.google.inject.Inject;
 
 public class PatRegBoImpl implements PatRegBo {
-
-	private static final Logger logger = Logger.getLogger(PatRegBoImpl.class);
-
 	
+	private static final Logger logger = Logger.getLogger(PatRegBoImpl.class);
+	private PatRegDao patRegDao;
+	
+	public PatRegDao getPatRegDao() {
+		return patRegDao;
+	}
+
+	@Inject
+	public void setPatRegDao(PatRegDao patRegDao) {
+		this.patRegDao = patRegDao;
+	}
+
 	@Override
-	public PatRegResponseBean savePatDtls(PatRegDao patRegDao, PatRegRequestBean patRegRequestBean) {
+	public PatRegResponseBean savePatDtls(PatRegRequestBean patRegRequestBean) {
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
@@ -38,7 +48,7 @@ public class PatRegBoImpl implements PatRegBo {
 
 
 	@Override
-	public Map<String, String> getPatNames(PatRegDao patRegDao, PatRegRequestBean patRegRequestBean) {
+	public Map<String, String> getPatNames(PatRegRequestBean patRegRequestBean) {
 		
 		Map<String,String> patNameListMap = new LinkedHashMap<String,String>();
 		
@@ -57,7 +67,7 @@ public class PatRegBoImpl implements PatRegBo {
 
 
 	@Override
-	public PatRegResponseBean getPatDtls(PatRegDao patRegDao,PatRegRequestBean patRegRequestBean) {
+	public PatRegResponseBean getPatDtls(PatRegRequestBean patRegRequestBean) {
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
@@ -76,7 +86,7 @@ public class PatRegBoImpl implements PatRegBo {
 
 
 	@Override
-	public PatRegResponseBean updatePatDtls(PatRegDao patRegDao, PatRegRequestBean patRegRequestBean) {
+	public PatRegResponseBean updatePatDtls(PatRegRequestBean patRegRequestBean) {
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
@@ -97,8 +107,8 @@ public class PatRegBoImpl implements PatRegBo {
 
 
 	@Override
-	public PatRegResponseBean uploadPatDtls(PatRegDao patRegDao,PatRegRequestBean patRegRequestBean,int rowNum,int maxRowNum) {
-		
+	public PatRegResponseBean uploadPatDtls(PatRegRequestBean patRegRequestBean,int rowNum,int maxRowNum) {
+			
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
 		try {
@@ -118,7 +128,7 @@ public class PatRegBoImpl implements PatRegBo {
 
 
 	@Override
-	public PatRegResponseBean getExcelRowsOnUpload(PatRegDao patRegDao,	PatRegRequestBean patRegRequestBean) {
+	public PatRegResponseBean getExcelRowsOnUpload(PatRegRequestBean patRegRequestBean) {
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		

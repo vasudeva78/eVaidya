@@ -14,6 +14,7 @@ import java.util.Map;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.common.Logger;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -30,6 +31,8 @@ public class PatRegDaoImpl implements PatRegDao {
 	private static final ThreadLocal<PatRegThreadBean> threadLocal= new ThreadLocal<PatRegThreadBean>();
 	
 	private static final Calendar cal = Calendar.getInstance();
+	
+	private static final Logger logger = Logger.getLogger(PatRegDaoImpl.class);
 
 	@Override
 	public PatRegResponseBean savePatDtls(PatRegRequestBean patRegRequestBean) throws Exception {
@@ -215,15 +218,20 @@ public class PatRegDaoImpl implements PatRegDao {
 				
 				threadLocal.set(patRegThreadBean);
 				
-			} else if (rowNum % 100 == 0){
+				addToPreparedStatement( rowNum );
+				
+			} else if (rowNum % 100 == 0) {
+				
+				addToPreparedStatement(rowNum);
+				
 				PatRegThreadBean patRegThreadBean = threadLocal.get();
 				patRegThreadBean.getpStat().executeBatch();
 					
 				patRegThreadBean.getpStat().clearBatch();
 				patRegThreadBean.getpStat().clearParameters();
-			}
-			else if(rowNum == maxRowNum){
-				
+			
+			} else if(rowNum == maxRowNum) {
+							
 				PatRegThreadBean patRegThreadBean = threadLocal.get();
 				
 				patRegThreadBean.getpStat().executeBatch();
@@ -235,50 +243,62 @@ public class PatRegDaoImpl implements PatRegDao {
 				patRegThreadBean.getWorkbook().close();
 				
 				threadLocal.remove();
-			}
-			else {
+
+			} else {
 				
-				PatRegThreadBean patRegThreadBean = threadLocal.get();
-				Sheet sheet = patRegThreadBean.getWorkbook().getSheet(0);
-				
-				Cell[] cells = sheet.getRow(rowNum);
-				
-				PreparedStatement pStat = patRegThreadBean.getpStat();
-				pStat.setString(1, cells[0].getContents().trim().substring(0, Math.min(100, cells[0].getContents().trim().length() )) );
-				
-				cal.setTime( sdf.parse(cells[1].getContents().trim()) );
-				
-				pStat.setString(2, cal.get(Calendar.YEAR) + "-" + ( cal.get(Calendar.MONTH) + 1 ) + "-" + cal.get(Calendar.DATE) );
-				
-				pStat.setString(3, cells[2].getContents().substring(0, Math.min(2000, cells[2].getContents().trim().length())) );
-				pStat.setString(4, cells[3].getContents().substring(0, Math.min(2000, cells[3].getContents().trim().length())) );
-				pStat.setString(5, cells[4].getContents().substring(0, Math.min(10, cells[4].getContents().trim().length())) );
-				pStat.setString(6, cells[5].getContents().substring(0, Math.min(10, cells[5].getContents().trim().length())) );
-				pStat.setString(7, cells[6].getContents().substring(0, Math.min(100, cells[6].getContents().trim().length())) );
-				pStat.setString(8, cells[7].getContents().substring(0, Math.min(100, cells[7].getContents().trim().length())) );
-				
-				pStat.addBatch();
+				addToPreparedStatement(rowNum);
+
 			}
 			
 		} catch (Exception e) {
 			
-			PatRegThreadBean patRegThreadBean = threadLocal.get();
+			patRegResponseBean.setErrMessage(e.getMessage());
 			
-			if(null != patRegThreadBean){
-				
-				patRegThreadBean.getpStat().close();
-				patRegThreadBean.getDbConn().close();
-				patRegThreadBean.getWorkbook().close();
-				
-			}
+//			PatRegThreadBean patRegThreadBean = threadLocal.get();
+//			
+//			if(null != patRegThreadBean){
+//				
+//				patRegThreadBean.getpStat().close();
+//				patRegThreadBean.getDbConn().close();
+//				patRegThreadBean.getWorkbook().close();
+//				
+//			}
+//			
+//			threadLocal.remove();
+//			
+//			throw e;
 			
-			threadLocal.remove();
-			
-			throw e;
+			logger.error("Error on Upload ",e);
 		
 		} 
 			
 		return patRegResponseBean;
+	}
+
+	private void addToPreparedStatement( int rowNum ) throws Exception {
+		
+		PatRegThreadBean patRegThreadBean = threadLocal.get();
+		
+		Sheet sheet = patRegThreadBean.getWorkbook().getSheet(0);
+		
+		Cell[] cells = sheet.getRow(rowNum);
+		
+		PreparedStatement pStat = patRegThreadBean.getpStat();
+		pStat.setString(1, cells[0].getContents().trim().substring(0, Math.min(100, cells[0].getContents().trim().length() )) );
+		
+		cal.setTime( sdf.parse(cells[1].getContents().trim()) );
+		
+		pStat.setString(2, cal.get(Calendar.YEAR) + "-" + ( cal.get(Calendar.MONTH) + 1 ) + "-" + cal.get(Calendar.DATE) );
+		
+		pStat.setString(3, cells[2].getContents().substring(0, Math.min(2000, cells[2].getContents().trim().length())) );
+		pStat.setString(4, cells[3].getContents().substring(0, Math.min(2000, cells[3].getContents().trim().length())) );
+		pStat.setString(5, cells[4].getContents().substring(0, Math.min(10, cells[4].getContents().trim().length())) );
+		pStat.setString(6, cells[5].getContents().substring(0, Math.min(10, cells[5].getContents().trim().length())) );
+		pStat.setString(7, cells[6].getContents().substring(0, Math.min(100, cells[6].getContents().trim().length())) );
+		pStat.setString(8, cells[7].getContents().substring(0, Math.min(100, cells[7].getContents().trim().length())) );
+		
+		pStat.addBatch();
+
 	}
 	
 //	@Override

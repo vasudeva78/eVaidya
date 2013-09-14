@@ -217,7 +217,7 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, qualiTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, qualiTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols - ( ) . , allowed ...") ) {
 			return;
 		}
 		
@@ -225,7 +225,7 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, desigTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, desigTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols - ( ) . , allowed ...") ) {
 			return;
 		}
 		
@@ -245,7 +245,7 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextAreaForInvalidLetters(statusLabel, consulTextArea , "[a-zA-Z -().,]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextAreaForInvalidLetters(statusLabel, consulTextArea , "[a-zA-Z0-9 -():.,]*" , "Only Numbers , Letters and Symbols - ( ) : . , allowed ...") ) {
 			return;
 		}
 		

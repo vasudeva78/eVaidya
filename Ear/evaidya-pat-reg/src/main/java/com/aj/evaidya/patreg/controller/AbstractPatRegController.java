@@ -17,10 +17,8 @@ import javafx.scene.control.TextField;
 
 import com.aj.evaidya.common.bo.CommonBo;
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
-import com.aj.evaidya.common.dao.CommonDao;
 import com.aj.evaidya.patreg.beans.PatRegRequestBean;
 import com.aj.evaidya.patreg.bo.PatRegBo;
-import com.aj.evaidya.patreg.dao.PatRegDao;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -38,17 +36,6 @@ public abstract class AbstractPatRegController implements Initializable {
 		this.commonBo = commonBo;
 	}
 
-	protected CommonDao commonDao;
-	
-	public CommonDao getCommonDao() {
-		return commonDao;
-	}
-
-	@Inject
-	public void setCommonDao(CommonDao commonDao) {
-		this.commonDao = commonDao;
-	}
-
 	protected PatRegBo patRegBo;
 	
 	public PatRegBo getPatRegBo() {
@@ -58,17 +45,6 @@ public abstract class AbstractPatRegController implements Initializable {
 	@Inject
 	public void setPatRegBo(PatRegBo patRegBo) {
 		this.patRegBo = patRegBo;
-	}
-
-	protected PatRegDao patRegDao;
-	
-	public PatRegDao getPatRegDao() {
-		return patRegDao;
-	}
-
-	@Inject
-	public void setPatRegDao(PatRegDao patRegDao) {
-		this.patRegDao = patRegDao;
 	}
 
 	protected String dbUrl;
@@ -162,7 +138,7 @@ public abstract class AbstractPatRegController implements Initializable {
 
 			@Override
 			protected Map<String, String> call() throws Exception {
-				return commonBo.getStateDropDownList( commonDao, dbUrl , dbUsername , dbPwd ); 
+				return commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd ); 
 			}
 			
 			@Override

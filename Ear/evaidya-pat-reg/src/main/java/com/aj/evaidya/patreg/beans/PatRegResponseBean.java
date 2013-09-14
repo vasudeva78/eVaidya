@@ -17,6 +17,7 @@ public class PatRegResponseBean {
 	private String patMon;
 	private String patYear;
 	private String excelRowNum;
+	private String errMessage;
 		
 	
 	public String getQualiText() {
@@ -118,6 +119,12 @@ public class PatRegResponseBean {
 		this.excelRowNum = excelRowNum;
 	}
 	
+	public String getErrMessage() {
+		return errMessage;
+	}
+	public void setErrMessage(String errMessage) {
+		this.errMessage = errMessage;
+	}
 	@Override
 	public String toString() {
 		return "PatRegResponseBean ["
@@ -139,9 +146,9 @@ public class PatRegResponseBean {
 				+ (patDay != null ? "patDay=" + patDay + ", " : "")
 				+ (patMon != null ? "patMon=" + patMon + ", " : "")
 				+ (patYear != null ? "patYear=" + patYear + ", " : "")
-				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum : "")
-				+ "]";
+				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum + ", "
+						: "")
+				+ (errMessage != null ? "errMessage=" + errMessage : "") + "]";
 	}
-			
 	
 }

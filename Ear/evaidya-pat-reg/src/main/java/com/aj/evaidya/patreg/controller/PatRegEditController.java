@@ -133,7 +133,7 @@ public class PatRegEditController extends AbstractPatRegController {
 		final Task<PatRegResponseBean> saveTask = new Task<PatRegResponseBean>() { 
 			
 	         @Override protected PatRegResponseBean call() throws Exception {			
-	        	 return patRegBo.updatePatDtls(patRegDao, patRegRequestBean);
+	        	 return patRegBo.updatePatDtls(patRegRequestBean);
 	         }
 		};     
 		
@@ -188,7 +188,7 @@ public class PatRegEditController extends AbstractPatRegController {
 				patRegRequestBean.setDbUsername(dbUsername);
 				patRegRequestBean.setDbPwd(dbPwd);
 				
-				return patRegBo.getPatNames(patRegDao, patRegRequestBean);
+				return patRegBo.getPatNames(patRegRequestBean);
 				
 			}
 			
@@ -247,7 +247,7 @@ public class PatRegEditController extends AbstractPatRegController {
 	    		patRegRequestBean.setDbUsername(dbUsername);
 	    		patRegRequestBean.setDbPwd(dbPwd);
 	        	
-	     		return patRegBo.getPatDtls(patRegDao, patRegRequestBean);
+	     		return patRegBo.getPatDtls(patRegRequestBean);
 			}
 			
 			@Override

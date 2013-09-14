@@ -10,6 +10,7 @@ public class DocRegNewController extends AbstractDocRegController {
 	
 	protected void populateFieldsOnIinit() {			
 		super.populateStateField( false );
+		super.consulTextArea.setPromptText("Every Monday & Tuesday.\nBetween 10:30 am to 12 pm.");
 	}
 	
 	protected DocRegRequestBean populateDocRegRequestBean(){
