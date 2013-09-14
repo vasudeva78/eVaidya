@@ -35,7 +35,7 @@ AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
                 <Insets right="5.0" />
               </HBox.margin>
             </Label>
-            <Button fx:id="browseButton" onAction="#browseAction" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Browse ...">
+            <Button fx:id="browseButton" mnemonicParsing="false" onAction="#browseAction" prefHeight="35.0" prefWidth="220.0" text="Browse ...">
               <HBox.margin>
                 <Insets left="5.0" />
               </HBox.margin>
@@ -49,14 +49,18 @@ AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
     </VBox>
     <VBox padding="$x1" prefWidth="1000.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
       <children>
-        <ProgressBar fx:id="uploadProgressBar" prefHeight="20.0" prefWidth="980.0" progress="0.0">
+        <HBox maxHeight="-Infinity" prefHeight="50.0" prefWidth="200.0">
+          <children>
+            <ProgressBar fx:id="uploadProgressBar" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="20.0" prefWidth="922.0000999999975" progress="0.0" />
+            <ProgressIndicator fx:id="uploadProgressBarInd" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="40.0" prefWidth="67.0001220703125" progress="0.0" />
+          </children>
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </HBox>
+        <TextArea fx:id="resultTextArea" prefHeight="200.0" prefWidth="200.0" wrapText="true">
           <VBox.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" fx:id="x3" />
-          </VBox.margin>
-        </ProgressBar>
-        <TextArea prefHeight="200.0" prefWidth="200.0" wrapText="true">
-          <VBox.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" fx:id="x1" />
           </VBox.margin>
         </TextArea>
       </children>
