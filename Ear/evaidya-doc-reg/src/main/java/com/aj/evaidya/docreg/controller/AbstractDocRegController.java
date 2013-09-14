@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import org.apache.log4j.Logger;
@@ -22,7 +23,6 @@ import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.common.dao.CommonDao;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.bo.DocRegBo;
-import com.aj.evaidya.docreg.dao.DocRegDao;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -62,18 +62,7 @@ public abstract class AbstractDocRegController implements Initializable {
 	public void setDocRegBo(DocRegBo docRegBo) {
 		this.docRegBo = docRegBo;
 	}
-	
-	protected DocRegDao docRegDao;
-	
-	public DocRegDao getDocRegDao() {
-		return docRegDao;
-	}
-
-	@Inject
-	public void setDocRegDao(DocRegDao docRegDao) {
-		this.docRegDao = docRegDao;
-	}
-	
+		
 	protected String dbUrl;
 	protected String dbUsername;
 	protected String dbPwd;
@@ -119,10 +108,16 @@ public abstract class AbstractDocRegController implements Initializable {
 	protected TextField qualiTextField;
 	
 	@FXML
+	protected TextField desigTextField;
+	
+	@FXML
 	protected TextField address1TextField;
 
 	@FXML
 	protected TextField address2TextField;
+	
+	@FXML
+	protected TextArea consulTextArea;
 	
 	@FXML
 	protected ChoiceBox<String> stateChoiceBox;
@@ -138,6 +133,9 @@ public abstract class AbstractDocRegController implements Initializable {
 	
 	@FXML
 	protected TextField emailTextField;
+	
+	@FXML
+	protected TextField hospTextField;
 	
 	protected String stateCode;
 
@@ -167,7 +165,7 @@ public abstract class AbstractDocRegController implements Initializable {
 
 			@Override
 			protected Map<String, String> call() throws Exception {
-				return commonBo.getStateDropDownList(commonDao, dbUrl , dbUsername , dbPwd ); 
+				return commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd ); 
 			}
 			
 			@Override
@@ -223,6 +221,14 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		}
 		
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, desigTextField , "Empty Designation ...") ) {
+			return;
+		};
+		
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, desigTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
+			return;
+		}
+		
 		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, address1TextField , "Empty Address ...") ) {
 			return;
 		}
@@ -234,12 +240,24 @@ public abstract class AbstractDocRegController implements Initializable {
 		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address2TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
-				
+			
+		if ( !CommonControlsBoImpl.checkTextAreaForEmptyString(statusLabel, consulTextArea , "Empty Consultation Details ...") ) {
+			return;
+		};
+		
+		if ( !CommonControlsBoImpl.checkTextAreaForInvalidLetters(statusLabel, consulTextArea , "[a-zA-Z -().,]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
+			return;
+		}
+		
 		if( !CommonControlsBoImpl.checkSelectionBox(statusLabel, stateChoiceBox , "Select State ...") ){
 			return;
 		}
 
 		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, pincodeTextField , "[0-9]*" , "Only Digits allowed ...") ) {
+			return;
+		}
+		
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, emailTextField , EMAIL_PATTERN , "Valid Email Id allowed ...") ) {
 			return;
 		}
 		
@@ -255,9 +273,14 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		}
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, emailTextField , EMAIL_PATTERN , "Valid Email Id allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, hospTextField , "Empty Hospital ...") ) {
+			return;
+		};
+		
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, hospTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
 			return;
 		}
+		
 		
 		// All good
 		
@@ -270,9 +293,12 @@ public abstract class AbstractDocRegController implements Initializable {
 	public final void resetAction(){
 		nameTextField.setText("");
 		qualiTextField.setText("");
+		desigTextField.setText("");
 		
 		address1TextField.setText("");
 		address2TextField.setText("");
+		
+		consulTextArea.setText("");
 		
 		stateChoiceBox.getSelectionModel().selectFirst();
 		pincodeTextField.setText("");
@@ -280,6 +306,8 @@ public abstract class AbstractDocRegController implements Initializable {
 		
 		tel1TextField.setText("");
 		tel2TextField.setText("");
+		
+		hospTextField.setText("");
 		
 		abstractResetFields();
 		

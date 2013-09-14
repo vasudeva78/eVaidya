@@ -16,15 +16,18 @@ public class DocRegNewController extends AbstractDocRegController {
 		
 		DocRegRequestBean docReqBean = new DocRegRequestBean();
 		
-		docReqBean.setNameText( nameTextField.getText().trim().substring(0, Math.min(100, nameTextField.getText().trim().length() )) );
-		docReqBean.setQualiText( qualiTextField.getText().trim().substring(0, Math.min(100, qualiTextField.getText().trim().length() )) );
-		docReqBean.setAddress1Text( address1TextField.getText().substring(0, Math.min(2000, address1TextField.getText().trim().length())) );
-		docReqBean.setAddress2Text( address2TextField.getText().substring(0, Math.min(2000, address2TextField.getText().trim().length() )) );
+		docReqBean.setNameText( nameTextField.getText().trim().substring(0, Math.min(1000, nameTextField.getText().trim().length() )) );
+		docReqBean.setQualiText( qualiTextField.getText().trim().substring(0, Math.min(5000, qualiTextField.getText().trim().length() )) );
+		docReqBean.setDesigText( desigTextField.getText().trim().substring(0, Math.min(5000, desigTextField.getText().trim().length() )) );
+		docReqBean.setAddress1Text( address1TextField.getText().substring(0, Math.min(5000, address1TextField.getText().trim().length())) );
+		docReqBean.setAddress2Text( address2TextField.getText().substring(0, Math.min(5000, address2TextField.getText().trim().length() )) );
+		docReqBean.setConsultText( consulTextArea.getText().substring(0, Math.min(5000, consulTextArea.getText().trim().length())) );
 		docReqBean.setStateId( stateCode );
 		docReqBean.setPincode( pincodeTextField.getText().substring(0, Math.min(10, pincodeTextField.getText().trim().length())) );
+		docReqBean.setEmail( emailTextField.getText().substring(0, Math.min(1000, emailTextField.getText().trim().length())) );
 		docReqBean.setTel1Text( tel1TextField.getText().substring(0, Math.min(100, tel1TextField.getText().trim().length() )) );
 		docReqBean.setTel2Text( tel2TextField.getText().substring(0, Math.min(100, tel2TextField.getText().trim().length() )) );
-		docReqBean.setEmail( emailTextField.getText().substring(0, Math.min(200, emailTextField.getText().trim().length())) );
+		docReqBean.setHospText( hospTextField.getText().substring(0, Math.min(5000, hospTextField.getText().trim().length() )) );
 		
 		docReqBean.setDbUrl(dbUrl);
 		docReqBean.setDbUsername(dbUsername);
@@ -45,7 +48,7 @@ public class DocRegNewController extends AbstractDocRegController {
 	     		
 	     		try {
 	     						
-	     			docRegResponseBean = docRegBo.saveDocDtls(docRegDao , docReqBean);
+	     			docRegResponseBean = docRegBo.saveDocDtls(docReqBean);
 	     			
 	     		}  catch(Exception e) {
 	     			

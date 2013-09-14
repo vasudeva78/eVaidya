@@ -5,37 +5,37 @@ public class DocRegRequestBean {
 
 	private String nameText;
 	private String qualiText;
+	private String desigText;
 	private String address1Text;
 	private String address2Text;
-	private String address3Text;
+	private String consultText;
 	private String stateId;
 	private String pincode;
+	private String email;
 	private String tel1Text;
 	private String tel2Text;
 	private String nameId;
-	private String email;
+	private String hospText;
 	private String dbUrl;
 	private String dbUsername;
 	private String dbPwd;
-	
-	
+	public String getNameText() {
+		return nameText;
+	}
+	public void setNameText(String nameText) {
+		this.nameText = nameText;
+	}
 	public String getQualiText() {
 		return qualiText;
 	}
 	public void setQualiText(String qualiText) {
 		this.qualiText = qualiText;
 	}
-	public String getNameId() {
-		return nameId;
+	public String getDesigText() {
+		return desigText;
 	}
-	public void setNameId(String nameId) {
-		this.nameId = nameId;
-	}
-	public String getNameText() {
-		return nameText;
-	}
-	public void setNameText(String nameText) {
-		this.nameText = nameText;
+	public void setDesigText(String desigText) {
+		this.desigText = desigText;
 	}
 	public String getAddress1Text() {
 		return address1Text;
@@ -49,29 +49,17 @@ public class DocRegRequestBean {
 	public void setAddress2Text(String address2Text) {
 		this.address2Text = address2Text;
 	}
-	public String getAddress3Text() {
-		return address3Text;
+	public String getConsultText() {
+		return consultText;
 	}
-	public void setAddress3Text(String address3Text) {
-		this.address3Text = address3Text;
+	public void setConsultText(String consultText) {
+		this.consultText = consultText;
 	}
 	public String getStateId() {
 		return stateId;
 	}
 	public void setStateId(String stateId) {
 		this.stateId = stateId;
-	}
-	public String getTel1Text() {
-		return tel1Text;
-	}
-	public void setTel1Text(String tel1Text) {
-		this.tel1Text = tel1Text;
-	}
-	public String getTel2Text() {
-		return tel2Text;
-	}
-	public void setTel2Text(String tel2Text) {
-		this.tel2Text = tel2Text;
 	}
 	public String getPincode() {
 		return pincode;
@@ -85,7 +73,30 @@ public class DocRegRequestBean {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+	public String getTel1Text() {
+		return tel1Text;
+	}
+	public void setTel1Text(String tel1Text) {
+		this.tel1Text = tel1Text;
+	}
+	public String getTel2Text() {
+		return tel2Text;
+	}
+	public void setTel2Text(String tel2Text) {
+		this.tel2Text = tel2Text;
+	}
+	public String getNameId() {
+		return nameId;
+	}
+	public void setNameId(String nameId) {
+		this.nameId = nameId;
+	}
+	public String getHospText() {
+		return hospText;
+	}
+	public void setHospText(String hospText) {
+		this.hospText = hospText;
+	}
 	public String getDbUrl() {
 		return dbUrl;
 	}
@@ -109,18 +120,20 @@ public class DocRegRequestBean {
 		return "DocRegRequestBean ["
 				+ (nameText != null ? "nameText=" + nameText + ", " : "")
 				+ (qualiText != null ? "qualiText=" + qualiText + ", " : "")
+				+ (desigText != null ? "desigText=" + desigText + ", " : "")
 				+ (address1Text != null ? "address1Text=" + address1Text + ", "
 						: "")
 				+ (address2Text != null ? "address2Text=" + address2Text + ", "
 						: "")
-				+ (address3Text != null ? "address3Text=" + address3Text + ", "
+				+ (consultText != null ? "consultText=" + consultText + ", "
 						: "")
 				+ (stateId != null ? "stateId=" + stateId + ", " : "")
 				+ (pincode != null ? "pincode=" + pincode + ", " : "")
+				+ (email != null ? "email=" + email + ", " : "")
 				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
 				+ (tel2Text != null ? "tel2Text=" + tel2Text + ", " : "")
 				+ (nameId != null ? "nameId=" + nameId + ", " : "")
-				+ (email != null ? "email=" + email + ", " : "")
+				+ (hospText != null ? "hospText=" + hospText + ", " : "")
 				+ (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
 				+ (dbUsername != null ? "dbUsername=" + dbUsername + ", " : "")
 				+ (dbPwd != null ? "dbPwd=" + dbPwd : "") + "]";

@@ -9,13 +9,25 @@ import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.beans.DocRegResponseBean;
 import com.aj.evaidya.docreg.bo.DocRegBo;
 import com.aj.evaidya.docreg.dao.DocRegDao;
+import com.google.inject.Inject;
 
 public class DocRegBoImpl implements DocRegBo{
 	
 	private static final Logger logger = Logger.getLogger(DocRegBoImpl.class);
+	
+	private DocRegDao docRegDao;
+	
+	public DocRegDao getDocRegDao() {
+		return docRegDao;
+	}
+
+	@Inject
+	public void setDocRegDao(DocRegDao docRegDao) {
+		this.docRegDao = docRegDao;
+	}
 
 	@Override
-	public DocRegResponseBean saveDocDtls(DocRegDao docRegDao , final DocRegRequestBean docRegRequestBean) {
+	public DocRegResponseBean saveDocDtls(final DocRegRequestBean docRegRequestBean) {
 		
 		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
 		
@@ -36,7 +48,7 @@ public class DocRegBoImpl implements DocRegBo{
 	}
 
 	@Override
-	public Map<String, String> getDocNames(DocRegDao docRegDao, DocRegRequestBean docRegRequestBean) {
+	public Map<String, String> getDocNames(DocRegRequestBean docRegRequestBean) {
 		
 		Map<String,String> docNameListMap = new LinkedHashMap<String,String>();
 		
@@ -54,7 +66,7 @@ public class DocRegBoImpl implements DocRegBo{
 	}
 
 	@Override
-	public DocRegResponseBean getDocDtls(DocRegDao docRegDao,DocRegRequestBean docRegRequestBean) {
+	public DocRegResponseBean getDocDtls(DocRegRequestBean docRegRequestBean) {
 		
 		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
 		
@@ -72,7 +84,7 @@ public class DocRegBoImpl implements DocRegBo{
 	}
 
 	@Override
-	public DocRegResponseBean updateDocDtls(DocRegDao docRegDao, DocRegRequestBean docRegRequestBean) {
+	public DocRegResponseBean updateDocDtls( DocRegRequestBean docRegRequestBean) {
 		
 		DocRegResponseBean docRegResponseBean = new DocRegResponseBean();
 		

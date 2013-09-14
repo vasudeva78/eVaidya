@@ -82,7 +82,7 @@ public class DocRegEditController extends AbstractDocRegController {
 	     		 docReqBean.setDbUsername(dbUsername);
 	     		 docReqBean.setDbPwd(dbPwd);
 	     			        	 
-	        	 return docRegBo.getDocNames( docRegDao , docReqBean);	        	 
+	        	 return docRegBo.getDocNames(docReqBean);	        	 
 	         }
 			
 			@Override
@@ -106,7 +106,7 @@ public class DocRegEditController extends AbstractDocRegController {
 
 			@Override protected Map<String, String> call() throws Exception {
 	        	 
-	        	 return commonBo.getStateDropDownList( commonDao,dbUrl , dbUsername , dbPwd ); 
+	        	 return commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd ); 
 	        	 
 	         }
 			
@@ -145,7 +145,7 @@ public class DocRegEditController extends AbstractDocRegController {
 	     		docReqBean.setDbPwd(dbPwd);
 	     		docReqBean.setNameId(nameId);
 	     		
-	     		return docRegBo.getDocDtls(docRegDao, docReqBean);
+	     		return docRegBo.getDocDtls(docReqBean);
 			}
 			
 			@Override
@@ -231,7 +231,7 @@ public class DocRegEditController extends AbstractDocRegController {
 	        	 docRegRequestBean.setDbUsername(dbUsername);
 	        	 docRegRequestBean.setDbPwd(dbPwd);
 	        	 
-	     		return docRegBo.updateDocDtls(docRegDao, docRegRequestBean);
+	     		return docRegBo.updateDocDtls(docRegRequestBean);
 			}
 			
 			@Override

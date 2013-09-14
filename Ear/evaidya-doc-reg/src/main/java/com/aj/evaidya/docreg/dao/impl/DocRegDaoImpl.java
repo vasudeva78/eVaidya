@@ -55,8 +55,8 @@ public class DocRegDaoImpl implements DocRegDao{
  			}
  			
  			qRunner.update(dbConn , 
- 					"insert into EV_DOC(EV_DOC_NAME,EV_DOC_QUALI,EV_DOC_ADDR1,EV_DOC_ADDR2,EV_DOC_STATE,EV_DOC_PIN_CODE,EV_DOC_TEL1,EV_DOC_TEL2,EV_DOC_EMAIL) values ( ?,?,?,?,?,?,?,?,? ) "  , 
- 					new Object[]{docRegRequestBean.getNameText() , docRegRequestBean.getQualiText() , docRegRequestBean.getAddress1Text() , docRegRequestBean.getAddress2Text() , docRegRequestBean.getStateId() , docRegRequestBean.getPincode() ,docRegRequestBean.getTel1Text() , docRegRequestBean.getTel2Text() , docRegRequestBean.getEmail() });
+ 					"insert into EV_DOC(EV_DOC_NAME,EV_DOC_QUALI,EV_DOC_DESIG,EV_DOC_ADDR1,EV_DOC_ADDR2,EV_DOC_CNSULT,EV_DOC_STATE,EV_DOC_PIN_CODE,EV_DOC_TEL1,EV_DOC_TEL2,EV_DOC_EMAIL,EV_DOC_HOSP) values ( ?,?,?,?,?,?,?,?,?,?,?,? ) "  , 
+ 					new Object[]{docRegRequestBean.getNameText() , docRegRequestBean.getQualiText() , docRegRequestBean.getDesigText() , docRegRequestBean.getAddress1Text() , docRegRequestBean.getAddress2Text() , docRegRequestBean.getConsultText() , docRegRequestBean.getStateId() , docRegRequestBean.getPincode() , docRegRequestBean.getTel1Text() , docRegRequestBean.getTel2Text() ,docRegRequestBean.getEmail() , docRegRequestBean.getHospText() });
  			 			
  			dbConn.commit();
 		
@@ -115,7 +115,7 @@ public class DocRegDaoImpl implements DocRegDao{
  									
  			QueryRunner qRunner = new QueryRunner();
  			
- 			docRegResponseBean = qRunner.query(dbConn , "select EV_DOC_ID , EV_DOC_NAME , EV_DOC_QUALI , EV_DOC_ADDR1, EV_DOC_ADDR2 , EV_DOC_STATE , EV_DOC_PIN_CODE , EV_DOC_TEL1 , EV_DOC_TEL2 , EV_DOC_EMAIL from EV_DOC where EV_DOC_ID = '"+nameId+"'" , 
+ 			docRegResponseBean = qRunner.query(dbConn , "select EV_DOC_ID , EV_DOC_NAME , EV_DOC_QUALI , EV_DOC_DESIG , EV_DOC_ADDR1, EV_DOC_ADDR2 , EV_DOC_CNSULT , EV_DOC_STATE , EV_DOC_PIN_CODE , EV_DOC_TEL1 , EV_DOC_TEL2 , EV_DOC_EMAIL , EV_DOC_HOSP from EV_DOC where EV_DOC_ID = '"+nameId+"'" , 
 					new ResultSetHandler<DocRegResponseBean>(){
 
 						public DocRegResponseBean handle(ResultSet resultSet) throws SQLException {
@@ -125,13 +125,16 @@ public class DocRegDaoImpl implements DocRegDao{
 							resultSet.next();
 							docRegResponseBean.setNameText(resultSet.getString("EV_DOC_NAME"));
 							docRegResponseBean.setQualiText(resultSet.getString("EV_DOC_QUALI"));
+							docRegResponseBean.setDesigText(resultSet.getString("EV_DOC_DESIG"));
 							docRegResponseBean.setAddress1Text(resultSet.getString("EV_DOC_ADDR1"));
 							docRegResponseBean.setAddress2Text(resultSet.getString("EV_DOC_ADDR2"));
+							docRegResponseBean.setConsultText(resultSet.getString("EV_DOC_CNSULT"));
 							docRegResponseBean.setStateId(resultSet.getString("EV_DOC_STATE"));
 							docRegResponseBean.setPincode(resultSet.getString("EV_DOC_PIN_CODE"));
 							docRegResponseBean.setTel1Text(resultSet.getString("EV_DOC_TEL1"));
 							docRegResponseBean.setTel2Text(resultSet.getString("EV_DOC_TEL2"));
 							docRegResponseBean.setEmail(resultSet.getString("EV_DOC_EMAIL"));
+							docRegResponseBean.setHospText(resultSet.getString("EV_DOC_HOSP"));
 							
 							return docRegResponseBean;
 						}
@@ -161,8 +164,8 @@ public class DocRegDaoImpl implements DocRegDao{
  			QueryRunner qRunner = new QueryRunner();
  			     			
  			qRunner.update(dbConn , 
- 					"update EV_DOC set EV_DOC_NAME = ? , EV_DOC_QUALI = ? , EV_DOC_ADDR1 = ? ,EV_DOC_ADDR2 = ? , EV_DOC_STATE = ? , EV_DOC_PIN_CODE = ? ,EV_DOC_TEL1 = ? ,EV_DOC_TEL2 = ? , EV_DOC_EMAIL = ? , EV_ENTRY_TIME = ( select now() ) where EV_DOC_ID = ? "  , 
- 					new Object[]{docRegRequestBean.getNameText() ,  docRegRequestBean.getQualiText(), docRegRequestBean.getAddress1Text() , docRegRequestBean.getAddress2Text() , docRegRequestBean.getStateId() , docRegRequestBean.getPincode() ,docRegRequestBean.getTel1Text() , docRegRequestBean.getTel2Text() , docRegRequestBean.getEmail() , docRegRequestBean.getNameId() });
+ 					"update EV_DOC set EV_DOC_NAME = ? , EV_DOC_QUALI = ? , EV_DOC_DESIG = ?, EV_DOC_ADDR1 = ? ,EV_DOC_ADDR2 = ? , EV_DOC_CNSULT = ? , EV_DOC_STATE = ? , EV_DOC_PIN_CODE = ? ,EV_DOC_TEL1 = ? ,EV_DOC_TEL2 = ? , EV_DOC_EMAIL = ? , EV_DOC_HOSP = ? , EV_ENTRY_TIME = ( select now() ) where EV_DOC_ID = ? "  , 
+ 					new Object[]{docRegRequestBean.getNameText() ,  docRegRequestBean.getQualiText(),docRegRequestBean.getDesigText(), docRegRequestBean.getAddress1Text() , docRegRequestBean.getAddress2Text() ,docRegRequestBean.getConsultText() , docRegRequestBean.getStateId() , docRegRequestBean.getPincode() ,docRegRequestBean.getTel1Text() , docRegRequestBean.getTel2Text() , docRegRequestBean.getEmail() ,docRegRequestBean.getHospText() , docRegRequestBean.getNameId() });
  			
  			docRegResponseBean.setStatus("success");
  			docRegResponseBean.setMessage("Saved ...");
