@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -34,6 +35,18 @@ public final class CommonControlsBoImpl {
 		
 		if ( textField.getText().trim().isEmpty() ){
 			CommonControlsBoImpl.showErrorMessage(statusLabel, textField , errMessage );
+			
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	public static boolean checkTextAreaForEmptyString (Label statusLabel,TextArea textArea,String errMessage) {
+		
+		if ( textArea.getText().trim().isEmpty() ){
+			CommonControlsBoImpl.showErrorMessage(statusLabel, textArea , errMessage );
 			
 			return false;
 		}
@@ -96,6 +109,17 @@ public final class CommonControlsBoImpl {
 		
 		if ( !Pattern.compile( regExp ).matcher( textField.getText().trim() ).matches() ){
 			CommonControlsBoImpl.showErrorMessage(statusLabel, textField , errMessage );
+			
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static boolean checkTextAreaForInvalidLetters (Label statusLabel, TextArea textArea ,String regExp ,String errMessage) {
+		
+		if ( !Pattern.compile( regExp ).matcher( textArea.getText().trim() ).matches() ){
+			CommonControlsBoImpl.showErrorMessage(statusLabel, textArea , errMessage );
 			
 			return false;
 		}
