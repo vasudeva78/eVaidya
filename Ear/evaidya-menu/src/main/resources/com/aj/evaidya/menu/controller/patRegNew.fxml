@@ -12,11 +12,12 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
+<GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml"
+AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
   <children>
     <VBox prefHeight="80.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
-        <Label alignment="CENTER" prefHeight="40.0" prefWidth="1000.0" styleClass="headerGridpane" textFill="#3354ff" underline="false">
+        <Label fx:id="myHeader" alignment="CENTER" prefHeight="40.0" prefWidth="1000.0" styleClass="headerGridpane" textFill="#3354ff" underline="false">
           <effect>
             <Glow level="0.25" />
           </effect>
@@ -28,11 +29,11 @@
       <children>
         <VBox prefHeight="75.0" prefWidth="500.0" styleClass="eVBox">
           <children>
-            <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Name : *" />
-            <TextField fx:id="nameTextField" prefHeight="45.0" prefWidth="500.0" />
+            <Label fx:id="labelTextField" prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Name : *" />
+            <TextField fx:id="nameTextField" prefHeight="38.0" prefWidth="495.0" />
           </children>
           <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x2" />
+            <Insets bottom="5.0" left="5.0" right="10.0" top="10.0" fx:id="x2" />
           </padding>
         </VBox>
         <VBox padding="$x2" prefHeight="75.0" prefWidth="500.0" styleClass="eVBox">
@@ -47,7 +48,7 @@
                 </Label>
                 <TextField fx:id="dateTextField" prefHeight="45.0" prefWidth="45.0" />
                 <Label alignment="CENTER_RIGHT" maxWidth="-Infinity" prefHeight="35.0" prefWidth="70.0" style="-fx-text-fill: #ff4500" text="Month" HBox.margin="$x1" />
-                <ChoiceBox fx:id="monthChoiceBox" maxWidth="-Infinity" prefHeight="45.0" prefWidth="80.0" value="--">
+                <ChoiceBox fx:id="monthChoiceBox" maxWidth="-Infinity" prefHeight="45.0" prefWidth="90.0" value="--">
                   <items>
                     <FXCollections fx:factory="observableArrayList">
                       <String fx:value="--" />
@@ -74,7 +75,7 @@
         </VBox>
       </children>
     </HBox>
-    <VBox prefHeight="110.0" styleClass="eVBox" GridPane.columnIndex="0" GridPane.rowIndex="2">
+    <VBox padding="$x2" prefHeight="110.0" styleClass="eVBox" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="2">
       <children>
         <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Address : *" />
         <TextField fx:id="address1TextField" prefHeight="45.0" />
@@ -84,22 +85,16 @@
           </VBox.margin>
         </TextField>
       </children>
-      <padding>
-        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" fx:id="x4" />
-      </padding>
-      <GridPane.margin>
-        <Insets top="5.0" fx:id="x3" />
-      </GridPane.margin>
     </VBox>
-    <HBox alignment="CENTER" prefHeight="75.0" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="4">
+    <HBox alignment="CENTER" prefHeight="75.0" GridPane.columnIndex="0" GridPane.rowIndex="4">
       <children>
-        <VBox padding="$x4" prefHeight="75.0" prefWidth="500.0" styleClass="eVBox">
+        <VBox padding="$x2" prefHeight="80.0" prefWidth="439.0" styleClass="eVBox">
           <children>
             <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="State : *" />
             <ChoiceBox fx:id="stateChoiceBox" prefHeight="45.0" prefWidth="250.0" />
           </children>
         </VBox>
-        <VBox prefHeight="75.0" prefWidth="500.0" styleClass="eVBox">
+        <VBox padding="$x2" prefHeight="80.0" prefWidth="351.0" styleClass="eVBox">
           <children>
             <Label prefHeight="35.0" text="Pin Code :" />
             <TextField fx:id="pincodeTextField" maxWidth="-Infinity" prefHeight="45.0" prefWidth="250.0" />
@@ -108,21 +103,50 @@
             <Insets bottom="5.0" left="10.0" top="10.0" />
           </padding>
         </VBox>
+        <VBox padding="$x2" prefHeight="80.0" prefWidth="233.0" styleClass="eVBox">
+          <children>
+            <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Sex :" />
+            <HBox prefHeight="45.0" prefWidth="200.0">
+              <children>
+                <RadioButton mnemonicParsing="false" prefHeight="30.0" prefWidth="116.0" selected="true" text="Male">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="radioGroupId" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton mnemonicParsing="false" prefHeight="30.0" prefWidth="116.0" text="Female" toggleGroup="$radioGroupId" />
+              </children>
+            </HBox>
+          </children>
+        </VBox>
       </children>
     </HBox>
     <HBox alignment="CENTER" prefHeight="75.0" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="5">
       <children>
-        <VBox padding="$x4" prefHeight="75.0" prefWidth="1000.0" styleClass="eVBox">
+        <VBox padding="$x2" prefHeight="75.0" prefWidth="1000.0" styleClass="eVBox">
           <children>
             <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Telephone : *" />
             <HBox>
               <children>
                 <TextField fx:id="tel1TextField" prefHeight="45.0" prefWidth="500.0">
                   <HBox.margin>
-                    <Insets right="5.0" fx:id="x1" />
+                    <Insets right="10.0" />
                   </HBox.margin>
                 </TextField>
-                <TextField fx:id="tel2TextField" prefHeight="45.0" prefWidth="500.0" />
+                <TextField fx:id="tel2TextField" prefHeight="45.0" prefWidth="500.0">
+                  <HBox.margin>
+                    <Insets right="10.0" />
+                  </HBox.margin>
+                </TextField>
+              </children>
+            </HBox>
+          </children>
+        </VBox>
+        <VBox padding="$x2" prefHeight="75.0" prefWidth="1000.0" styleClass="eVBox">
+          <children>
+            <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Father Name : *" />
+            <HBox>
+              <children>
+                <TextField fx:id="fatNameTextField" prefHeight="45.0" prefWidth="500.0" />
               </children>
             </HBox>
           </children>
@@ -130,12 +154,16 @@
       </children>
     </HBox>
     <HBox alignment="CENTER" prefHeight="75.0" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="6">
-      <AnchorPane>
-        <Button alignment="CENTER" onAction="#saveAction" text="Save" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="15.0" />
-        <Button alignment="CENTER" onAction="#resetAction" text="Reset" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="15.0" />
-      </AnchorPane>
+      <children>
+        <Button alignment="CENTER" onAction="#saveAction" text="Save">
+          <HBox.margin>
+            <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" fx:id="x5" />
+          </HBox.margin>
+        </Button>
+        <Button alignment="CENTER" onAction="#resetAction" text="Reset" HBox.margin="$x5" />
+      </children>
       <padding>
-        <Insets top="10.0" />
+        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" fx:id="x4" />
       </padding>
     </HBox>
   </children>
@@ -146,12 +174,12 @@
     <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
   </padding>
   <rowConstraints>
-    <RowConstraints maxHeight="80.0" prefHeight="80.0" />
-    <RowConstraints maxHeight="75.0" prefHeight="75.0" />
-    <RowConstraints maxHeight="115.0" prefHeight="115.0" />
-    <RowConstraints maxHeight="0.0" prefHeight="0.0" />
-    <RowConstraints maxHeight="80.0" prefHeight="80.0" />
-    <RowConstraints maxHeight="80.0" prefHeight="80.0" />
-    <RowConstraints maxHeight="80.0" prefHeight="80.0" />
+    <RowConstraints />
+    <RowConstraints />
+    <RowConstraints />
+    <RowConstraints />
+    <RowConstraints />
+    <RowConstraints />
+    <RowConstraints />
   </rowConstraints>
 </GridPane>

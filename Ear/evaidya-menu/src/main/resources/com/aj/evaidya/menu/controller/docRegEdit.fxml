@@ -12,7 +12,8 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
+<GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml"
+AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
   <children>
     <VBox prefHeight="80.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
@@ -37,31 +38,52 @@
             </HBox>
           </children>
           <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" fx:id="x1" />
+            <Insets bottom="5.0" left="5.0" right="10.0" top="10.0" fx:id="x3" />
           </padding>
         </VBox>
-        <VBox padding="$x1" prefHeight="75.0" prefWidth="500.0" styleClass="eVBox">
+        <VBox prefHeight="75.0" prefWidth="500.0" styleClass="eVBox">
           <children>
             <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Qualification : *" />
             <TextField fx:id="qualiTextField" prefHeight="45.0" prefWidth="500.0" />
           </children>
+          <padding>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" fx:id="x1" />
+          </padding>
+        </VBox>
+        <VBox padding="$x1" prefHeight="75.0" prefWidth="500.0" styleClass="eVBox">
+          <children>
+            <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Designation : *" />
+            <TextField fx:id="desigTextField" prefHeight="45.0" prefWidth="500.0" />
+          </children>
         </VBox>
       </children>
     </HBox>
-    <VBox padding="$x1" prefHeight="110.0" styleClass="eVBox" GridPane.columnIndex="0" GridPane.rowIndex="2">
-      <children>
-        <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Address : *" />
-        <TextField fx:id="address1TextField" prefHeight="45.0" />
-        <TextField fx:id="address2TextField" prefHeight="45.0">
-          <VBox.margin>
-            <Insets top="5.0" />
-          </VBox.margin>
-        </TextField>
-      </children>
-    </VBox>
+    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+      <VBox padding="$x3" prefHeight="110.0" prefWidth="495.0" styleClass="eVBox">
+        <children>
+          <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Address : *" />
+          <TextField fx:id="address1TextField" prefHeight="45.0" />
+          <TextField fx:id="address2TextField" prefHeight="45.0">
+            <VBox.margin>
+              <Insets top="5.0" />
+            </VBox.margin>
+          </TextField>
+        </children>
+      </VBox>
+      <VBox padding="$x1" prefHeight="100.0" prefWidth="505.0" styleClass="eVBox">
+        <children>
+          <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Consultation Details : *">
+            <VBox.margin>
+              <Insets left="5.0" fx:id="x4" />
+            </VBox.margin>
+          </Label>
+          <TextArea fx:id="consulTextArea" maxHeight="-1.0" maxWidth="-1.0" prefHeight="80.0" prefWidth="485.0" wrapText="true" VBox.margin="$x4" />
+        </children>
+      </VBox>
+    </HBox>
     <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="4">
       <children>
-        <VBox padding="$x1" prefHeight="75.0" prefWidth="250.0" styleClass="eVBox">
+        <VBox padding="$x3" prefHeight="75.0" prefWidth="250.0" styleClass="eVBox">
           <children>
             <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="State : *" />
             <ChoiceBox fx:id="stateChoiceBox" prefHeight="45.0" prefWidth="250.0" />
@@ -83,24 +105,46 @@
     </HBox>
     <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5">
       <children>
-        <VBox padding="$x1" prefHeight="75.0" prefWidth="1000.0" styleClass="eVBox">
+        <VBox padding="$x3" prefHeight="75.0" prefWidth="1000.0" styleClass="eVBox">
           <children>
             <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Telephone : *" />
             <HBox>
               <children>
-                <TextField fx:id="tel1TextField" prefHeight="45.0" prefWidth="500.0" />
+                <TextField fx:id="tel1TextField" prefHeight="45.0" prefWidth="500.0">
+                  <HBox.margin>
+                    <Insets right="10.0" />
+                  </HBox.margin>
+                </TextField>
                 <TextField fx:id="tel2TextField" prefHeight="45.0" prefWidth="500.0" />
+              </children>
+            </HBox>
+          </children>
+        </VBox>
+        <VBox padding="$x1" prefHeight="75.0" prefWidth="1000.0" styleClass="eVBox">
+          <children>
+            <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="Hospital : *" />
+            <HBox>
+              <children>
+                <TextField fx:id="hospTextField" prefHeight="45.0" prefWidth="500.0" />
               </children>
             </HBox>
           </children>
         </VBox>
       </children>
     </HBox>
-    <HBox alignment="CENTER" padding="$x1" GridPane.columnIndex="0" GridPane.rowIndex="6">
-      <AnchorPane>
-        <Button alignment="CENTER" onAction="#saveAction" text="Save" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="15.0" />
-        <Button alignment="CENTER" onAction="#resetAction" text="Reset" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="15.0" />
-      </AnchorPane>
+    <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="6">
+      <children>
+        <Button alignment="CENTER" onAction="#saveAction" text="Save">
+          <HBox.margin>
+            <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" fx:id="x2" />
+          </HBox.margin>
+        </Button>
+        <Button alignment="CENTER" onAction="#resetAction" text="Reset" HBox.margin="$x2" />
+        <Button alignment="CENTER" onAction="#resetAction" text="Preview" textOverrun="ELLIPSIS" HBox.margin="$x2" />
+      </children>
+      <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+      </padding>
     </HBox>
   </children>
   <columnConstraints>
@@ -110,6 +154,7 @@
     <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
   </padding>
   <rowConstraints>
+    <RowConstraints />
     <RowConstraints />
     <RowConstraints />
     <RowConstraints />
