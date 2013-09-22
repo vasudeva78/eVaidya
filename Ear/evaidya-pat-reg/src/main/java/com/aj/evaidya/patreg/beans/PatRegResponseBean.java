@@ -10,8 +10,10 @@ public class PatRegResponseBean {
 	private String address3Text;
 	private String stateId;
 	private String pincode;
+	private String sex;
 	private String tel1Text;
 	private String tel2Text;
+	private String fatNameText;
 	private String email;
 	private String patDay;
 	private String patMon;
@@ -20,6 +22,18 @@ public class PatRegResponseBean {
 	private String errMessage;
 		
 	
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public String getFatNameText() {
+		return fatNameText;
+	}
+	public void setFatNameText(String fatNameText) {
+		this.fatNameText = fatNameText;
+	}
 	public String getQualiText() {
 		return qualiText;
 	}
@@ -140,8 +154,11 @@ public class PatRegResponseBean {
 						: "")
 				+ (stateId != null ? "stateId=" + stateId + ", " : "")
 				+ (pincode != null ? "pincode=" + pincode + ", " : "")
+				+ (sex != null ? "sex=" + sex + ", " : "")
 				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
 				+ (tel2Text != null ? "tel2Text=" + tel2Text + ", " : "")
+				+ (fatNameText != null ? "fatNameText=" + fatNameText + ", "
+						: "")
 				+ (email != null ? "email=" + email + ", " : "")
 				+ (patDay != null ? "patDay=" + patDay + ", " : "")
 				+ (patMon != null ? "patMon=" + patMon + ", " : "")
@@ -150,5 +167,6 @@ public class PatRegResponseBean {
 						: "")
 				+ (errMessage != null ? "errMessage=" + errMessage : "") + "]";
 	}
+	
 	
 }

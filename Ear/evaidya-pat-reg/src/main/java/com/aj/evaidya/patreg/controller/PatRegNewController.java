@@ -1,6 +1,9 @@
 package com.aj.evaidya.patreg.controller;
 
 import javafx.concurrent.Task;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.patreg.beans.PatRegRequestBean;
@@ -8,11 +11,15 @@ import com.aj.evaidya.patreg.beans.PatRegResponseBean;
 
 public class PatRegNewController extends AbstractPatRegController {
 	
+	private @FXML Label myHeader;
+	private @FXML Label labelTextField;
+	
 	protected void populateFieldsOnIinit() {			
 		super.populateStateField(false);
 		
 		dateTextField.setPromptText("dd");
 		yearTextField.setPromptText("yyyy");
+
 	}
 	
 	protected PatRegRequestBean populatePatRegRequestBean(){
@@ -28,8 +35,10 @@ public class PatRegNewController extends AbstractPatRegController {
 		patRegRequestBean.setAddress2Text( address2TextField.getText().substring(0, Math.min(2000, address2TextField.getText().trim().length() )) );
 		patRegRequestBean.setStateId( stateCode );
 		patRegRequestBean.setPincode( pincodeTextField.getText().substring(0, Math.min(10, pincodeTextField.getText().trim().length())) );
+		patRegRequestBean.setSex( ((RadioButton)radioGroupId.getSelectedToggle()).getText() ); 
 		patRegRequestBean.setTel1Text( tel1TextField.getText().substring(0, Math.min(100, tel1TextField.getText().trim().length() )) );
 		patRegRequestBean.setTel2Text( tel2TextField.getText().substring(0, Math.min(100, tel2TextField.getText().trim().length() )) );
+		patRegRequestBean.setFatNameText( fatNameTextField.getText().substring(0, Math.min(100, fatNameTextField.getText().trim().length() )) );
 		
 		patRegRequestBean.setDbUrl(dbUrl);
 		patRegRequestBean.setDbUsername(dbUsername);
@@ -70,6 +79,6 @@ public class PatRegNewController extends AbstractPatRegController {
 
 	@Override
 	protected void abstractResetFields() {
-		
+	
 	}
 }

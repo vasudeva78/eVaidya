@@ -11,15 +11,29 @@ public class PatRegRequestBean {
 	private String address2Text;
 	private String stateId;
 	private String pincode;
+	private String sex;
 	private String tel1Text;
 	private String tel2Text;
 	private String nameId;
+	private String fatNameText;
 	private String dbUrl;
 	private String dbUsername;
 	private String dbPwd;
 	private String xlFilePath;
 	private String excelRowNum;
 	
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public String getFatNameText() {
+		return fatNameText;
+	}
+	public void setFatNameText(String fatNameText) {
+		this.fatNameText = fatNameText;
+	}
 	public String getDbUrl() {
 		return dbUrl;
 	}
@@ -131,16 +145,17 @@ public class PatRegRequestBean {
 						: "")
 				+ (stateId != null ? "stateId=" + stateId + ", " : "")
 				+ (pincode != null ? "pincode=" + pincode + ", " : "")
+				+ (sex != null ? "sex=" + sex + ", " : "")
 				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
 				+ (tel2Text != null ? "tel2Text=" + tel2Text + ", " : "")
 				+ (nameId != null ? "nameId=" + nameId + ", " : "")
-				+ (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
+				+ (fatNameText != null ? "fatNameText=" + fatNameText + ", "
+						: "") + (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
 				+ (dbUsername != null ? "dbUsername=" + dbUsername + ", " : "")
 				+ (dbPwd != null ? "dbPwd=" + dbPwd + ", " : "")
 				+ (xlFilePath != null ? "xlFilePath=" + xlFilePath + ", " : "")
 				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum : "")
 				+ "]";
 	}
-		
 	
 }

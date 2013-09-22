@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 
 import com.aj.evaidya.common.bo.CommonBo;
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
@@ -106,10 +107,16 @@ public abstract class AbstractPatRegController implements Initializable {
 	protected TextField pincodeTextField;
 	
 	@FXML
+	protected ToggleGroup radioGroupId;
+		
+	@FXML
 	protected TextField tel1TextField;
 	
 	@FXML
 	protected TextField tel2TextField;
+	
+	@FXML
+	protected TextField fatNameTextField;
 	
 	protected String stateCode;
 
@@ -122,13 +129,13 @@ public abstract class AbstractPatRegController implements Initializable {
 	protected abstract void abstractResetFields();
 	
 	public final void initialize(URL url, ResourceBundle bundle) {
-	
 		// populate other control fields
 		populateFieldsOnIinit();
 		
 	}
 	
 	protected final void populateStateField(final boolean isStateChoiceBoxDisabled) {
+		
 		stateChoiceBox.setDisable(true);
 		
 		stateList = new ArrayList<String>();
@@ -250,6 +257,14 @@ public abstract class AbstractPatRegController implements Initializable {
 			return;
 		}
 		
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, fatNameTextField , "Empty Father Name ...") ) {
+			return;
+		}
+		
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, fatNameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
+			return;
+		}
+		
 		// All good
 		
 		PatRegRequestBean patRegRequestBean = populatePatRegRequestBean();
@@ -272,6 +287,8 @@ public abstract class AbstractPatRegController implements Initializable {
 		
 		tel1TextField.setText("");
 		tel2TextField.setText("");
+		
+		fatNameTextField.setText("");
 		
 		abstractResetFields();
 		

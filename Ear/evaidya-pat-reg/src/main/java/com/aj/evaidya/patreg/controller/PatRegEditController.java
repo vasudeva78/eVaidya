@@ -10,6 +10,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.RadioButton;
 
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.patreg.beans.PatRegRequestBean;
@@ -91,9 +92,14 @@ public class PatRegEditController extends AbstractPatRegController {
 
 		stateChoiceBox.setDisable(true);
 		pincodeTextField.setEditable(false);
+		
+		((RadioButton)radioGroupId.getToggles().get(0)).setDisable(true);
+		((RadioButton)radioGroupId.getToggles().get(1)).setDisable(true);
 
 		tel1TextField.setEditable(false);
 		tel2TextField.setEditable(false);
+		
+		fatNameTextField.setEditable(false);
 	}
 
 
@@ -114,8 +120,10 @@ public class PatRegEditController extends AbstractPatRegController {
 		patRegRequestBean.setAddress2Text( address2TextField.getText().substring(0, Math.min(2000, address2TextField.getText().trim().length() )) );
 		patRegRequestBean.setStateId( stateCode );
 		patRegRequestBean.setPincode( pincodeTextField.getText().substring(0, Math.min(10, pincodeTextField.getText().trim().length())) );
+		patRegRequestBean.setSex( ((RadioButton)radioGroupId.getSelectedToggle()).getText() ); 
 		patRegRequestBean.setTel1Text( tel1TextField.getText().substring(0, Math.min(100, tel1TextField.getText().trim().length() )) );
 		patRegRequestBean.setTel2Text( tel2TextField.getText().substring(0, Math.min(100, tel2TextField.getText().trim().length() )) );
+		patRegRequestBean.setFatNameText( fatNameTextField.getText().substring(0, Math.min(100, fatNameTextField.getText().trim().length() )) );
 
    	 	patRegRequestBean.setDbUrl(dbUrl);
 		patRegRequestBean.setDbUsername(dbUsername);
@@ -268,9 +276,19 @@ public class PatRegEditController extends AbstractPatRegController {
 				stateChoiceBox.setValue( stateIdIndx == -1 ? "-- Select --" : stateList.get(stateIdIndx)  );
 				
 				pincodeTextField.setText(patRegResponseBean.getPincode());
+				
+				if( patRegResponseBean.getSex().equalsIgnoreCase("female") ){
+					((RadioButton)radioGroupId.getToggles().get(0)).setSelected(false);
+					((RadioButton)radioGroupId.getToggles().get(1)).setSelected(true);
+				} else {
+					((RadioButton)radioGroupId.getToggles().get(0)).setSelected(true);
+					((RadioButton)radioGroupId.getToggles().get(1)).setSelected(false);					
+				}
 		
 				tel1TextField.setText(patRegResponseBean.getTel1Text());
 				tel2TextField.setText(patRegResponseBean.getTel2Text());
+				
+				fatNameTextField.setText(patRegResponseBean.getFatNameText());
 				
 				if (stateIdIndx != -1){
 										
@@ -282,8 +300,14 @@ public class PatRegEditController extends AbstractPatRegController {
 					address2TextField.setEditable(true);
 					stateChoiceBox.setDisable(false);
 					pincodeTextField.setEditable(true);
+					
+					((RadioButton)radioGroupId.getToggles().get(0)).setDisable(false);
+					((RadioButton)radioGroupId.getToggles().get(1)).setDisable(false);
+					
 					tel1TextField.setEditable(true);
 					tel2TextField.setEditable(true);
+					
+					fatNameTextField.setEditable(true);
 					
 					nameTextField.requestFocus();
 					

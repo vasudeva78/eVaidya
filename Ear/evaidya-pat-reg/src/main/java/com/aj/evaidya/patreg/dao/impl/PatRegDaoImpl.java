@@ -45,7 +45,7 @@ public class PatRegDaoImpl implements PatRegDao {
  			
  			QueryRunner qRunner = new QueryRunner();
  			
- 			int patNameExistsRowcount = qRunner.query(dbConn , "select count(*) from EV_PAT where EV_PAT_NAME='" + patRegRequestBean.getNameText() + "'" , 
+ 			int patNameExistsRowcount = qRunner.query(dbConn , "select count(*) from EV_PAT where EV_PAT_NAME='" + patRegRequestBean.getNameText() + "' and EV_PAT_ADDR1 ='" + patRegRequestBean.getAddress1Text() + "' and EV_PAT_FAT_NAME = '"+  patRegRequestBean.getFatNameText() +"'", 
 					new ResultSetHandler<Integer>(){
 
 						public Integer handle(ResultSet resultSet) throws SQLException {
@@ -66,8 +66,8 @@ public class PatRegDaoImpl implements PatRegDao {
  			}
  			
  			qRunner.update(dbConn , 
- 					"insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_TEL1,EV_PAT_TEL2) values ( ?,?,?,?,?,?,?,? ) "  , 
- 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateId() , patRegRequestBean.getPincode() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text()  });
+ 					"insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) values ( ?,?,?,?,?,?,?,?,?,? ) "  , 
+ 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateId() , patRegRequestBean.getPincode() ,patRegRequestBean.getSex() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text() ,patRegRequestBean.getFatNameText()  });
  			
  			patRegResponseBean.setStatus("success");
  			patRegResponseBean.setMessage("Saved ...");
@@ -92,7 +92,7 @@ public class PatRegDaoImpl implements PatRegDao {
 						
 			QueryRunner qRunner = new QueryRunner();
  			
- 			patNameListMap = qRunner.query(dbConn , "select EV_PAT_ID , EV_PAT_NAME from EV_PAT where EV_PAT_NAME like '"+patRegRequestBean.getNameText()+"%' order by EV_PAT_NAME" , 
+ 			patNameListMap = qRunner.query(dbConn , "select EV_PAT_ID , EV_PAT_NAME from EV_PAT where upper(EV_PAT_NAME) like upper('"+patRegRequestBean.getNameText()+"%') order by EV_PAT_NAME" , 
 					new ResultSetHandler<Map<String, String>>(){
 
 						public Map<String, String> handle(ResultSet resultSet) throws SQLException {
@@ -129,7 +129,7 @@ public class PatRegDaoImpl implements PatRegDao {
  			
 			String patNameId = patRegRequestBean.getNameId();
 			
-			patRegResponseBean = qRunner.query(dbConn , "select EV_PAT_ID , EV_PAT_NAME , DAY_OF_MONTH(EV_PAT_DOB) as PAT_DAY , FORMATDATETIME(EV_PAT_DOB,'MMM') as PAT_MON , YEAR(EV_PAT_DOB) as PAT_YEAR ,EV_PAT_ADDR1, EV_PAT_ADDR2 , EV_PAT_STATE , EV_PAT_PIN_CODE , EV_PAT_TEL1 , EV_PAT_TEL2 from EV_PAT where EV_PAT_ID = '"+patNameId+"'" , 
+			patRegResponseBean = qRunner.query(dbConn , "select EV_PAT_ID , EV_PAT_NAME , DAY_OF_MONTH(EV_PAT_DOB) as PAT_DAY , FORMATDATETIME(EV_PAT_DOB,'MMM') as PAT_MON , YEAR(EV_PAT_DOB) as PAT_YEAR ,EV_PAT_ADDR1, EV_PAT_ADDR2 , EV_PAT_STATE , EV_PAT_PIN_CODE , EV_PAT_SEX , EV_PAT_TEL1 , EV_PAT_TEL2 , EV_PAT_FAT_NAME from EV_PAT where EV_PAT_ID = '"+patNameId+"'" , 
 					new ResultSetHandler<PatRegResponseBean>(){
 
 						public PatRegResponseBean handle(ResultSet resultSet) throws SQLException {
@@ -145,8 +145,10 @@ public class PatRegDaoImpl implements PatRegDao {
 							patRegResponseBean.setAddress2Text(resultSet.getString("EV_PAT_ADDR2"));
 							patRegResponseBean.setStateId(resultSet.getString("EV_PAT_STATE"));
 							patRegResponseBean.setPincode(resultSet.getString("EV_PAT_PIN_CODE"));
+							patRegResponseBean.setSex(resultSet.getString("EV_PAT_SEX"));
 							patRegResponseBean.setTel1Text(resultSet.getString("EV_PAT_TEL1"));
 							patRegResponseBean.setTel2Text(resultSet.getString("EV_PAT_TEL2"));
+							patRegResponseBean.setFatNameText(resultSet.getString("EV_PAT_FAT_NAME"));
 							
 							return patRegResponseBean;
 						}
@@ -173,8 +175,8 @@ public class PatRegDaoImpl implements PatRegDao {
  			QueryRunner qRunner = new QueryRunner();
  			 			
  			qRunner.update(dbConn , 
- 					"update EV_PAT set EV_PAT_NAME = ?,EV_PAT_DOB=?,EV_PAT_ADDR1=?,EV_PAT_ADDR2=?,EV_PAT_STATE=?,EV_PAT_PIN_CODE=?,EV_PAT_TEL1=?,EV_PAT_TEL2 = ? where EV_PAT_ID = ? "  , 
- 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateId() , patRegRequestBean.getPincode() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text() , patRegRequestBean.getNameId() });
+ 					"update EV_PAT set EV_PAT_NAME = ?,EV_PAT_DOB=?,EV_PAT_ADDR1=?,EV_PAT_ADDR2=?,EV_PAT_STATE=?,EV_PAT_PIN_CODE=?,EV_PAT_SEX=?,EV_PAT_TEL1=?,EV_PAT_TEL2 = ?,EV_PAT_FAT_NAME=? where EV_PAT_ID = ? "  , 
+ 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateId() , patRegRequestBean.getPincode() , patRegRequestBean.getSex() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text() ,patRegRequestBean.getFatNameText() , patRegRequestBean.getNameId() });
  			
  			patRegResponseBean.setStatus("success");
  			patRegResponseBean.setMessage("Saved ...");
@@ -209,7 +211,7 @@ public class PatRegDaoImpl implements PatRegDao {
 				
 				patRegThreadBean.setDbConn(dbConn);
 				
-				PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_TEL1,EV_PAT_TEL2) values (?,?,?,?,?,?,?,?)" );
+				PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) values (?,?,?,?,?,?,?,?,?,?)" );
 				patRegThreadBean.setpStat(pStat);
 				
 				Workbook workbook = Workbook.getWorkbook(new File( patRegRequestBean.getXlFilePath() ));
