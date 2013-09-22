@@ -19,10 +19,10 @@ public class EVaidyaMain extends Application {
 	
 	@Override
 	public void init(){	
-		Font.loadFont("/com/aj/evaidya/main/font/OpenSans-Regular.ttf", 10);
+		Font.loadFont( getClass().getResource("/com/aj/evaidya/main/font/OpenSans-Regular.ttf").toExternalForm() , 10);
+		Font.loadFont( getClass().getResource("/com/aj/evaidya/main/font/DroidSerif.ttf").toExternalForm() , 10);
 	}
-	
-	
+		
 	@Override
 	public void start(Stage stage) throws Exception {
 		

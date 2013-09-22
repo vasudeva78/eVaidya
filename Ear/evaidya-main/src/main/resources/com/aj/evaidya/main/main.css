@@ -476,6 +476,7 @@
     -fx-text-fill: -fx-text-background-color;
     -fx-font-size: 18px;
 	-fx-font-style: normal;
+	-fx-font-smoothing-type: lcd;
 }
 
 .label:disabled {
@@ -500,22 +501,19 @@
  ******************************************************************************/
 
 .button {
-    -fx-background-color: 
-    	#000000,
-        linear-gradient(#7ebcea, #2f4b8f),
-        linear-gradient(#426ab7, #263e75),
-        linear-gradient(#395cab, #223768);
-    -fx-background-insets: 0,1,2,30;
-    -fx-background-radius: 70px;
-    -fx-padding: 15 45 15 45;
+    -fx-background-color: blue;
+    -fx-padding: 10 40 10 40;
     -fx-text-fill: white;
     -fx-alignment: CENTER;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: Open;
+    -fx-font-size: 1.5em; /* 18px */
+    -fx-font-weight: normal;
+    -fx-font-smoothing-type: lcd;
 }
 
 .button:hover {
     -fx-cursor: hand;
-    -fx-background-insets:  0,-3,2,30;
+    /* -fx-background-insets:  0,-3,2,30;-fx-alignment: */
 }
 
 .button:armed {
@@ -1019,8 +1017,8 @@
 
 .choice-box {
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 8;
+    /*-fx-background-insets: 0, 1, 2;
+    /* -fx-background-radius: 8; 
     -fx-padding: 0.0em 0.5em 0.0em 0.0em; /* 0 6 0 0 */
     -fx-alignment: CENTER;
     -fx-content-display: LEFT;
@@ -1390,23 +1388,30 @@
  ******************************************************************************/
 
 .text-field {
-
-    -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 8;
-    -fx-text-fill: darkgray;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+	
+	-fx-background-color: white;
+	-fx-border-color: #BBDBFF;	
+	-fx-font-size: 1.16em; /* 14px */
+	-fx-font-weight: normal;
+	-fx-font-family: "Open Sans";
+	-fx-text-fill: darkslategrey;
     -fx-cursor: text;
-    -fx-font-size: 20px;
-	-fx-font-style: normal;
 	-fx-padding:2px;
+	-fx-font-smoothing-type: lcd;
 }
 
 .text-field:focused {
+	-fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+    -fx-background-insets: -0.4, 1, 2;
+    -fx-background-radius: 3.4, 2, 2;
+    -fx-prompt-text-fill: transparent;
+    /*
     -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
     -fx-prompt-text-fill: transparent;
     -fx-effect: dropshadow( one-pass-box , #EEF6FE , 2 , 0.75 , 1 , 1 );
     -fx-background-insets: 0, -1, 2, 3;
+    * 
+    */
 }
 
 .text-field:disabled {
@@ -3519,13 +3524,12 @@ Only the properties with values that are different from the TextBox are specifie
 
 #rootVbox{
 	 -fx-background-color: #BBDBFF;
-	 -fx-background-radius: 70px;
-	 -fx-font-family: "Open Sans";
+	 /* -fx-background-radius: 70px; */
 }
 
 #tabGridPane{
 	 -fx-background-color: white;
-	 -fx-background-radius: 70px;
+	 /* -fx-background-radius: 70px; */
 	 -fx-grid-lines-visible : false;
 }
 
@@ -3536,20 +3540,44 @@ Only the properties with values that are different from the TextBox are specifie
 }
 
 #statusLabel{
-    -fx-font-size: 20px;
-	-fx-font-weight: normal;
+    -fx-font-size: 1.5em; /* 18px */
+    -fx-font-family: Open;
 	-fx-text-fill: red;    
 	-fx-padding: 3px;
 }
 
 .headerGridpane{
-    -fx-font-size: 24px;
+    -fx-font-size: 2.25em; /* 27px */
 	-fx-font-weight: normal;
+	-fx-font-family: Droid;
+	-fx-text-fill: darkslategrey;
 }
 
 .eVBox {
-	-fx-background-color: white;	
-	-fx-background-radius: 8;
+	-fx-background-color: white;
+}
+
+.eVBox .label{
+	-fx-font-family: Open;
+	-fx-font-size: 1.5em; /* 18px */
+}
+
+.eVBox .text-field{
+	-fx-font-family: Open;
+	-fx-text-fill: darkslategrey;
+	-fx-font-size: 1.5em; /* 18px */
+}
+
+.eVBox .choice-box{
+	-fx-font-family: Open;
+	-fx-text-fill: darkslategrey;
+	-fx-font-size: 1.5em; /* 18px */
+}
+
+.eVBox .radio-button {
+	-fx-font-family: Open;
+	-fx-text-fill: darkslategrey;
+	-fx-font-size: 1.5em; /* 18px */
 }
 
 .eVBox:hover {
