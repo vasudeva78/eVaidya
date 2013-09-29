@@ -90,8 +90,8 @@ AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
       <children>
         <VBox padding="$x2" prefHeight="80.0" prefWidth="439.0" styleClass="eVBox">
           <children>
-            <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="State : *" />
-            <ChoiceBox fx:id="stateChoiceBox" prefHeight="45.0" prefWidth="250.0" />
+            <Label prefHeight="35.0" style="-fx-text-fill: #ff4500" text="State : *" /> 
+            <TextField fx:id="stateTextField" prefHeight="45.0" />
           </children>
         </VBox>
         <VBox padding="$x2" prefHeight="80.0" prefWidth="351.0" styleClass="eVBox">

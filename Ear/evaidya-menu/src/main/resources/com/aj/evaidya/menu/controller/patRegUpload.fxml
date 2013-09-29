@@ -71,7 +71,8 @@ AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
           <Insets left="20.0" right="20.0" fx:id="x2" />
         </HBox.margin>
       </Button>
-      <Button mnemonicParsing="false" onAction="#resetAction" prefHeight="32.9998779296875" text="Reset" HBox.margin="$x2" />
+      <Button mnemonicParsing="false" onAction="#resetUploadAction" prefHeight="33.0" text="Reset" HBox.margin="$x2" />
+      <Button mnemonicParsing="false" onAction="#sampleAction" prefHeight="33.0" text="Download Sample Excel" HBox.margin="$x2" />
     </HBox>
   </children>
   <columnConstraints>
