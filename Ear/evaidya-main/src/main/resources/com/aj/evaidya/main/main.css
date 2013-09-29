@@ -3584,3 +3584,9 @@ Only the properties with values that are different from the TextBox are specifie
 	-fx-background-color: #EEF6FE;	
 	-fx-cursor: hand;
 }
+
+#resultTextArea{
+	-fx-font-family: Open;
+	-fx-font-size: 1.5em; /* 18px */
+	-fx-text-fill: #ff4500;
+}
