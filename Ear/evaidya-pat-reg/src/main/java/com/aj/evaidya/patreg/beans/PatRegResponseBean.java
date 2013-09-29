@@ -9,6 +9,7 @@ public class PatRegResponseBean {
 	private String address2Text;
 	private String address3Text;
 	private String stateId;
+	private String stateText;
 	private String pincode;
 	private String sex;
 	private String tel1Text;
@@ -20,43 +21,45 @@ public class PatRegResponseBean {
 	private String patYear;
 	private String excelRowNum;
 	private String errMessage;
-		
+	private String dateOfBirth;
+	private String state;
+	private String rowCnt;
 	
-	public String getSex() {
-		return sex;
+	public String getRowCnt() {
+		return rowCnt;
 	}
-	public void setSex(String sex) {
-		this.sex = sex;
+	public void setRowCnt(String rowCnt) {
+		this.rowCnt = rowCnt;
 	}
-	public String getFatNameText() {
-		return fatNameText;
+	public String getStateText() {
+		return stateText;
 	}
-	public void setFatNameText(String fatNameText) {
-		this.fatNameText = fatNameText;
+	public void setStateText(String stateText) {
+		this.stateText = stateText;
 	}
-	public String getQualiText() {
-		return qualiText;
+	public String getStatus() {
+		return status;
 	}
-	public void setQualiText(String qualiText) {
-		this.qualiText = qualiText;
+	public void setStatus(String status) {
+		this.status = status;
 	}
-	public String getPincode() {
-		return pincode;
+	public String getMessage() {
+		return message;
 	}
-	public void setPincode(String pincode) {
-		this.pincode = pincode;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	public String getNameText() {
 		return nameText;
 	}
 	public void setNameText(String nameText) {
 		this.nameText = nameText;
+	}
+	public String getQualiText() {
+		return qualiText;
+	}
+	public void setQualiText(String qualiText) {
+		this.qualiText = qualiText;
 	}
 	public String getAddress1Text() {
 		return address1Text;
@@ -82,6 +85,18 @@ public class PatRegResponseBean {
 	public void setStateId(String stateId) {
 		this.stateId = stateId;
 	}
+	public String getPincode() {
+		return pincode;
+	}
+	public void setPincode(String pincode) {
+		this.pincode = pincode;
+	}
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
 	public String getTel1Text() {
 		return tel1Text;
 	}
@@ -94,19 +109,18 @@ public class PatRegResponseBean {
 	public void setTel2Text(String tel2Text) {
 		this.tel2Text = tel2Text;
 	}
-	public String getStatus() {
-		return status;
+	public String getFatNameText() {
+		return fatNameText;
 	}
-	public void setStatus(String status) {
-		this.status = status;
+	public void setFatNameText(String fatNameText) {
+		this.fatNameText = fatNameText;
 	}
-	public String getMessage() {
-		return message;
+	public String getEmail() {
+		return email;
 	}
-	public void setMessage(String message) {
-		this.message = message;
+	public void setEmail(String email) {
+		this.email = email;
 	}
-	
 	public String getPatDay() {
 		return patDay;
 	}
@@ -125,19 +139,29 @@ public class PatRegResponseBean {
 	public void setPatYear(String patYear) {
 		this.patYear = patYear;
 	}
-	
 	public String getExcelRowNum() {
 		return excelRowNum;
 	}
 	public void setExcelRowNum(String excelRowNum) {
 		this.excelRowNum = excelRowNum;
 	}
-	
 	public String getErrMessage() {
 		return errMessage;
 	}
 	public void setErrMessage(String errMessage) {
 		this.errMessage = errMessage;
+	}
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
 	}
 	@Override
 	public String toString() {
@@ -153,6 +177,7 @@ public class PatRegResponseBean {
 				+ (address3Text != null ? "address3Text=" + address3Text + ", "
 						: "")
 				+ (stateId != null ? "stateId=" + stateId + ", " : "")
+				+ (stateText != null ? "stateText=" + stateText + ", " : "")
 				+ (pincode != null ? "pincode=" + pincode + ", " : "")
 				+ (sex != null ? "sex=" + sex + ", " : "")
 				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
@@ -165,7 +190,9 @@ public class PatRegResponseBean {
 				+ (patYear != null ? "patYear=" + patYear + ", " : "")
 				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum + ", "
 						: "")
-				+ (errMessage != null ? "errMessage=" + errMessage : "") + "]";
+				+ (errMessage != null ? "errMessage=" + errMessage + ", " : "")
+				+ (dateOfBirth != null ? "dateOfBirth=" + dateOfBirth + ", "
+						: "") + (state != null ? "state=" + state : "") + "]";
 	}
 	
 	

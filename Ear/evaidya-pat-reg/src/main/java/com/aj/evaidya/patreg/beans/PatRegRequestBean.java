@@ -10,6 +10,7 @@ public class PatRegRequestBean {
 	private String address1Text;
 	private String address2Text;
 	private String stateId;
+	private String stateText;
 	private String pincode;
 	private String sex;
 	private String tel1Text;
@@ -21,7 +22,21 @@ public class PatRegRequestBean {
 	private String dbPwd;
 	private String xlFilePath;
 	private String excelRowNum;
+	private String dateOfBirth;
 	
+	
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+	public String getStateText() {
+		return stateText;
+	}
+	public void setStateText(String stateText) {
+		this.stateText = stateText;
+	}
 	public String getSex() {
 		return sex;
 	}
@@ -144,18 +159,23 @@ public class PatRegRequestBean {
 				+ (address2Text != null ? "address2Text=" + address2Text + ", "
 						: "")
 				+ (stateId != null ? "stateId=" + stateId + ", " : "")
+				+ (stateText != null ? "stateText=" + stateText + ", " : "")
 				+ (pincode != null ? "pincode=" + pincode + ", " : "")
 				+ (sex != null ? "sex=" + sex + ", " : "")
 				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
 				+ (tel2Text != null ? "tel2Text=" + tel2Text + ", " : "")
 				+ (nameId != null ? "nameId=" + nameId + ", " : "")
 				+ (fatNameText != null ? "fatNameText=" + fatNameText + ", "
-						: "") + (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
+						: "")
+				+ (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
 				+ (dbUsername != null ? "dbUsername=" + dbUsername + ", " : "")
 				+ (dbPwd != null ? "dbPwd=" + dbPwd + ", " : "")
 				+ (xlFilePath != null ? "xlFilePath=" + xlFilePath + ", " : "")
-				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum : "")
+				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum + ", "
+						: "")
+				+ (dateOfBirth != null ? "dateOfBirth=" + dateOfBirth : "")
 				+ "]";
 	}
+	
 	
 }

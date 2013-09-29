@@ -1,14 +1,8 @@
 package com.aj.evaidya.patreg.controller;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -101,7 +95,7 @@ public abstract class AbstractPatRegController implements Initializable {
 	protected TextField address2TextField;
 	
 	@FXML
-	protected ChoiceBox<String> stateChoiceBox;
+	protected TextField stateTextField;
 	
 	@FXML
 	protected TextField pincodeTextField;
@@ -118,10 +112,10 @@ public abstract class AbstractPatRegController implements Initializable {
 	@FXML
 	protected TextField fatNameTextField;
 	
-	protected String stateCode;
+//	protected String stateCode;
 
-	protected List<String> stateList;
-	protected List<String> stateIdList;
+//	protected List<String> stateList;
+//	protected List<String> stateIdList;
 	
 	protected abstract void populateFieldsOnIinit();
 	protected abstract PatRegRequestBean populatePatRegRequestBean();
@@ -134,54 +128,54 @@ public abstract class AbstractPatRegController implements Initializable {
 		
 	}
 	
-	protected final void populateStateField(final boolean isStateChoiceBoxDisabled) {
-		
-		stateChoiceBox.setDisable(true);
-		
-		stateList = new ArrayList<String>();
-		stateIdList = new ArrayList<String>();
-		
-		new Thread(new Task<Map<String, String>>() {
-
-			@Override
-			protected Map<String, String> call() throws Exception {
-				return commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd ); 
-			}
-			
-			@Override
-			protected void succeeded(){
-				
-				Map<String, String> stateListMap = getValue();
-				
-				stateIdList.addAll( stateListMap.keySet() );
-				stateList.addAll( stateListMap.values()  );
-				
-				stateChoiceBox.getItems().addAll( stateList );
-				
-				stateChoiceBox.setDisable( isStateChoiceBoxDisabled );
-				
-				stateChoiceBox.setValue("-- Select --");
-				
-			}
-				
-		}).start();   
-		
-		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
-			new ChangeListener<Number>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Number> ov,
-						Number oldValue, Number newValue) {
-					
-					if (newValue.intValue() == -1){
-						return;
-					}
-					
-					stateCode = stateIdList.get( newValue.intValue() );
-										
-				}
-			});
-	}
+//	protected final void populateStateField(final boolean isStateChoiceBoxDisabled) {
+//		
+//		stateChoiceBox.setDisable(true);
+//		
+//		stateList = new ArrayList<String>();
+//		stateIdList = new ArrayList<String>();
+//		
+//		new Thread(new Task<Map<String, String>>() {
+//
+//			@Override
+//			protected Map<String, String> call() throws Exception {
+//				return commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd ); 
+//			}
+//			
+//			@Override
+//			protected void succeeded(){
+//				
+//				Map<String, String> stateListMap = getValue();
+//				
+//				stateIdList.addAll( stateListMap.keySet() );
+//				stateList.addAll( stateListMap.values()  );
+//				
+//				stateChoiceBox.getItems().addAll( stateList );
+//				
+//				stateChoiceBox.setDisable( isStateChoiceBoxDisabled );
+//				
+//				stateChoiceBox.setValue("-- Select --");
+//				
+//			}
+//				
+//		}).start();   
+//		
+//		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
+//			new ChangeListener<Number>() {
+//
+//				@Override
+//				public void changed(ObservableValue<? extends Number> ov,
+//						Number oldValue, Number newValue) {
+//					
+//					if (newValue.intValue() == -1){
+//						return;
+//					}
+//					
+//					stateCode = stateIdList.get( newValue.intValue() );
+//										
+//				}
+//			});
+//	}
 	
 	public final void saveAction(){
 		
@@ -236,8 +230,12 @@ public abstract class AbstractPatRegController implements Initializable {
 		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address2TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
-				
-		if( !CommonControlsBoImpl.checkSelectionBox(statusLabel, stateChoiceBox , "Select State ...") ){
+			
+		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, stateTextField , "Empty State ...") ) {
+			return;
+		};
+		
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, stateTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
 			return;
 		}
 
@@ -282,7 +280,7 @@ public abstract class AbstractPatRegController implements Initializable {
 		address1TextField.setText("");
 		address2TextField.setText("");
 		
-		stateChoiceBox.getSelectionModel().selectFirst();
+		stateTextField.setText("");
 		pincodeTextField.setText("");
 		
 		tel1TextField.setText("");

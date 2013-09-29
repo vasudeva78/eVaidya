@@ -15,7 +15,7 @@ public class PatRegNewController extends AbstractPatRegController {
 	private @FXML Label labelTextField;
 	
 	protected void populateFieldsOnIinit() {			
-		super.populateStateField(false);
+		// super.populateStateField(false);
 		
 		dateTextField.setPromptText("dd");
 		yearTextField.setPromptText("yyyy");
@@ -33,7 +33,7 @@ public class PatRegNewController extends AbstractPatRegController {
 		patRegRequestBean.setYearText( yearTextField.getText().trim() );
 		patRegRequestBean.setAddress1Text( address1TextField.getText().substring(0, Math.min(2000, address1TextField.getText().trim().length())) );
 		patRegRequestBean.setAddress2Text( address2TextField.getText().substring(0, Math.min(2000, address2TextField.getText().trim().length() )) );
-		patRegRequestBean.setStateId( stateCode );
+		patRegRequestBean.setStateText( stateTextField.getText().trim().substring(0, Math.min(100, stateTextField.getText().trim().length() )) );
 		patRegRequestBean.setPincode( pincodeTextField.getText().substring(0, Math.min(10, pincodeTextField.getText().trim().length())) );
 		patRegRequestBean.setSex( ((RadioButton)radioGroupId.getSelectedToggle()).getText() ); 
 		patRegRequestBean.setTel1Text( tel1TextField.getText().substring(0, Math.min(100, tel1TextField.getText().trim().length() )) );

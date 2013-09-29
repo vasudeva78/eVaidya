@@ -6,8 +6,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,11 +24,7 @@ import com.aj.evaidya.patreg.dao.PatRegDao;
 
 public class PatRegDaoImpl implements PatRegDao {
 	
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy"); 
-	
 	private static final ThreadLocal<PatRegThreadBean> threadLocal= new ThreadLocal<PatRegThreadBean>();
-	
-	private static final Calendar cal = Calendar.getInstance();
 	
 	private static final Logger logger = Logger.getLogger(PatRegDaoImpl.class);
 
@@ -67,7 +61,7 @@ public class PatRegDaoImpl implements PatRegDao {
  			
  			qRunner.update(dbConn , 
  					"insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) values ( ?,?,?,?,?,?,?,?,?,? ) "  , 
- 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateId() , patRegRequestBean.getPincode() ,patRegRequestBean.getSex() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text() ,patRegRequestBean.getFatNameText()  });
+ 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateText() , patRegRequestBean.getPincode() ,patRegRequestBean.getSex() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text() ,patRegRequestBean.getFatNameText()  });
  			
  			patRegResponseBean.setStatus("success");
  			patRegResponseBean.setMessage("Saved ...");
@@ -143,7 +137,7 @@ public class PatRegDaoImpl implements PatRegDao {
 							patRegResponseBean.setPatYear(resultSet.getString("PAT_YEAR"));
 							patRegResponseBean.setAddress1Text(resultSet.getString("EV_PAT_ADDR1"));
 							patRegResponseBean.setAddress2Text(resultSet.getString("EV_PAT_ADDR2"));
-							patRegResponseBean.setStateId(resultSet.getString("EV_PAT_STATE"));
+							patRegResponseBean.setStateText(resultSet.getString("EV_PAT_STATE"));
 							patRegResponseBean.setPincode(resultSet.getString("EV_PAT_PIN_CODE"));
 							patRegResponseBean.setSex(resultSet.getString("EV_PAT_SEX"));
 							patRegResponseBean.setTel1Text(resultSet.getString("EV_PAT_TEL1"));
@@ -176,7 +170,7 @@ public class PatRegDaoImpl implements PatRegDao {
  			 			
  			qRunner.update(dbConn , 
  					"update EV_PAT set EV_PAT_NAME = ?,EV_PAT_DOB=?,EV_PAT_ADDR1=?,EV_PAT_ADDR2=?,EV_PAT_STATE=?,EV_PAT_PIN_CODE=?,EV_PAT_SEX=?,EV_PAT_TEL1=?,EV_PAT_TEL2 = ?,EV_PAT_FAT_NAME=? where EV_PAT_ID = ? "  , 
- 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateId() , patRegRequestBean.getPincode() , patRegRequestBean.getSex() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text() ,patRegRequestBean.getFatNameText() , patRegRequestBean.getNameId() });
+ 					new Object[]{patRegRequestBean.getNameText() , patRegRequestBean.getYearText()+"-"+patRegRequestBean.getMonthText()+"-"+patRegRequestBean.getDateText() , patRegRequestBean.getAddress1Text() , patRegRequestBean.getAddress2Text() , patRegRequestBean.getStateText() , patRegRequestBean.getPincode() , patRegRequestBean.getSex() ,patRegRequestBean.getTel1Text() , patRegRequestBean.getTel2Text() ,patRegRequestBean.getFatNameText() , patRegRequestBean.getNameId() });
  			
  			patRegResponseBean.setStatus("success");
  			patRegResponseBean.setMessage("Saved ...");
@@ -193,115 +187,90 @@ public class PatRegDaoImpl implements PatRegDao {
 	}
 
 	@Override
-	public PatRegResponseBean uploadPatDtls(PatRegRequestBean patRegRequestBean , int rowNum , int maxRowNum) throws Exception {
+	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean , int rowNum , int maxRowNum) throws Exception {
 	
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
 		patRegResponseBean.setStatus("success");
 		patRegResponseBean.setMessage("Saved ...");
 		
-		try {
+		if(rowNum == 1){
 			
-			if(rowNum == 1){
-				
-				PatRegThreadBean patRegThreadBean = new PatRegThreadBean();
-				
-				Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() );
-				dbConn.setAutoCommit(false);
-				
-				patRegThreadBean.setDbConn(dbConn);
-				
-				PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) values (?,?,?,?,?,?,?,?,?,?)" );
-				patRegThreadBean.setpStat(pStat);
-				
-				Workbook workbook = Workbook.getWorkbook(new File( patRegRequestBean.getXlFilePath() ));
-				
-				patRegThreadBean.setWorkbook(workbook);
-				
-				threadLocal.set(patRegThreadBean);
-				
-				addToPreparedStatement( rowNum );
-				
-			} else if (rowNum % 100 == 0) {
-				
-				addToPreparedStatement(rowNum);
-				
-				PatRegThreadBean patRegThreadBean = threadLocal.get();
-				patRegThreadBean.getpStat().executeBatch();
-					
-				patRegThreadBean.getpStat().clearBatch();
-				patRegThreadBean.getpStat().clearParameters();
+			PatRegThreadBean patRegThreadBean = new PatRegThreadBean();
 			
-			} else if(rowNum == maxRowNum) {
-							
-				PatRegThreadBean patRegThreadBean = threadLocal.get();
-				
-				patRegThreadBean.getpStat().executeBatch();
-				patRegThreadBean.getpStat().close();
-				
-				patRegThreadBean.getDbConn().commit();
-				patRegThreadBean.getDbConn().close();
-				
-				patRegThreadBean.getWorkbook().close();
-				
-				threadLocal.remove();
-
-			} else {
-				
-				addToPreparedStatement(rowNum);
-
-			}
+			Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() );
+			dbConn.setAutoCommit(false);
 			
-		} catch (Exception e) {
+			patRegThreadBean.setDbConn(dbConn);
 			
-			patRegResponseBean.setErrMessage(e.getMessage());
+			PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) select ?,?,?,?,?,?,?,?,?,? from EV_PAT where lower(EV_PAT_NAME) != ? and lower(EV_PAT_ADDR1) != ? and lower(EV_PAT_FAT_NAME) != ?" );
+			patRegThreadBean.setpStat(pStat);
 			
-//			PatRegThreadBean patRegThreadBean = threadLocal.get();
-//			
-//			if(null != patRegThreadBean){
-//				
-//				patRegThreadBean.getpStat().close();
-//				patRegThreadBean.getDbConn().close();
-//				patRegThreadBean.getWorkbook().close();
-//				
-//			}
-//			
-//			threadLocal.remove();
-//			
-//			throw e;
+			threadLocal.set(patRegThreadBean);
 			
-			logger.error("Error on Upload ",e);
+			addToPreparedStatement( patRegRequestBean );
+			
+		} else if (rowNum % 100 == 0) {
+			
+			addToPreparedStatement( patRegRequestBean );
+			
+			PatRegThreadBean patRegThreadBean = threadLocal.get();
+			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
+			
+			patRegResponseBean.setRowCnt(String.valueOf(insertedRowCnt)); 
+				
+			patRegThreadBean.getpStat().clearBatch();
+			patRegThreadBean.getpStat().clearParameters();
 		
-		} 
+		} else if(rowNum == maxRowNum) {
+						
+			PatRegThreadBean patRegThreadBean = threadLocal.get();
+			
+			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
+			patRegResponseBean.setRowCnt(String.valueOf(insertedRowCnt));
+			
+			// All resources clean up
+			
+			patRegThreadBean.getpStat().close();
+							
+			patRegThreadBean.getDbConn().commit();
+			patRegThreadBean.getDbConn().close();
+			
+			threadLocal.remove();
+
+		} else {
+			
+			addToPreparedStatement( patRegRequestBean );
+
+		}
 			
 		return patRegResponseBean;
 	}
 
-	private void addToPreparedStatement( int rowNum ) throws Exception {
+	private void addToPreparedStatement( PatRegRequestBean patRegRequestBean ) throws Exception {
 		
 		PatRegThreadBean patRegThreadBean = threadLocal.get();
 		
-		Sheet sheet = patRegThreadBean.getWorkbook().getSheet(0);
-		
-		Cell[] cells = sheet.getRow(rowNum);
-		
 		PreparedStatement pStat = patRegThreadBean.getpStat();
-		pStat.setString(1, cells[0].getContents().trim().substring(0, Math.min(100, cells[0].getContents().trim().length() )) );
 		
-		cal.setTime( sdf.parse(cells[1].getContents().trim()) );
-		
-		pStat.setString(2, cal.get(Calendar.YEAR) + "-" + ( cal.get(Calendar.MONTH) + 1 ) + "-" + cal.get(Calendar.DATE) );
-		
-		pStat.setString(3, cells[2].getContents().substring(0, Math.min(2000, cells[2].getContents().trim().length())) );
-		pStat.setString(4, cells[3].getContents().substring(0, Math.min(2000, cells[3].getContents().trim().length())) );
-		pStat.setString(5, cells[4].getContents().substring(0, Math.min(10, cells[4].getContents().trim().length())) );
-		pStat.setString(6, cells[5].getContents().substring(0, Math.min(10, cells[5].getContents().trim().length())) );
-		pStat.setString(7, cells[6].getContents().substring(0, Math.min(100, cells[6].getContents().trim().length())) );
-		pStat.setString(8, cells[7].getContents().substring(0, Math.min(100, cells[7].getContents().trim().length())) );
-		
+		pStat.setString( 1, patRegRequestBean.getNameText() );
+		pStat.setString( 2, patRegRequestBean.getDateOfBirth() );
+		pStat.setString( 3, patRegRequestBean.getAddress1Text() );
+		pStat.setString( 4, patRegRequestBean.getAddress2Text() );
+		pStat.setString( 5, patRegRequestBean.getStateText());
+		pStat.setString( 6, patRegRequestBean.getPincode() );
+		pStat.setString( 7, patRegRequestBean.getSex() );
+		pStat.setString( 8, patRegRequestBean.getTel1Text());
+		pStat.setString( 9, patRegRequestBean.getTel2Text());
+		pStat.setString( 10, patRegRequestBean.getFatNameText() );
+		pStat.setString( 11, patRegRequestBean.getNameText().toLowerCase() );
+		pStat.setString( 12, patRegRequestBean.getAddress1Text().toLowerCase() );
+		pStat.setString( 13, patRegRequestBean.getFatNameText().toLowerCase() );
+				
 		pStat.addBatch();
 
 	}
+	
 	
 //	@Override
 //	public PatRegResponseBean uploadPatDtls(PatRegRequestBean patRegRequestBean , int rowNum) throws Exception {
@@ -381,9 +350,46 @@ public class PatRegDaoImpl implements PatRegDao {
 			
 			workbook = Workbook.getWorkbook(new File( patRegRequestBean.getXlFilePath() ));
 			
-			Sheet sheet = workbook.getSheet(0);
+			Sheet sheet = workbook.getSheet(1);
 			
 			patRegResponseBean.setExcelRowNum( String.valueOf(sheet.getRows()) );
+			
+ 		}  catch(Exception e) {
+ 			
+ 			throw e;
+ 			 			
+ 		} finally {
+ 			workbook.close();
+ 		}
+		
+		return patRegResponseBean;
+	}
+
+	@Override
+	public PatRegResponseBean getExcelCellDtls(PatRegRequestBean patRegRequestBean, int rowNum) throws Exception {
+		
+		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
+		
+		Workbook workbook = null;	
+		
+		try {
+			
+			workbook = Workbook.getWorkbook(new File( patRegRequestBean.getXlFilePath() ));
+			
+			Sheet sheet = workbook.getSheet(1);
+			
+			Cell[] cells = sheet.getRow(rowNum);
+			
+			patRegResponseBean.setNameText(cells[0].getContents().trim());
+			patRegResponseBean.setDateOfBirth(cells[1].getContents().trim());
+			patRegResponseBean.setAddress1Text(cells[2].getContents().trim());
+			patRegResponseBean.setAddress2Text(cells[3].getContents().trim());
+			patRegResponseBean.setState(cells[4].getContents().trim());
+			patRegResponseBean.setPincode(cells[5].getContents().trim());
+			patRegResponseBean.setSex(cells[6].getContents().trim());
+			patRegResponseBean.setTel1Text(cells[7].getContents().trim());
+			patRegResponseBean.setTel2Text(cells[8].getContents().trim());
+			patRegResponseBean.setFatNameText(cells[9].getContents().trim());
 			
  		}  catch(Exception e) {
  			

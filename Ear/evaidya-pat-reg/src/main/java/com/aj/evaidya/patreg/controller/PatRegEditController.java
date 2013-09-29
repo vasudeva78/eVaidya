@@ -26,27 +26,27 @@ public class PatRegEditController extends AbstractPatRegController {
 	private List<String> patNameIdList;
 
 	protected void populateFieldsOnIinit() {
-		super.populateStateField( true );
+		// super.populateStateField( true );
 		
 		dateTextField.setPromptText("dd");
 		yearTextField.setPromptText("yyyy");
 		
 		abstractResetFields();
 		
-		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
-			new ChangeListener<Number>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-					
-					if (newValue.intValue() == -1){
-						return;
-					}
-					
-					stateCode = stateIdList.get( newValue.intValue() );
-										
-				}
-		});
+//		stateTextField.getSelectionModel().selectedIndexProperty().addListener(
+//			new ChangeListener<Number>() {
+//
+//				@Override
+//				public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+//					
+//					if (newValue.intValue() == -1){
+//						return;
+//					}
+//					
+//					stateCode = stateIdList.get( newValue.intValue() );
+//										
+//				}
+//		});
 		
 		patNameChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
 				new ChangeListener<Number>() {
@@ -90,7 +90,7 @@ public class PatRegEditController extends AbstractPatRegController {
 		address1TextField.setEditable(false);
 		address2TextField.setEditable(false);
 
-		stateChoiceBox.setDisable(true);
+		stateTextField.setEditable(false);
 		pincodeTextField.setEditable(false);
 		
 		((RadioButton)radioGroupId.getToggles().get(0)).setDisable(true);
@@ -118,7 +118,7 @@ public class PatRegEditController extends AbstractPatRegController {
 		patRegRequestBean.setYearText( yearTextField.getText().trim() );
 		patRegRequestBean.setAddress1Text( address1TextField.getText().substring(0, Math.min(2000, address1TextField.getText().trim().length())) );
 		patRegRequestBean.setAddress2Text( address2TextField.getText().substring(0, Math.min(2000, address2TextField.getText().trim().length() )) );
-		patRegRequestBean.setStateId( stateCode );
+		patRegRequestBean.setStateText( stateTextField.getText().trim().substring(0, Math.min(100, stateTextField.getText().trim().length() )) );
 		patRegRequestBean.setPincode( pincodeTextField.getText().substring(0, Math.min(10, pincodeTextField.getText().trim().length())) );
 		patRegRequestBean.setSex( ((RadioButton)radioGroupId.getSelectedToggle()).getText() ); 
 		patRegRequestBean.setTel1Text( tel1TextField.getText().substring(0, Math.min(100, tel1TextField.getText().trim().length() )) );
@@ -271,9 +271,7 @@ public class PatRegEditController extends AbstractPatRegController {
 				address1TextField.setText(patRegResponseBean.getAddress1Text());
 				address2TextField.setText(patRegResponseBean.getAddress2Text());
 								
-				int stateIdIndx = stateIdList.indexOf( patRegResponseBean.getStateId() );
-				
-				stateChoiceBox.setValue( stateIdIndx == -1 ? "-- Select --" : stateList.get(stateIdIndx)  );
+				stateTextField.setText(patRegResponseBean.getStateText());
 				
 				pincodeTextField.setText(patRegResponseBean.getPincode());
 				
@@ -290,32 +288,32 @@ public class PatRegEditController extends AbstractPatRegController {
 				
 				fatNameTextField.setText(patRegResponseBean.getFatNameText());
 				
-				if (stateIdIndx != -1){
+//				if (stateIdIndx != -1){
 										
-					nameTextField.setEditable(true);
-					dateTextField.setEditable(true);
-					monthChoiceBox.setDisable(false);
-					yearTextField.setEditable(true);
-					address1TextField.setEditable(true);
-					address2TextField.setEditable(true);
-					stateChoiceBox.setDisable(false);
-					pincodeTextField.setEditable(true);
+				nameTextField.setEditable(true);
+				dateTextField.setEditable(true);
+				monthChoiceBox.setDisable(false);
+				yearTextField.setEditable(true);
+				address1TextField.setEditable(true);
+				address2TextField.setEditable(true);
+				stateTextField.setEditable(true);
+				pincodeTextField.setEditable(true);
+				
+				((RadioButton)radioGroupId.getToggles().get(0)).setDisable(false);
+				((RadioButton)radioGroupId.getToggles().get(1)).setDisable(false);
+				
+				tel1TextField.setEditable(true);
+				tel2TextField.setEditable(true);
+				
+				fatNameTextField.setEditable(true);
+				
+				nameTextField.requestFocus();
 					
-					((RadioButton)radioGroupId.getToggles().get(0)).setDisable(false);
-					((RadioButton)radioGroupId.getToggles().get(1)).setDisable(false);
-					
-					tel1TextField.setEditable(true);
-					tel2TextField.setEditable(true);
-					
-					fatNameTextField.setEditable(true);
-					
-					nameTextField.requestFocus();
-					
-				} else {
-					
-					resetAction();
-					
-				}
+//				} else {
+//					
+//					resetAction();
+//					
+//				}
 			}
 				
 		}).start();
