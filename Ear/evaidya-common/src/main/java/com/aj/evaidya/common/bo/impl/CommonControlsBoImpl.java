@@ -144,6 +144,8 @@ public final class CommonControlsBoImpl {
 	
 		try{
 			
+			now.clear();
+			 
 			now.set( Integer.parseInt( yearTextField.getText()) , monthChoiceBox.getSelectionModel().getSelectedIndex() - 1 , Integer.parseInt( dateTextField.getText() ) );
 			
 			now.getTime();
