@@ -1,5 +1,7 @@
 package com.aj.evaidya.config;
 
+import org.h2.jdbcx.JdbcConnectionPool;
+
 import com.aj.evaidya.common.bo.CommonBo;
 import com.aj.evaidya.common.bo.impl.CommonBoImpl;
 import com.aj.evaidya.common.dao.CommonDao;
@@ -20,9 +22,11 @@ public class EvaidyaBindings extends AbstractModule{
 	@Override
 	protected void configure() {
 		
-		bind(String.class).annotatedWith(Names.named("dbUrl")).toInstance("jdbc:h2:file:D:/projects/eVaidya/data/evaidya");
-		bind(String.class).annotatedWith(Names.named("dbUsername")).toInstance("ajay");
-		bind(String.class).annotatedWith(Names.named("dbPwd")).toInstance("ajaypwd");
+		String dbUrl = "jdbc:h2:file:D:/projects/eVaidya/data/evaidya;CACHE_SIZE=1048576";
+		String dbUsername = "ajay";
+		String dbPwd = "ajaypwd";
+		
+		bind(JdbcConnectionPool.class).annotatedWith(Names.named("dbConnPool")).toInstance( JdbcConnectionPool.create( dbUrl  , dbUsername , dbPwd ) );
 		
 		bind(CommonBo.class).to(CommonBoImpl.class);
 		bind(CommonDao.class).to(CommonDaoImpl.class);
