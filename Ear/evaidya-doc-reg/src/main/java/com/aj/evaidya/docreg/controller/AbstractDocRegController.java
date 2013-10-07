@@ -24,7 +24,6 @@ import com.aj.evaidya.common.dao.CommonDao;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.bo.DocRegBo;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public abstract class AbstractDocRegController implements Initializable {
 	
@@ -63,37 +62,6 @@ public abstract class AbstractDocRegController implements Initializable {
 		this.docRegBo = docRegBo;
 	}
 		
-	protected String dbUrl;
-	protected String dbUsername;
-	protected String dbPwd;
-	
-	public String getDbUrl() {
-		return dbUrl;
-	}
-
-	@Inject
-	public void setDbUrl(@Named("dbUrl") String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-
-	public String getDbUsername() {
-		return dbUsername;
-	}
-
-	@Inject
-	public void setDbUsername(@Named("dbUsername") String dbUsername) {
-		this.dbUsername = dbUsername;
-	}
-
-	public String getDbPwd() {
-		return dbPwd;
-	}
-
-	@Inject
-	public void setDbPwd(@Named("dbPwd") String dbPwd) {
-		this.dbPwd = dbPwd;
-	}
-	
 	private static final String EMAIL_PATTERN = 
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -147,6 +115,8 @@ public abstract class AbstractDocRegController implements Initializable {
 	protected abstract void saveDbTask( DocRegRequestBean docRegRequestBean );
 	protected abstract void abstractResetFields();
 	
+	protected long startTime;
+	
 	public final void initialize(URL url, ResourceBundle bundle) {
 		
 		// populate other control fields
@@ -165,7 +135,7 @@ public abstract class AbstractDocRegController implements Initializable {
 
 			@Override
 			protected Map<String, String> call() throws Exception {
-				return commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd ); 
+				return commonBo.getStateDropDownList(); 
 			}
 			
 			@Override
@@ -204,6 +174,8 @@ public abstract class AbstractDocRegController implements Initializable {
 	}
 	
 	public final void saveAction(){
+		
+		startTime = System.nanoTime();
 		
 		if ( !CommonControlsBoImpl.checkTextFieldForEmptyString(statusLabel, nameTextField , "Empty Name ...") ) {
 			return;

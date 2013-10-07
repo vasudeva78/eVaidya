@@ -6,7 +6,7 @@ import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.beans.DocRegResponseBean;
 
 public interface DocRegBo {
-	public Map<String, String> getDocNames(DocRegRequestBean docRegRequestBean);
+	public Map<String, String> getDocNames();
 	public DocRegResponseBean getDocDtls(DocRegRequestBean docRegRequestBean);
 	public DocRegResponseBean saveDocDtls(DocRegRequestBean docRegRequestBean);
 	public DocRegResponseBean updateDocDtls(DocRegRequestBean docRegRequestBean);

@@ -1,7 +1,6 @@
 package com.aj.evaidya.docreg.dao.impl;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -10,14 +9,24 @@ import java.util.Map;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.h2.jdbcx.JdbcConnectionPool;
 
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
 import com.aj.evaidya.docreg.beans.DocRegResponseBean;
 import com.aj.evaidya.docreg.dao.DocRegDao;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class DocRegDaoImpl implements DocRegDao{
 	
 	private static final Logger logger = Logger.getLogger(DocRegDaoImpl.class);
+	
+	private JdbcConnectionPool dbConnPool;
+
+	@Inject
+	public void setDbConnPool(@Named("dbConnPool") JdbcConnectionPool dbConnPool) {
+		this.dbConnPool = dbConnPool;
+	}
 
 	@Override
 	public DocRegResponseBean saveDocDtls(DocRegRequestBean docRegRequestBean) throws Exception {
@@ -27,7 +36,7 @@ public class DocRegDaoImpl implements DocRegDao{
 		docRegResponseBean.setStatus("success");
 		docRegResponseBean.setMessage("Saved ...");
 		
-		try(Connection dbConn = DriverManager.getConnection( docRegRequestBean.getDbUrl(), docRegRequestBean.getDbUsername() , docRegRequestBean.getDbPwd() )){
+		try(Connection dbConn = dbConnPool.getConnection()){
 			
 			dbConn.setAutoCommit(false);
 			
@@ -69,11 +78,11 @@ public class DocRegDaoImpl implements DocRegDao{
 	}
 
 	@Override
-	public Map<String, String> getDocNameDtls(DocRegRequestBean docRegRequestBean) throws Exception {
+	public Map<String, String> getDocNameDtls() throws Exception {
 		
 		Map<String,String> docNameListMap = new LinkedHashMap<String,String>();
 		
-		try(Connection dbConn = DriverManager.getConnection( docRegRequestBean.getDbUrl(), docRegRequestBean.getDbUsername() , docRegRequestBean.getDbPwd() )){
+		try(Connection dbConn = dbConnPool.getConnection() ){
 						
 			QueryRunner qRunner = new QueryRunner();
  			
@@ -111,7 +120,7 @@ public class DocRegDaoImpl implements DocRegDao{
  			return docRegResponseBean;
  		}
  		
- 		try(Connection dbConn = DriverManager.getConnection( docRegRequestBean.getDbUrl(), docRegRequestBean.getDbUsername() , docRegRequestBean.getDbPwd() )){
+ 		try(Connection dbConn = dbConnPool.getConnection() ){
  									
  			QueryRunner qRunner = new QueryRunner();
  			
@@ -157,7 +166,7 @@ public class DocRegDaoImpl implements DocRegDao{
 		docRegResponseBean.setStatus("success");
 		docRegResponseBean.setMessage("Saved ...");
 			
-		try(Connection dbConn = DriverManager.getConnection( docRegRequestBean.getDbUrl(), docRegRequestBean.getDbUsername() , docRegRequestBean.getDbPwd() )){
+		try(Connection dbConn = dbConnPool.getConnection() ){
  			
  			dbConn.setAutoCommit(false);
  			

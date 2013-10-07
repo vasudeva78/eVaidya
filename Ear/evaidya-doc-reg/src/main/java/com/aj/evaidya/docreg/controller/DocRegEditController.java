@@ -76,13 +76,7 @@ public class DocRegEditController extends AbstractDocRegController {
 		final Thread namesChoiceThread =  new Thread(new Task<Map<String, String>>() {
 
 			@Override protected Map<String, String> call() throws Exception {
-	        	 
-	        	 DocRegRequestBean docReqBean = new DocRegRequestBean();
-	        	 docReqBean.setDbUrl(dbUrl);
-	     		 docReqBean.setDbUsername(dbUsername);
-	     		 docReqBean.setDbPwd(dbPwd);
-	     			        	 
-	        	 return docRegBo.getDocNames(docReqBean);	        	 
+	        	 return docRegBo.getDocNames();	        	 
 	         }
 			
 			@Override
@@ -106,7 +100,7 @@ public class DocRegEditController extends AbstractDocRegController {
 
 			@Override protected Map<String, String> call() throws Exception {
 	        	 
-	        	 return commonBo.getStateDropDownList(dbUrl , dbUsername , dbPwd ); 
+	        	 return commonBo.getStateDropDownList();
 	        	 
 	         }
 			
@@ -139,10 +133,6 @@ public class DocRegEditController extends AbstractDocRegController {
 			protected DocRegResponseBean call() throws Exception {
 				
 				DocRegRequestBean docReqBean = new DocRegRequestBean();
-        	    
-        	    docReqBean.setDbUrl(dbUrl);
-	     		docReqBean.setDbUsername(dbUsername);
-	     		docReqBean.setDbPwd(dbPwd);
 	     		docReqBean.setNameId(nameId);
 	     		
 	     		return docRegBo.getDocDtls(docReqBean);
@@ -227,9 +217,6 @@ public class DocRegEditController extends AbstractDocRegController {
 
 			@Override
 			protected DocRegResponseBean call() throws Exception {
-				 docRegRequestBean.setDbUrl(dbUrl);
-	        	 docRegRequestBean.setDbUsername(dbUsername);
-	        	 docRegRequestBean.setDbPwd(dbPwd);
 	        	 
 	     		return docRegBo.updateDocDtls(docRegRequestBean);
 			}

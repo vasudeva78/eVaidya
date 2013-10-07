@@ -30,10 +30,6 @@ public class DocRegNewController extends AbstractDocRegController {
 		docReqBean.setTel2Text( tel2TextField.getText().substring(0, Math.min(100, tel2TextField.getText().trim().length() )) );
 		docReqBean.setHospText( hospTextField.getText().substring(0, Math.min(5000, hospTextField.getText().trim().length() )) );
 		
-		docReqBean.setDbUrl(dbUrl);
-		docReqBean.setDbUsername(dbUsername);
-		docReqBean.setDbPwd(dbPwd);
-		
 		return docReqBean;
 		
 	}

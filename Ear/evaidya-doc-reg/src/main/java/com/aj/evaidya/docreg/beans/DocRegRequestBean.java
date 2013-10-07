@@ -16,9 +16,7 @@ public class DocRegRequestBean {
 	private String tel2Text;
 	private String nameId;
 	private String hospText;
-	private String dbUrl;
-	private String dbUsername;
-	private String dbPwd;
+
 	public String getNameText() {
 		return nameText;
 	}
@@ -97,24 +95,7 @@ public class DocRegRequestBean {
 	public void setHospText(String hospText) {
 		this.hospText = hospText;
 	}
-	public String getDbUrl() {
-		return dbUrl;
-	}
-	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-	public String getDbUsername() {
-		return dbUsername;
-	}
-	public void setDbUsername(String dbUsername) {
-		this.dbUsername = dbUsername;
-	}
-	public String getDbPwd() {
-		return dbPwd;
-	}
-	public void setDbPwd(String dbPwd) {
-		this.dbPwd = dbPwd;
-	}
+	
 	@Override
 	public String toString() {
 		return "DocRegRequestBean ["
@@ -133,11 +114,9 @@ public class DocRegRequestBean {
 				+ (tel1Text != null ? "tel1Text=" + tel1Text + ", " : "")
 				+ (tel2Text != null ? "tel2Text=" + tel2Text + ", " : "")
 				+ (nameId != null ? "nameId=" + nameId + ", " : "")
-				+ (hospText != null ? "hospText=" + hospText + ", " : "")
-				+ (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
-				+ (dbUsername != null ? "dbUsername=" + dbUsername + ", " : "")
-				+ (dbPwd != null ? "dbPwd=" + dbPwd : "") + "]";
+				+ (hospText != null ? "hospText=" + hospText : "") + "]";
 	}
+	
 	
 	
 }

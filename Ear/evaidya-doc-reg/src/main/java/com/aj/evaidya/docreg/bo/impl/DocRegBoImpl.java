@@ -48,13 +48,13 @@ public class DocRegBoImpl implements DocRegBo{
 	}
 
 	@Override
-	public Map<String, String> getDocNames(DocRegRequestBean docRegRequestBean) {
+	public Map<String, String> getDocNames() {
 		
 		Map<String,String> docNameListMap = new LinkedHashMap<String,String>();
 		
 		try {
 				
-			docNameListMap = docRegDao.getDocNameDtls(docRegRequestBean);
+			docNameListMap = docRegDao.getDocNameDtls();
  			
  		}  catch(Exception e) {
  			
