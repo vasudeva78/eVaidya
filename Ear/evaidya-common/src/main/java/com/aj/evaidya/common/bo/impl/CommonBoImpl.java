@@ -18,9 +18,9 @@ public class CommonBoImpl implements CommonBo {
 		this.commonDao = commonDao;
 	}
 
-	public Map<String, String> getStateDropDownList( final String connUrl , final String uName ,final String pwd ){
+	public Map<String, String> getStateDropDownList(){
 					
-		return commonDao.getStateDropDownList( connUrl , uName , pwd ); 
+		return commonDao.getStateDropDownList(); 
 		
 	}
 }

@@ -1,7 +1,6 @@
 package com.aj.evaidya.common.dao.impl;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -11,17 +10,27 @@ import java.util.Map;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.h2.jdbcx.JdbcConnectionPool;
 
 import com.aj.evaidya.common.dao.CommonDao;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class CommonDaoImpl implements CommonDao {
 	private Logger logger = Logger.getLogger(CommonDaoImpl.class);
 	
-	public Map<String, String> getStateDropDownList(String connUrl , String uName , String pwd) {
+	private JdbcConnectionPool dbConnPool;
+
+	@Inject
+	public void setDbConnPool(@Named("dbConnPool") JdbcConnectionPool dbConnPool) {
+		this.dbConnPool = dbConnPool;
+	}
+	
+	public Map<String, String> getStateDropDownList() {
 		
 		Map<String, String> stateListMap = null ;
 					
-		try ( Connection dbConn = DriverManager.getConnection(connUrl, uName , pwd ) ){
+		try ( Connection dbConn = dbConnPool.getConnection() ){
 			
 			QueryRunner qRunner = new QueryRunner();
 			
