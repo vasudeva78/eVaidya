@@ -89,6 +89,7 @@ public class PatRegBoImpl implements PatRegBo {
 	public PatRegResponseBean updatePatDtls(PatRegRequestBean patRegRequestBean) {
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
+		logger.debug("inside updatePatDtls => "+patRegRequestBean);
 		
 		try {
 			
@@ -107,13 +108,15 @@ public class PatRegBoImpl implements PatRegBo {
 
 
 	@Override
-	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean,int rowNum,int maxRowNum) {
+	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean,boolean isLastRow) {
 			
+		logger.debug("inside uploadPatDtlsToDb "+patRegRequestBean);
+		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
 		try {
 			
-			patRegResponseBean = patRegDao.uploadPatDtlsToDb(patRegRequestBean,rowNum,maxRowNum);
+			patRegResponseBean = patRegDao.uploadPatDtlsToDb(patRegRequestBean,isLastRow);
  			
  		}  catch(Exception e) {
  			

@@ -41,37 +41,6 @@ public abstract class AbstractPatRegController implements Initializable {
 	public void setPatRegBo(PatRegBo patRegBo) {
 		this.patRegBo = patRegBo;
 	}
-
-	protected String dbUrl;
-	protected String dbUsername;
-	protected String dbPwd;
-	
-	public String getDbUrl() {
-		return dbUrl;
-	}
-
-	@Inject
-	public void setDbUrl(@Named("dbUrl") String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-
-	public String getDbUsername() {
-		return dbUsername;
-	}
-
-	@Inject
-	public void setDbUsername(@Named("dbUsername") String dbUsername) {
-		this.dbUsername = dbUsername;
-	}
-
-	public String getDbPwd() {
-		return dbPwd;
-	}
-
-	@Inject
-	public void setDbPwd(@Named("dbPwd") String dbPwd) {
-		this.dbPwd = dbPwd;
-	}
 	
 	@FXML
 	protected Label statusLabel;

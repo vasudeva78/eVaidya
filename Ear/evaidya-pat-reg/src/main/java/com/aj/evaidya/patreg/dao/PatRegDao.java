@@ -10,7 +10,7 @@ public interface PatRegDao {
 	public PatRegResponseBean getPatDtls(PatRegRequestBean patRegRequestBean) throws Exception;
 	public PatRegResponseBean savePatDtls(PatRegRequestBean patRegRequestBean) throws Exception;
 	public PatRegResponseBean updatePatDtls(PatRegRequestBean patRegRequestBean) throws Exception;
-	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean , int rowNum , int maxRowNum) throws Exception;
+	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean , boolean isLastRow) throws Exception;
 	public PatRegResponseBean getExcelRowsOnUpload(PatRegRequestBean patRegRequestBean) throws Exception;
 	public PatRegResponseBean getExcelCellDtls(PatRegRequestBean patRegRequestBean , int rowNum) throws Exception;
 }

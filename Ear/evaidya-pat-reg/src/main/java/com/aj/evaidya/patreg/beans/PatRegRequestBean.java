@@ -17,9 +17,6 @@ public class PatRegRequestBean {
 	private String tel2Text;
 	private String nameId;
 	private String fatNameText;
-	private String dbUrl;
-	private String dbUsername;
-	private String dbPwd;
 	private String xlFilePath;
 	private String excelRowNum;
 	private String dateOfBirth;
@@ -48,24 +45,6 @@ public class PatRegRequestBean {
 	}
 	public void setFatNameText(String fatNameText) {
 		this.fatNameText = fatNameText;
-	}
-	public String getDbUrl() {
-		return dbUrl;
-	}
-	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-	public String getDbUsername() {
-		return dbUsername;
-	}
-	public void setDbUsername(String dbUsername) {
-		this.dbUsername = dbUsername;
-	}
-	public String getDbPwd() {
-		return dbPwd;
-	}
-	public void setDbPwd(String dbPwd) {
-		this.dbPwd = dbPwd;
 	}
 	public String getNameText() {
 		return nameText;
@@ -167,15 +146,11 @@ public class PatRegRequestBean {
 				+ (nameId != null ? "nameId=" + nameId + ", " : "")
 				+ (fatNameText != null ? "fatNameText=" + fatNameText + ", "
 						: "")
-				+ (dbUrl != null ? "dbUrl=" + dbUrl + ", " : "")
-				+ (dbUsername != null ? "dbUsername=" + dbUsername + ", " : "")
-				+ (dbPwd != null ? "dbPwd=" + dbPwd + ", " : "")
 				+ (xlFilePath != null ? "xlFilePath=" + xlFilePath + ", " : "")
 				+ (excelRowNum != null ? "excelRowNum=" + excelRowNum + ", "
 						: "")
 				+ (dateOfBirth != null ? "dateOfBirth=" + dateOfBirth : "")
 				+ "]";
 	}
-	
 	
 }

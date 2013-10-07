@@ -23,12 +23,12 @@ public class PatRegResponseBean {
 	private String errMessage;
 	private String dateOfBirth;
 	private String state;
-	private String rowCnt;
-	
-	public String getRowCnt() {
+	private int rowCnt;
+
+	public int getRowCnt() {
 		return rowCnt;
 	}
-	public void setRowCnt(String rowCnt) {
+	public void setRowCnt(int rowCnt) {
 		this.rowCnt = rowCnt;
 	}
 	public String getStateText() {
@@ -192,7 +192,8 @@ public class PatRegResponseBean {
 						: "")
 				+ (errMessage != null ? "errMessage=" + errMessage + ", " : "")
 				+ (dateOfBirth != null ? "dateOfBirth=" + dateOfBirth + ", "
-						: "") + (state != null ? "state=" + state : "") + "]";
+						: "") + (state != null ? "state=" + state + ", " : "")
+				+ "rowCnt=" + rowCnt + "]";
 	}
 	
 	

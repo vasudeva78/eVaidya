@@ -2,7 +2,6 @@ package com.aj.evaidya.patreg.dao.impl;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,24 +15,34 @@ import jxl.common.Logger;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.h2.jdbcx.JdbcConnectionPool;
 
 import com.aj.evaidya.patreg.beans.PatRegRequestBean;
 import com.aj.evaidya.patreg.beans.PatRegResponseBean;
 import com.aj.evaidya.patreg.beans.PatRegThreadBean;
 import com.aj.evaidya.patreg.dao.PatRegDao;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class PatRegDaoImpl implements PatRegDao {
 	
 	private static final ThreadLocal<PatRegThreadBean> threadLocal= new ThreadLocal<PatRegThreadBean>();
 	
 	private static final Logger logger = Logger.getLogger(PatRegDaoImpl.class);
+	
+	private JdbcConnectionPool dbConnPool;
+
+	@Inject
+	public void setDbConnPool(@Named("dbConnPool") JdbcConnectionPool dbConnPool) {
+		this.dbConnPool = dbConnPool;
+	}
 
 	@Override
 	public PatRegResponseBean savePatDtls(PatRegRequestBean patRegRequestBean) throws Exception {
 		
  		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
  		
- 		try(Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() )){
+ 		try(Connection dbConn = dbConnPool.getConnection()){
  					 			
  			dbConn.setAutoCommit(false);
  			
@@ -82,7 +91,7 @@ public class PatRegDaoImpl implements PatRegDao {
 
 		Map<String,String> patNameListMap = new LinkedHashMap<String,String>();
 		
-		try(Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() )){
+		try(Connection dbConn = dbConnPool.getConnection()){
 						
 			QueryRunner qRunner = new QueryRunner();
  			
@@ -117,7 +126,7 @@ public class PatRegDaoImpl implements PatRegDao {
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
-		try(Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() )){
+		try(Connection dbConn = dbConnPool.getConnection()){
 			
 			QueryRunner qRunner = new QueryRunner();
  			
@@ -162,7 +171,7 @@ public class PatRegDaoImpl implements PatRegDao {
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
  		
- 		try(Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() )){
+		try(Connection dbConn = dbConnPool.getConnection()){
  					 			
  			dbConn.setAutoCommit(false);
  			
@@ -187,18 +196,22 @@ public class PatRegDaoImpl implements PatRegDao {
 	}
 
 	@Override
-	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean , int rowNum , int maxRowNum) throws Exception {
+	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean , boolean isLastRow) throws Exception {
 	
+		logger.debug("inside uploadPatDtlsToDb "+patRegRequestBean);
+		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
 		patRegResponseBean.setStatus("success");
 		patRegResponseBean.setMessage("Saved ...");
+		patRegResponseBean.setRowCnt( 0 );
 		
-		if(rowNum == 1){
-			
+		if( threadLocal.get() == null ){
+			// Initialize
+		
 			PatRegThreadBean patRegThreadBean = new PatRegThreadBean();
 			
-			Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() );
+			Connection dbConn = dbConnPool.getConnection();
 			dbConn.setAutoCommit(false);
 			
 			patRegThreadBean.setDbConn(dbConn);
@@ -206,28 +219,40 @@ public class PatRegDaoImpl implements PatRegDao {
 			PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) select ?,?,?,?,?,?,?,?,?,? from EV_PAT where lower(EV_PAT_NAME) != ? and lower(EV_PAT_ADDR1) != ? and lower(EV_PAT_FAT_NAME) != ?" );
 			patRegThreadBean.setpStat(pStat);
 			
+			patRegThreadBean.setRowsToInsert( 1 );
 			threadLocal.set(patRegThreadBean);
 			
 			addToPreparedStatement( patRegRequestBean );
 			
-		} else if (rowNum % 100 == 0) {
+		} else if( threadLocal.get().getRowsToInsert() % 100 == 0 ){
 			
 			addToPreparedStatement( patRegRequestBean );
 			
 			PatRegThreadBean patRegThreadBean = threadLocal.get();
 			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
 			
-			patRegResponseBean.setRowCnt(String.valueOf(insertedRowCnt)); 
+			patRegResponseBean.setRowCnt( insertedRowCnt );
+			
+			patRegThreadBean.setRowsToInsert( patRegThreadBean.getRowsToInsert() + 1 );
 				
 			patRegThreadBean.getpStat().clearBatch();
-			patRegThreadBean.getpStat().clearParameters();
+			patRegThreadBean.getpStat().clearParameters();	
 		
-		} else if(rowNum == maxRowNum) {
-						
+		} else if (  isLastRow ) {
+			
+			if(threadLocal.get() == null){
+				
+				patRegResponseBean.setStatus("success");
+				patRegResponseBean.setMessage("No Data To Save ...");
+				patRegResponseBean.setRowCnt( 0 );
+				return patRegResponseBean;
+				
+			}
+			
 			PatRegThreadBean patRegThreadBean = threadLocal.get();
 			
 			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
-			patRegResponseBean.setRowCnt(String.valueOf(insertedRowCnt));
+			patRegResponseBean.setRowCnt( insertedRowCnt );
 			
 			// All resources clean up
 			
@@ -237,14 +262,64 @@ public class PatRegDaoImpl implements PatRegDao {
 			patRegThreadBean.getDbConn().close();
 			
 			threadLocal.remove();
-
-		} else {
-			
+				
+		}  else {
 			addToPreparedStatement( patRegRequestBean );
-
 		}
-			
+		
 		return patRegResponseBean;
+		
+//		if(rowNum == 1){
+//			
+//			PatRegThreadBean patRegThreadBean = new PatRegThreadBean();
+//			
+//			Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() );
+//			dbConn.setAutoCommit(false);
+//			
+//			patRegThreadBean.setDbConn(dbConn);
+//			
+//			PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) select ?,?,?,?,?,?,?,?,?,? from EV_PAT where lower(EV_PAT_NAME) != ? and lower(EV_PAT_ADDR1) != ? and lower(EV_PAT_FAT_NAME) != ?" );
+//			patRegThreadBean.setpStat(pStat);
+//			
+//			threadLocal.set(patRegThreadBean);
+//			
+//			addToPreparedStatement( patRegRequestBean );
+//			
+//		} else if (rowNum % 100 == 0) {
+//			
+//			addToPreparedStatement( patRegRequestBean );
+//			
+//			PatRegThreadBean patRegThreadBean = threadLocal.get();
+//			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
+//			
+//			patRegResponseBean.setRowCnt(String.valueOf(insertedRowCnt)); 
+//				
+//			patRegThreadBean.getpStat().clearBatch();
+//			patRegThreadBean.getpStat().clearParameters();
+//		
+//		} else if(rowNum == maxRowNum) {
+//						
+//			PatRegThreadBean patRegThreadBean = threadLocal.get();
+//			
+//			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
+//			patRegResponseBean.setRowCnt(String.valueOf(insertedRowCnt));
+//			
+//			// All resources clean up
+//			
+//			patRegThreadBean.getpStat().close();
+//							
+//			patRegThreadBean.getDbConn().commit();
+//			patRegThreadBean.getDbConn().close();
+//			
+//			threadLocal.remove();
+//
+//		} else {
+//			
+//			addToPreparedStatement( patRegRequestBean );
+//
+//		}
+			
+		
 	}
 
 	private void addToPreparedStatement( PatRegRequestBean patRegRequestBean ) throws Exception {

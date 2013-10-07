@@ -19,6 +19,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 
+import org.apache.log4j.Logger;
 import org.h2.util.IOUtils;
 
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
@@ -26,6 +27,8 @@ import com.aj.evaidya.patreg.beans.PatRegRequestBean;
 import com.aj.evaidya.patreg.beans.PatRegResponseBean;
 
 public class PatRegUploadController extends AbstractPatRegController {
+	
+	private static final Logger logger = Logger.getLogger(PatRegUploadController.class);
 	
 	@FXML
 	private Label fileLocLabel;
@@ -129,78 +132,87 @@ public class PatRegUploadController extends AbstractPatRegController {
 		final PatRegRequestBean patRegRequestBean = new PatRegRequestBean();
 		patRegRequestBean.setXlFilePath(fileLocLabel.getText());
 		
-		patRegRequestBean.setDbUrl(dbUrl);
-		patRegRequestBean.setDbUsername(dbUsername);
-		patRegRequestBean.setDbPwd(dbPwd);
-		
 		final Task<PatRegResponseBean> uploadTask = new Task<PatRegResponseBean>() {
 
 			@Override
-			protected PatRegResponseBean call() throws Exception {
+			protected PatRegResponseBean call()  {
 				
 				PatRegResponseBean finalPatRegResponseBean = new PatRegResponseBean();
-				finalPatRegResponseBean.setMessage("");
-				finalPatRegResponseBean.setStatus("success");
-				finalPatRegResponseBean.setRowCnt("0");
-	        	 
-				int excelRowNum = Integer.parseInt( patRegRequestBean.getExcelRowNum() );
-				 
-				 for(int i = 1;i<=excelRowNum;i++){
+				
+				try {
+					finalPatRegResponseBean.setMessage("");
+					finalPatRegResponseBean.setStatus("success");
+					finalPatRegResponseBean.setRowCnt( 0 );
 					 
-					 updateMessage( ((int) ((i/ excelRowNum) * 100))+" %");
-					 updateProgress(i, excelRowNum);
+					int excelRowNum = Integer.parseInt( patRegRequestBean.getExcelRowNum() );
 					 
-					 if (i != excelRowNum){ // To avoid array out of exception when fetching last row
+					boolean isLastRow = false;
+					for(int i = 1;i<=excelRowNum;i++){
 						 
-						 PatRegResponseBean patRegResponseBean = patRegBo.getExcelCellDtls(patRegRequestBean,i);
+						 updateMessage( ((int) ((i/ excelRowNum) * 100))+" %");
+						 updateProgress(i, excelRowNum);
 						 
-						 if( "success".equals(patRegResponseBean.getStatus() ) ){
+						 if (i != excelRowNum){ // To avoid array out of exception when fetching last row
 							 
-							 // Validate each cell
+							 PatRegResponseBean patRegResponseBean = patRegBo.getExcelCellDtls(patRegRequestBean,i);
 							 
-							 if(!checkExcelData(patRegResponseBean,i)){
-								 // Error in cell
+							 if( "success".equals(patRegResponseBean.getStatus() ) ){
 								 
-								 finalPatRegResponseBean.setMessage( finalPatRegResponseBean.getMessage().concat("/n ").concat(patRegResponseBean.getMessage()) );
+								 // Validate each cell
+								 
+								 if(!checkExcelData(patRegResponseBean,i)){
+									 // Error in cell
+									 
+									 finalPatRegResponseBean.setMessage( finalPatRegResponseBean.getMessage().concat("\n").concat( patRegResponseBean.getMessage() ) );
+									 continue;
+								 }
+								 
+							 } else {
+								 // Error while fetching cells
+								 logger.debug("error in fetching cells ");
 								 continue;
 							 }
 							 
-						 } else {
-							 // Error while fetching cells
-							 continue;
+							 // Copy patRegResponseBean To patRegRequestBean
+							 
+							 patRegRequestBean.setNameText( patRegResponseBean.getNameText() );
+							 patRegRequestBean.setDateOfBirth( patRegResponseBean.getDateOfBirth() );
+							 patRegRequestBean.setAddress1Text( patRegResponseBean.getAddress1Text() );
+							 patRegRequestBean.setAddress2Text( patRegResponseBean.getAddress2Text() );
+							 patRegRequestBean.setStateText( patRegResponseBean.getStateText() );
+							 patRegRequestBean.setPincode(patRegResponseBean.getPincode());
+							 patRegRequestBean.setSex(patRegResponseBean.getSex());
+							 patRegRequestBean.setTel1Text(patRegResponseBean.getTel1Text());
+							 patRegRequestBean.setTel2Text(patRegResponseBean.getTel2Text());
+							 patRegRequestBean.setFatNameText(patRegResponseBean.getFatNameText());
+							 
+							 logger.debug("patRegRequestBean set ");
+						 }
+						 else {
+							 // last row reached
+							 isLastRow = true;
 						 }
 						 
-						 // Copy patRegResponseBean To patRegRequestBean
 						 
-						 patRegRequestBean.setNameText( patRegResponseBean.getNameText() );
-						 patRegRequestBean.setDateOfBirth( patRegResponseBean.getDateOfBirth() );
-						 patRegRequestBean.setAddress1Text( patRegResponseBean.getAddress1Text() );
-						 patRegRequestBean.setAddress2Text( patRegResponseBean.getAddress2Text() );
-						 patRegRequestBean.setStateText( patRegResponseBean.getStateText() );
-						 patRegRequestBean.setPincode(patRegResponseBean.getPincode());
-						 patRegRequestBean.setSex(patRegResponseBean.getSex());
-						 patRegRequestBean.setTel1Text(patRegResponseBean.getTel1Text());
-						 patRegRequestBean.setTel2Text(patRegResponseBean.getTel2Text());
-						 patRegRequestBean.setFatNameText(patRegResponseBean.getFatNameText());
+						 PatRegResponseBean patRegResponseBean = patRegBo.uploadPatDtlsToDb(patRegRequestBean,isLastRow);
+						 
+						 switch( patRegResponseBean.getStatus() ){
+						 
+						 	case "success":
+						 		finalPatRegResponseBean.setRowCnt( finalPatRegResponseBean.getRowCnt() +  patRegResponseBean.getRowCnt() );	
+						 		break;
+						 	
+						 	case "error":
+						 		finalPatRegResponseBean.setMessage( finalPatRegResponseBean.getMessage().concat("\n").concat(patRegResponseBean.getMessage()) );
+						 		break;
+						 		
+						 }
+						 					 
+						 // Thread.sleep(250);
 					 }
-					 
-					 
-					 PatRegResponseBean patRegResponseBean = patRegBo.uploadPatDtlsToDb(patRegRequestBean,i,excelRowNum);
-					 
-					 switch( patRegResponseBean.getStatus() ){
-					 
-					 	case "success":
-					 		finalPatRegResponseBean.setRowCnt( String.valueOf( Integer.parseInt(finalPatRegResponseBean.getRowCnt()) + Integer.parseInt(patRegResponseBean.getRowCnt())) );	
-					 		break;
-					 	
-					 	case "error":
-					 		finalPatRegResponseBean.setMessage( finalPatRegResponseBean.getMessage().concat("/n ").concat(patRegResponseBean.getMessage()) );
-					 		break;
-					 		
-					 }
-					 					 
-					 // Thread.sleep(250);
-				 }
+				}  catch (Exception e) {
+					logger.error("uploadTask error ",e);
+				}
 	        	 
 	        	 return finalPatRegResponseBean;
 			}
@@ -209,11 +221,11 @@ public class PatRegUploadController extends AbstractPatRegController {
 			protected void succeeded(){
 				PatRegResponseBean patRegResponseBean = getValue();
 				
-				if (Integer.parseInt( patRegResponseBean.getRowCnt() ) > 0 ){
+				if (  patRegResponseBean.getRowCnt() > 0 ){
 					CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , "Saved" );
 				}
 				
-				resultTextArea.setText( patRegResponseBean.getMessage() );
+				resultTextArea.appendText( patRegResponseBean.getMessage() );
 				
 //				if( "success".equals(patRegResponseBean.getStatus() ) ){
 //					CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , patRegResponseBean.getMessage() );

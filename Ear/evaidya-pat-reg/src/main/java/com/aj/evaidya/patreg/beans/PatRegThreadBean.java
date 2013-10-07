@@ -2,17 +2,22 @@ package com.aj.evaidya.patreg.beans;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.Arrays;
 
 import jxl.Workbook;
 
 public class PatRegThreadBean {
 	private Connection dbConn;
 	private PreparedStatement pStat;
-	private String[] sqlUpdateResults;
 	private Workbook workbook;
+	private int rowsToInsert;
 	
 	
+	public int getRowsToInsert() {
+		return rowsToInsert;
+	}
+	public void setRowsToInsert(int rowsToInsert) {
+		this.rowsToInsert = rowsToInsert;
+	}
 	public Connection getDbConn() {
 		return dbConn;
 	}
@@ -25,12 +30,7 @@ public class PatRegThreadBean {
 	public void setpStat(PreparedStatement pStat) {
 		this.pStat = pStat;
 	}
-	public String[] getSqlUpdateResults() {
-		return sqlUpdateResults;
-	}
-	public void setSqlUpdateResults(String[] sqlUpdateResults) {
-		this.sqlUpdateResults = sqlUpdateResults;
-	}
+	
 	public Workbook getWorkbook() {
 		return workbook;
 	}
@@ -42,9 +42,8 @@ public class PatRegThreadBean {
 		return "PatRegThreadBean ["
 				+ (dbConn != null ? "dbConn=" + dbConn + ", " : "")
 				+ (pStat != null ? "pStat=" + pStat + ", " : "")
-				+ (sqlUpdateResults != null ? "sqlUpdateResults="
-						+ Arrays.toString(sqlUpdateResults) + ", " : "")
-				+ (workbook != null ? "workbook=" + workbook : "") + "]";
+				+ (workbook != null ? "workbook=" + workbook + ", " : "")
+				+ "rowsToInsert=" + rowsToInsert + "]";
 	}
 	
 	

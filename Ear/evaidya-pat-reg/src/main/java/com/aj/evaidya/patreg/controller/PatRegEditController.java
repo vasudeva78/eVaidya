@@ -124,10 +124,6 @@ public class PatRegEditController extends AbstractPatRegController {
 		patRegRequestBean.setTel1Text( tel1TextField.getText().substring(0, Math.min(100, tel1TextField.getText().trim().length() )) );
 		patRegRequestBean.setTel2Text( tel2TextField.getText().substring(0, Math.min(100, tel2TextField.getText().trim().length() )) );
 		patRegRequestBean.setFatNameText( fatNameTextField.getText().substring(0, Math.min(100, fatNameTextField.getText().trim().length() )) );
-
-   	 	patRegRequestBean.setDbUrl(dbUrl);
-		patRegRequestBean.setDbUsername(dbUsername);
-		patRegRequestBean.setDbPwd(dbPwd);
 		 
 		return patRegRequestBean;
 	}
@@ -192,10 +188,7 @@ public class PatRegEditController extends AbstractPatRegController {
 				PatRegRequestBean patRegRequestBean = new PatRegRequestBean();
 				
 				patRegRequestBean.setNameText( nameTextField.getText().trim() );
-				patRegRequestBean.setDbUrl(dbUrl);
-				patRegRequestBean.setDbUsername(dbUsername);
-				patRegRequestBean.setDbPwd(dbPwd);
-				
+
 				return patRegBo.getPatNames(patRegRequestBean);
 				
 			}
@@ -251,9 +244,6 @@ public class PatRegEditController extends AbstractPatRegController {
 				PatRegRequestBean patRegRequestBean = new PatRegRequestBean();
 	        	
 	        	patRegRequestBean.setNameId(patNameId);
-	    		patRegRequestBean.setDbUrl(dbUrl);
-	    		patRegRequestBean.setDbUsername(dbUsername);
-	    		patRegRequestBean.setDbPwd(dbPwd);
 	        	
 	     		return patRegBo.getPatDtls(patRegRequestBean);
 			}
