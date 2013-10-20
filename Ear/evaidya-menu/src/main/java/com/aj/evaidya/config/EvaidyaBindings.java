@@ -22,7 +22,7 @@ public class EvaidyaBindings extends AbstractModule{
 	@Override
 	protected void configure() {
 		
-		String dbUrl = "jdbc:h2:file:D:/projects/eVaidya/data/evaidya;CACHE_SIZE=1048576";
+		String dbUrl = "jdbc:h2:split:file:D:/projects/eVaidya/data/evaidya;CACHE_SIZE=1048576;DB_CLOSE_DELAY=-1";
 		String dbUsername = "ajay";
 		String dbPwd = "ajaypwd";
 		
