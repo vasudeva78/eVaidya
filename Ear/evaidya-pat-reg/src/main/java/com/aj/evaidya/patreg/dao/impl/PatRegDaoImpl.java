@@ -5,14 +5,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.common.Logger;
 
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.h2.jdbcx.JdbcConnectionPool;
@@ -206,126 +209,114 @@ public class PatRegDaoImpl implements PatRegDao {
 		patRegResponseBean.setMessage("Saved ...");
 		patRegResponseBean.setRowCnt( 0 );
 		
-		if( threadLocal.get() == null ){
-			// Initialize
-		
-			PatRegThreadBean patRegThreadBean = new PatRegThreadBean();
+		try {
 			
-			Connection dbConn = dbConnPool.getConnection();
-			dbConn.setAutoCommit(false);
+			if( threadLocal.get() == null ){
+				// Initialize
 			
-			patRegThreadBean.setDbConn(dbConn);
-			
-			PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) select ?,?,?,?,?,?,?,?,?,? from EV_PAT where lower(EV_PAT_NAME) != ? and lower(EV_PAT_ADDR1) != ? and lower(EV_PAT_FAT_NAME) != ?" );
-			patRegThreadBean.setpStat(pStat);
-			
-			patRegThreadBean.setRowsToInsert( 1 );
-			threadLocal.set(patRegThreadBean);
-			
-			addToPreparedStatement( patRegRequestBean );
-			
-		} else if( threadLocal.get().getRowsToInsert() % 100 == 0 ){
-			
-			addToPreparedStatement( patRegRequestBean );
-			
-			PatRegThreadBean patRegThreadBean = threadLocal.get();
-			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
-			
-			patRegResponseBean.setRowCnt( insertedRowCnt );
-			
-			patRegThreadBean.setRowsToInsert( patRegThreadBean.getRowsToInsert() + 1 );
+				PatRegThreadBean patRegThreadBean = new PatRegThreadBean();
 				
-			patRegThreadBean.getpStat().clearBatch();
-			patRegThreadBean.getpStat().clearParameters();	
-		
-		} else if (  isLastRow ) {
-			
-			if(threadLocal.get() == null){
+				Connection dbConn = dbConnPool.getConnection();
+				dbConn.setAutoCommit(false);
 				
-				patRegResponseBean.setStatus("success");
-				patRegResponseBean.setMessage("No Data To Save ...");
-				patRegResponseBean.setRowCnt( 0 );
-				return patRegResponseBean;
+				patRegThreadBean.setDbConn(dbConn);
+				
+				PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) values( ?,?,?,?,?,?,?,?,?,? ) ");
+				patRegThreadBean.setpStat(pStat);
+				
+				patRegThreadBean.setNameAddr1FatNameSet(new HashSet<String>());
+				
+				threadLocal.set(patRegThreadBean);
+				
+				addToPreparedStatement( patRegRequestBean );
+				
+			} else if( threadLocal.get().getRowsToInsert() % 5 == 0 ) {
+				
+				addToPreparedStatement( patRegRequestBean );
+				
+				PatRegThreadBean patRegThreadBean = threadLocal.get();
+				int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
+				
+				patRegResponseBean.setRowCnt( insertedRowCnt );
+					
+				patRegThreadBean.getDbConn().commit();
+				
+				patRegThreadBean.getDbConn().setAutoCommit(false);
+				
+				patRegThreadBean.getpStat().clearBatch();
+				patRegThreadBean.getpStat().clearParameters();	
+				
+				patRegThreadBean.getNameAddr1FatNameSet().clear();
+			
+			} else if ( isLastRow ) {
+				
+				if(threadLocal.get() == null){
+					
+					patRegResponseBean.setStatus("success");
+					patRegResponseBean.setMessage("No Data To Save ...");
+					patRegResponseBean.setRowCnt( 0 );
+					return patRegResponseBean;
+					
+				}
+				
+				PatRegThreadBean patRegThreadBean = threadLocal.get();
+				
+				int[] insertedRowCnt = patRegThreadBean.getpStat().executeBatch();
+				patRegResponseBean.setRowCnt( insertedRowCnt.length );
+				
+				logger.debug("rows inserted => "+insertedRowCnt.length);
+				
+				// All resources clean up
+				
+				patRegThreadBean.getNameAddr1FatNameSet().clear();
+				
+				DbUtils.commitAndCloseQuietly( patRegThreadBean.getDbConn() );
+				
+				DbUtils.closeQuietly( patRegThreadBean.getDbConn() , patRegThreadBean.getpStat(), null);
+								
+				threadLocal.remove();
+					
+			}  else {
+				
+				addToPreparedStatement( patRegRequestBean );
+			
+			}
+		
+		} catch (Exception e) {
+		
+			if(isLastRow){
+				if(threadLocal.get() != null){
+					
+					PatRegThreadBean patRegThreadBean = threadLocal.get();
+					
+					patRegThreadBean.getpStat().close();
+					patRegThreadBean.getDbConn().close();
+					
+					threadLocal.remove();
+					
+				}
 				
 			}
 			
-			PatRegThreadBean patRegThreadBean = threadLocal.get();
-			
-			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
-			patRegResponseBean.setRowCnt( insertedRowCnt );
-			
-			// All resources clean up
-			
-			patRegThreadBean.getpStat().close();
-							
-			patRegThreadBean.getDbConn().commit();
-			patRegThreadBean.getDbConn().close();
-			
-			threadLocal.remove();
-				
-		}  else {
-			addToPreparedStatement( patRegRequestBean );
+			throw e;
 		}
 		
 		return patRegResponseBean;
-		
-//		if(rowNum == 1){
-//			
-//			PatRegThreadBean patRegThreadBean = new PatRegThreadBean();
-//			
-//			Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() );
-//			dbConn.setAutoCommit(false);
-//			
-//			patRegThreadBean.setDbConn(dbConn);
-//			
-//			PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_SEX,EV_PAT_TEL1,EV_PAT_TEL2,EV_PAT_FAT_NAME) select ?,?,?,?,?,?,?,?,?,? from EV_PAT where lower(EV_PAT_NAME) != ? and lower(EV_PAT_ADDR1) != ? and lower(EV_PAT_FAT_NAME) != ?" );
-//			patRegThreadBean.setpStat(pStat);
-//			
-//			threadLocal.set(patRegThreadBean);
-//			
-//			addToPreparedStatement( patRegRequestBean );
-//			
-//		} else if (rowNum % 100 == 0) {
-//			
-//			addToPreparedStatement( patRegRequestBean );
-//			
-//			PatRegThreadBean patRegThreadBean = threadLocal.get();
-//			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
-//			
-//			patRegResponseBean.setRowCnt(String.valueOf(insertedRowCnt)); 
-//				
-//			patRegThreadBean.getpStat().clearBatch();
-//			patRegThreadBean.getpStat().clearParameters();
-//		
-//		} else if(rowNum == maxRowNum) {
-//						
-//			PatRegThreadBean patRegThreadBean = threadLocal.get();
-//			
-//			int insertedRowCnt = patRegThreadBean.getpStat().executeBatch().length;
-//			patRegResponseBean.setRowCnt(String.valueOf(insertedRowCnt));
-//			
-//			// All resources clean up
-//			
-//			patRegThreadBean.getpStat().close();
-//							
-//			patRegThreadBean.getDbConn().commit();
-//			patRegThreadBean.getDbConn().close();
-//			
-//			threadLocal.remove();
-//
-//		} else {
-//			
-//			addToPreparedStatement( patRegRequestBean );
-//
-//		}
-			
 		
 	}
 
 	private void addToPreparedStatement( PatRegRequestBean patRegRequestBean ) throws Exception {
 		
-		PatRegThreadBean patRegThreadBean = threadLocal.get();
+		if( isExistsInDb(patRegRequestBean) ){
+			return;
+		}
 		
+		if( !isExistsMoreInExcel(patRegRequestBean) ){
+			return;
+		}
+		
+		PatRegThreadBean patRegThreadBean = threadLocal.get();
+
 		PreparedStatement pStat = patRegThreadBean.getpStat();
 		
 		pStat.setString( 1, patRegRequestBean.getNameText() );
@@ -338,82 +329,45 @@ public class PatRegDaoImpl implements PatRegDao {
 		pStat.setString( 8, patRegRequestBean.getTel1Text());
 		pStat.setString( 9, patRegRequestBean.getTel2Text());
 		pStat.setString( 10, patRegRequestBean.getFatNameText() );
-		pStat.setString( 11, patRegRequestBean.getNameText().toLowerCase() );
-		pStat.setString( 12, patRegRequestBean.getAddress1Text().toLowerCase() );
-		pStat.setString( 13, patRegRequestBean.getFatNameText().toLowerCase() );
 				
 		pStat.addBatch();
 
+		// Increment rows to insert
+		patRegThreadBean.setRowsToInsert( patRegThreadBean.getRowsToInsert() + 1 );
+
+	}
+
+	private boolean isExistsInDb(PatRegRequestBean patRegRequestBean) throws Exception {
+		
+		PatRegThreadBean patRegThreadBean = threadLocal.get();
+		
+		QueryRunner qRunner = new QueryRunner();
+			
+		int rowcount = qRunner.query( patRegThreadBean.getDbConn() , "select count(*) from EV_PAT group by EV_PAT_NAME , EV_PAT_ADDR1 , EV_PAT_FAT_NAME having lower(EV_PAT_NAME) = ? and lower(EV_PAT_ADDR1) = ? and lower(EV_PAT_FAT_NAME) = ?", 
+			new ResultSetHandler<Integer>(){
+
+				public Integer handle(ResultSet resultSet) throws SQLException {
+				
+					if ( !resultSet.next() ){
+						return Integer.valueOf( 0 );
+					}
+					
+					return Integer.valueOf( resultSet.getInt(1) );
+				}
+		},patRegRequestBean.getNameText().toLowerCase(),patRegRequestBean.getAddress1Text().toLowerCase(),patRegRequestBean.getFatNameText().toLowerCase());
+					
+		return rowcount == 0 ? false : true ;
 	}
 	
+	private boolean isExistsMoreInExcel(PatRegRequestBean patRegRequestBean) throws Exception {
+		
+		Set<String> nameAddr1FatNameSet = threadLocal.get().getNameAddr1FatNameSet();
+		
+		// set already contains entry , then returns false
+					
+		return nameAddr1FatNameSet.add( patRegRequestBean.getNameText().concat( patRegRequestBean.getAddress1Text() ).concat( patRegRequestBean.getFatNameText() ) );
+	}
 	
-//	@Override
-//	public PatRegResponseBean uploadPatDtls(PatRegRequestBean patRegRequestBean , int rowNum) throws Exception {
-//		
-//		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
-// 		
-//		Workbook workbook = null;
-//		
-// 		try( Connection dbConn = DriverManager.getConnection( patRegRequestBean.getDbUrl(), patRegRequestBean.getDbUsername() , patRegRequestBean.getDbPwd() ) ; 
-// 				PreparedStatement pStat = dbConn.prepareStatement("insert into EV_PAT(EV_PAT_NAME,EV_PAT_DOB,EV_PAT_ADDR1,EV_PAT_ADDR2,EV_PAT_STATE,EV_PAT_PIN_CODE,EV_PAT_TEL1,EV_PAT_TEL2) values (?,?,?,?,?,?,?,?)" )) {
-// 					 			
-// 			dbConn.setAutoCommit(false);
-// 			
-// 			workbook = Workbook.getWorkbook(new File( patRegRequestBean.getXlFilePath() ));
-// 			
-// 			Sheet sheet = workbook.getSheet(0);
-// 			
-// 			int rowNum = sheet.getRows();
-// 			
-// 			Calendar cal = Calendar.getInstance();
-// 			 			
-// 			for( int i=1 ; i< rowNum ; i++ ){
-// 				
-// 				Cell[] cells = sheet.getRow(i);
-// 				
-// 				pStat.setString(1, cells[0].getContents().trim().substring(0, Math.min(100, cells[0].getContents().trim().length() )) );
-// 				
-// 				cal.setTime( sdf.parse(cells[1].getContents().trim()) );
-// 				
-// 				pStat.setString(2, cal.get(Calendar.YEAR) + "-" + ( cal.get(Calendar.MONTH) + 1 ) + "-" + cal.get(Calendar.DATE) );
-// 				
-// 				pStat.setString(3, cells[2].getContents().substring(0, Math.min(2000, cells[2].getContents().trim().length())) );
-// 				pStat.setString(4, cells[3].getContents().substring(0, Math.min(2000, cells[3].getContents().trim().length())) );
-// 				pStat.setString(5, cells[4].getContents().substring(0, Math.min(10, cells[4].getContents().trim().length())) );
-// 				pStat.setString(6, cells[5].getContents().substring(0, Math.min(10, cells[5].getContents().trim().length())) );
-// 				pStat.setString(7, cells[6].getContents().substring(0, Math.min(100, cells[6].getContents().trim().length())) );
-// 				pStat.setString(8, cells[7].getContents().substring(0, Math.min(100, cells[7].getContents().trim().length())) );
-// 				
-// 				pStat.addBatch();
-// 				
-// 				if(i % 100 == 0){
-// 					pStat.executeBatch();
-// 					
-// 					pStat.clearBatch();
-// 					pStat.clearParameters();
-// 				}
-// 				
-// 			}
-// 			
-//			pStat.executeBatch();
-// 			
-// 			patRegResponseBean.setStatus("success");
-// 			patRegResponseBean.setMessage("Saved ...");
-//	
-// 			dbConn.commit();
-// 			
-// 		}  catch(Exception e) {
-// 			
-// 			throw e;
-// 			 			
-// 		} finally {
-// 			workbook.close();
-// 		}
-// 		
-//    	return patRegResponseBean;
-//    	
-//	}
-
 	@Override
 	public PatRegResponseBean getExcelRowsOnUpload(PatRegRequestBean patRegRequestBean) throws Exception {
 		
@@ -459,7 +413,7 @@ public class PatRegDaoImpl implements PatRegDao {
 			patRegResponseBean.setDateOfBirth(cells[1].getContents().trim());
 			patRegResponseBean.setAddress1Text(cells[2].getContents().trim());
 			patRegResponseBean.setAddress2Text(cells[3].getContents().trim());
-			patRegResponseBean.setState(cells[4].getContents().trim());
+			patRegResponseBean.setStateText(cells[4].getContents().trim());
 			patRegResponseBean.setPincode(cells[5].getContents().trim());
 			patRegResponseBean.setSex(cells[6].getContents().trim());
 			patRegResponseBean.setTel1Text(cells[7].getContents().trim());

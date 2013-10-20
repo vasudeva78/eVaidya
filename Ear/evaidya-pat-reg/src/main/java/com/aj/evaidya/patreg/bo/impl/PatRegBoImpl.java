@@ -109,8 +109,6 @@ public class PatRegBoImpl implements PatRegBo {
 
 	@Override
 	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean,boolean isLastRow) {
-			
-		logger.debug("inside uploadPatDtlsToDb "+patRegRequestBean);
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
@@ -123,7 +121,7 @@ public class PatRegBoImpl implements PatRegBo {
  			logger.error("Error while uploading ",e);
  			
  			patRegResponseBean.setStatus("error");
- 			patRegResponseBean.setMessage("Not Saved ...");
+
  		} 
 		
 		return patRegResponseBean;

@@ -22,9 +22,9 @@ public class PatRegResponseBean {
 	private String excelRowNum;
 	private String errMessage;
 	private String dateOfBirth;
-	private String state;
 	private int rowCnt;
 
+	
 	public int getRowCnt() {
 		return rowCnt;
 	}
@@ -157,12 +157,6 @@ public class PatRegResponseBean {
 	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
-	}
 	@Override
 	public String toString() {
 		return "PatRegResponseBean ["
@@ -192,9 +186,6 @@ public class PatRegResponseBean {
 						: "")
 				+ (errMessage != null ? "errMessage=" + errMessage + ", " : "")
 				+ (dateOfBirth != null ? "dateOfBirth=" + dateOfBirth + ", "
-						: "") + (state != null ? "state=" + state + ", " : "")
-				+ "rowCnt=" + rowCnt + "]";
-	}
-	
-	
+						: "") + "rowCnt=" + rowCnt + "]";
+	}	
 }

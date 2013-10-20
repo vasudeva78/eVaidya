@@ -96,7 +96,11 @@ public class PatRegUploadController extends AbstractPatRegController {
 	}
 
 	protected void resetUploadAction(){
+		fileLocLabel.setText("");
+		resultTextArea.setText("");
 		
+		uploadProgressBar.setProgress(0);
+		uploadProgressBarInd.setProgress(0);
 	}
 	
 	@Override
@@ -106,8 +110,10 @@ public class PatRegUploadController extends AbstractPatRegController {
 	
 	public final void browseAction(){
 		
-		String uploadFileDtls = getUploadFileDtls();
+		resetUploadAction();
 		
+		String uploadFileDtls = getUploadFileDtls();
+
 		if(!uploadFileDtls.isEmpty()){
 			fChooser.setInitialDirectory(new File(uploadFileDtls));		
 		}
@@ -145,6 +151,8 @@ public class PatRegUploadController extends AbstractPatRegController {
 					finalPatRegResponseBean.setRowCnt( 0 );
 					 
 					int excelRowNum = Integer.parseInt( patRegRequestBean.getExcelRowNum() );
+					
+					logger.debug("excelRowNum => "+excelRowNum);
 					 
 					boolean isLastRow = false;
 					for(int i = 1;i<=excelRowNum;i++){
@@ -152,7 +160,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 						 updateMessage( ((int) ((i/ excelRowNum) * 100))+" %");
 						 updateProgress(i, excelRowNum);
 						 
-						 if (i != excelRowNum){ // To avoid array out of exception when fetching last row
+						 if (i != excelRowNum) { // To avoid array out of exception when fetching last row
 							 
 							 PatRegResponseBean patRegResponseBean = patRegBo.getExcelCellDtls(patRegRequestBean,i);
 							 
@@ -173,10 +181,22 @@ public class PatRegUploadController extends AbstractPatRegController {
 								 continue;
 							 }
 							 
-							 // Copy patRegResponseBean To patRegRequestBean
-							 
 							 patRegRequestBean.setNameText( patRegResponseBean.getNameText() );
-							 patRegRequestBean.setDateOfBirth( patRegResponseBean.getDateOfBirth() );
+							 String patDob = patRegResponseBean.getDateOfBirth();
+							 
+							 String dd = patDob.split("-")[0];
+							 String mmm = patDob.split("-")[1];
+							 String yyyy = patDob.split("-")[2];
+							 
+							 if (dd.length() != 2){
+								 dd = dd.concat("0");
+							 }
+							 
+							 String patMon =  monthIndex(mmm) < 10 ? "0" + monthIndex(mmm) : monthIndex(mmm) +"";
+							 	
+							 // for easy db insertion
+							 patRegRequestBean.setDateOfBirth( yyyy.concat("-").concat(patMon).concat("-").concat(dd) );
+							 
 							 patRegRequestBean.setAddress1Text( patRegResponseBean.getAddress1Text() );
 							 patRegRequestBean.setAddress2Text( patRegResponseBean.getAddress2Text() );
 							 patRegRequestBean.setStateText( patRegResponseBean.getStateText() );
@@ -185,17 +205,14 @@ public class PatRegUploadController extends AbstractPatRegController {
 							 patRegRequestBean.setTel1Text(patRegResponseBean.getTel1Text());
 							 patRegRequestBean.setTel2Text(patRegResponseBean.getTel2Text());
 							 patRegRequestBean.setFatNameText(patRegResponseBean.getFatNameText());
-							 
-							 logger.debug("patRegRequestBean set ");
 						 }
 						 else {
-							 // last row reached
+							 // last row reached. i == excelRowNum
 							 isLastRow = true;
 						 }
-						 
-						 
+						 						 
 						 PatRegResponseBean patRegResponseBean = patRegBo.uploadPatDtlsToDb(patRegRequestBean,isLastRow);
-						 
+												 
 						 switch( patRegResponseBean.getStatus() ){
 						 
 						 	case "success":
@@ -203,7 +220,16 @@ public class PatRegUploadController extends AbstractPatRegController {
 						 		break;
 						 	
 						 	case "error":
-						 		finalPatRegResponseBean.setMessage( finalPatRegResponseBean.getMessage().concat("\n").concat(patRegResponseBean.getMessage()) );
+						 		if (finalPatRegResponseBean.getMessage().isEmpty()){
+						 			
+						 			finalPatRegResponseBean.setMessage( patRegResponseBean.getMessage() );
+						 			
+						 		} else {
+						 			
+						 			finalPatRegResponseBean.setMessage( finalPatRegResponseBean.getMessage().concat("\n").concat(patRegResponseBean.getMessage()) );
+						 			
+						 		}
+						 		
 						 		break;
 						 		
 						 }
@@ -221,7 +247,10 @@ public class PatRegUploadController extends AbstractPatRegController {
 			protected void succeeded(){
 				PatRegResponseBean patRegResponseBean = getValue();
 				
+				logger.debug("PatRegResponseBean finally "+patRegResponseBean);
+				
 				if (  patRegResponseBean.getRowCnt() > 0 ){
+					
 					CommonControlsBoImpl.showFinalSuccessStatus( statusLabel , "Saved" );
 				}
 				
@@ -233,6 +262,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 //				} else {
 //					CommonControlsBoImpl.showFinalFailureStatus( statusLabel , patRegResponseBean.getMessage() );
 //				}
+				
 			}
 				
 		};
@@ -336,12 +366,12 @@ public class PatRegUploadController extends AbstractPatRegController {
 		int monthIndx = -1;
 		
 		try {
-			monthIndx = Month.valueOf(monthName).ordinal();
+			monthIndx = Month.valueOf(monthName.toLowerCase()).ordinal();
 		} catch (Exception e) {
 			throw new Exception("MONTH");
 		}
 				
-		return  monthIndx;
+		return  (monthIndx + 1);
 	}
 
 	private final boolean checkExcelData( PatRegResponseBean patRegResponseBean , int excelRowNum) throws Exception {
@@ -349,24 +379,24 @@ public class PatRegUploadController extends AbstractPatRegController {
 		boolean allOk = true;
 	
 		if(patRegResponseBean.getNameText().isEmpty()){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[1] : Name ::".concat(" Empty ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 1 ] : Name ::".concat(" Empty ")) );
 			return false;
 		}
 				
 		if ( !Pattern.compile( "[a-zA-Z ]*" ).matcher( patRegResponseBean.getNameText() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[1] : Name ::".concat(" Only Letters Allowed ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 1 ] : Name ::".concat(" Only Letters Allowed ")) );
 			return false;
 		}
 			
 		if(patRegResponseBean.getDateOfBirth().isEmpty()){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[2] : Date Of Birth ::".concat(" Empty ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 2 ] : Date Of Birth ::".concat(" Empty ")) );
 			return false;
 		}
 		
 		// Validate patient date of birth
 		
 		if ( !Pattern.compile( "[0-9]{1,2}-[a-zA-Z]{3}-[0-9]{4}" ).matcher( patRegResponseBean.getDateOfBirth() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[2] : Date Of Birth ::".concat(" Invalid Format. Example for Correct format is 12-May-1977 ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 2 ] : Date Of Birth ::".concat(" Invalid Format. Example for Correct format is 12-May-1977 ")) );
 			return false;
 		}
 		
@@ -381,15 +411,15 @@ public class PatRegUploadController extends AbstractPatRegController {
 			switch( e.getMessage() ){
 			
 				case "YEAR":
-					patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[2] : Date Of Birth ::".concat(" Invalid Year")) );
+					patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 2 ] : Date Of Birth ::".concat(" Invalid Year")) );
 					break;
 				
 				case "MONTH":
-					patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[2] : Date Of Birth ::".concat(" Invalid Month")) );
+					patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 2 ] : Date Of Birth ::".concat(" Invalid Month")) );
 					break;
 				
 				default:	
-					patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[2] : Date Of Birth ::".concat(" Invalid Date")) );
+					patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1)).concat( " ] Column[ 2 ] : Date Of Birth ::".concat(" Invalid Date")) );
 					
 			}
 			
@@ -397,62 +427,67 @@ public class PatRegUploadController extends AbstractPatRegController {
 		}
 				
 		if(patRegResponseBean.getAddress1Text().isEmpty()){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[3] : Address 1 ::".concat(" Empty ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1)).concat( " ] Column[ 3 ] : Address 1 ::".concat(" Empty ")) );
 			return false;
 		}
 			
 		if ( !Pattern.compile( "[a-zA-Z0-9 ,-/#]*" ).matcher( patRegResponseBean.getAddress1Text() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[3] : Address 1 ::".concat(" Only Letters and Symbols , - / # Allowed" )) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 3 ] : Address 1 ::".concat(" Only Letters and Symbols , - / # Allowed" )) );
 			return false;
 		}
 		
 		if ( !Pattern.compile( "[a-zA-Z0-9 ,-/#]*" ).matcher( patRegResponseBean.getAddress2Text() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[4] : Address 2 ::".concat(" Only Letters and Symbols , - / # Allowed" )) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1)).concat( " ] Column[ 4 ] : Address 2 ::".concat(" Only Letters and Symbols , - / # Allowed" )) );
 			return false;
 		}
 		
-		if(patRegResponseBean.getState().isEmpty()){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[5] : State ::".concat(" Empty ")) );
+		if(patRegResponseBean.getStateText().isEmpty()){
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 5 ] : State ::".concat(" Empty ")) );
+			return false;
+		}
+		
+		if ( !Pattern.compile( "[a-zA-Z ]*" ).matcher( patRegResponseBean.getStateText() ).matches() ){
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 5 ] : State ::".concat(" Only Letters Allowed" )) );
 			return false;
 		}
 		
 		if ( !Pattern.compile( "[0-9]*" ).matcher( patRegResponseBean.getPincode() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[6] : Pincode ::".concat( " Only Digits Allowed" )) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 6 ] : Pincode ::".concat( " Only Digits Allowed" )) );
 			return false;
 		}
 
 		if(patRegResponseBean.getSex().isEmpty()){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[7] : Sex ::".concat(" Empty ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 7 ] : Sex ::".concat(" Empty ")) );
 			return false;
 		}
 		
 		if(! (patRegResponseBean.getSex().equalsIgnoreCase("Male") || patRegResponseBean.getSex().equalsIgnoreCase("Female")) ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[7] : Sex ::".concat(" Only Male or Female values Allowed")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 7 ] : Sex ::".concat(" Only Male or Female values Allowed")) );
 			return false;
 		}
 		
 		if(patRegResponseBean.getTel1Text().isEmpty()){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[8] : Telephone 1 ::".concat(" Empty ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 8 ] : Telephone 1 ::".concat(" Empty ")) );
 			return false;
 		}
 		
 		if ( !Pattern.compile( "[0-9 -]*" ).matcher( patRegResponseBean.getTel1Text() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[8] : Telephone 1 ::".concat(" Only Digits and Symbol - Allowed")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 8 ] : Telephone 1 ::".concat(" Only Digits and Symbol - Allowed")) );
 			return false;
 		}
 		
 		if ( !Pattern.compile( "[0-9 -]*" ).matcher( patRegResponseBean.getTel2Text() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[9] : Telephone 2 ::".concat(" Only Digits and Symbol - Allowed")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 9 ] : Telephone 2 ::".concat(" Only Digits and Symbol - Allowed")) );
 			return false;
 		}
 		
 		if(patRegResponseBean.getFatNameText().isEmpty()){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[10] : Father's Name ::".concat(" Empty ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 10 ] : Father's Name ::".concat(" Empty ")) );
 			return false;
 		}
 		
 		if ( !Pattern.compile( "[a-zA-Z ]*" ).matcher( patRegResponseBean.getFatNameText() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum )).concat( " ] Column[10] : Father's Name ::".concat(" Only Letters Allowed")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 10 ] : Father's Name ::".concat(" Only Letters Allowed")) );
 			return false;
 		}
 	

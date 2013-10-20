@@ -15,7 +15,6 @@ import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.patreg.beans.PatRegRequestBean;
 import com.aj.evaidya.patreg.bo.PatRegBo;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 
 public abstract class AbstractPatRegController implements Initializable {
