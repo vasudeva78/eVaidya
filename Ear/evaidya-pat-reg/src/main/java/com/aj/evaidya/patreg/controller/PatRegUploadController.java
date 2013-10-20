@@ -1,5 +1,6 @@
 package com.aj.evaidya.patreg.controller;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -120,7 +121,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 			
 		File xlFile = fChooser.showOpenDialog( browseButton.getScene().getWindow() );
 		
-		if(xlFile.isFile()){
+		if(xlFile != null && xlFile.isFile()){
 			
 			fileLocLabel.setText( xlFile.getAbsolutePath() );
 			
@@ -130,6 +131,8 @@ public class PatRegUploadController extends AbstractPatRegController {
 	}
 	
 	public final void uploadAction() throws Exception {
+		
+		resultTextArea.setText("");
 		
 		if ( !CommonControlsBoImpl.checkLabelForEmptyString(statusLabel, fileLocLabel , "Empty File ...") ) {
 			return;
@@ -152,7 +155,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 					 
 					int excelRowNum = Integer.parseInt( patRegRequestBean.getExcelRowNum() );
 					
-					logger.debug("excelRowNum => "+excelRowNum);
+					// logger.debug("excelRowNum => "+excelRowNum);
 					 
 					boolean isLastRow = false;
 					for(int i = 1;i<=excelRowNum;i++){
@@ -171,7 +174,15 @@ public class PatRegUploadController extends AbstractPatRegController {
 								 if(!checkExcelData(patRegResponseBean,i)){
 									 // Error in cell
 									 
-									 finalPatRegResponseBean.setMessage( finalPatRegResponseBean.getMessage().concat("\n").concat( patRegResponseBean.getMessage() ) );
+									 if (finalPatRegResponseBean.getMessage().isEmpty()){
+								 			
+							 			finalPatRegResponseBean.setMessage( patRegResponseBean.getMessage() );
+							 			
+							 		 } else {
+							 			
+							 			finalPatRegResponseBean.setMessage( finalPatRegResponseBean.getMessage().concat("\n").concat(patRegResponseBean.getMessage()) );
+							 			
+							 		 }
 									 continue;
 								 }
 								 
@@ -189,7 +200,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 							 String yyyy = patDob.split("-")[2];
 							 
 							 if (dd.length() != 2){
-								 dd = dd.concat("0");
+								 dd = "0".concat(dd);
 							 }
 							 
 							 String patMon =  monthIndex(mmm) < 10 ? "0" + monthIndex(mmm) : monthIndex(mmm) +"";
@@ -358,7 +369,17 @@ public class PatRegUploadController extends AbstractPatRegController {
 	}
 	
 	public final void sampleAction() throws Exception {
+		// Copy to current directory
+		InputStream is = getClass().getResourceAsStream("/samples.xls");
+		OutputStream os = new FileOutputStream(new File(".","samples.xls"));
 		
+		IOUtils.copy(is, os);
+		
+		IOUtils.closeSilently(is);
+		IOUtils.closeSilently(os);
+		Thread.sleep(2);
+		
+		Desktop.getDesktop().open( new File( new File(".").getCanonicalFile() , "samples.xls" ) );
 	}
 	
 	private int monthIndex(String monthName) throws Exception{
@@ -379,12 +400,12 @@ public class PatRegUploadController extends AbstractPatRegController {
 		boolean allOk = true;
 	
 		if(patRegResponseBean.getNameText().isEmpty()){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 1 ] : Name ::".concat(" Empty ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 1 ] : Patient Name ::".concat(" Empty ")) );
 			return false;
 		}
 				
 		if ( !Pattern.compile( "[a-zA-Z ]*" ).matcher( patRegResponseBean.getNameText() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 1 ] : Name ::".concat(" Only Letters Allowed ")) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 1 ] : Patient Name ::".concat(" Only Letters Allowed ")) );
 			return false;
 		}
 			
@@ -452,7 +473,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 		}
 		
 		if ( !Pattern.compile( "[0-9]*" ).matcher( patRegResponseBean.getPincode() ).matches() ){
-			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 6 ] : Pincode ::".concat( " Only Digits Allowed" )) );
+			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 6 ] : Pin Code ::".concat( " Only Digits Allowed" )) );
 			return false;
 		}
 

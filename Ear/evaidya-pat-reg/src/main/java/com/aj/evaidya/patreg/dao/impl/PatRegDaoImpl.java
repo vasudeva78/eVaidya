@@ -201,7 +201,7 @@ public class PatRegDaoImpl implements PatRegDao {
 	@Override
 	public PatRegResponseBean uploadPatDtlsToDb(PatRegRequestBean patRegRequestBean , boolean isLastRow) throws Exception {
 	
-		logger.debug("inside uploadPatDtlsToDb "+patRegRequestBean);
+		// logger.debug("inside uploadPatDtlsToDb "+patRegRequestBean);
 		
 		PatRegResponseBean patRegResponseBean = new PatRegResponseBean();
 		
@@ -266,11 +266,11 @@ public class PatRegDaoImpl implements PatRegDao {
 				
 				logger.debug("rows inserted => "+insertedRowCnt.length);
 				
-				// All resources clean up
+				// All resources cleaned up
 				
 				patRegThreadBean.getNameAddr1FatNameSet().clear();
 				
-				DbUtils.commitAndCloseQuietly( patRegThreadBean.getDbConn() );
+				patRegThreadBean.getDbConn().commit();
 				
 				DbUtils.closeQuietly( patRegThreadBean.getDbConn() , patRegThreadBean.getpStat(), null);
 								
@@ -289,8 +289,7 @@ public class PatRegDaoImpl implements PatRegDao {
 					
 					PatRegThreadBean patRegThreadBean = threadLocal.get();
 					
-					patRegThreadBean.getpStat().close();
-					patRegThreadBean.getDbConn().close();
+					DbUtils.closeQuietly( patRegThreadBean.getDbConn() , patRegThreadBean.getpStat(), null);
 					
 					threadLocal.remove();
 					
@@ -365,7 +364,7 @@ public class PatRegDaoImpl implements PatRegDao {
 		
 		// set already contains entry , then returns false
 					
-		return nameAddr1FatNameSet.add( patRegRequestBean.getNameText().concat( patRegRequestBean.getAddress1Text() ).concat( patRegRequestBean.getFatNameText() ) );
+		return nameAddr1FatNameSet.add( patRegRequestBean.getNameText().concat( patRegRequestBean.getAddress1Text() ).concat( patRegRequestBean.getFatNameText() ).toLowerCase() );
 	}
 	
 	@Override
