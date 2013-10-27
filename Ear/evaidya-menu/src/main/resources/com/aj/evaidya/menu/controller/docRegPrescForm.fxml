@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="450.0" xmlns:fx="http://javafx.com/fxml">
+  <children>
+    <GridPane layoutX="1.0" layoutY="1.0" prefHeight="600.0" prefWidth="450.0">
+      <children>
+        <VBox prefHeight="488.0" prefWidth="450.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+          <children>
+            <HBox prefHeight="20.0" prefWidth="450.0">
+              <children>
+                <Label alignment="BASELINE_LEFT" contentDisplay="LEFT" prefHeight="20.0" prefWidth="450.0" text="Dr. Naman Ajay" fx:id="nameLabel">
+                  <font>
+                    <Font name="System Bold" size="16.0" fx:id="x3" />
+                  </font>
+                  <HBox.margin>
+                    <Insets left="5.0" top="10.0" />
+                  </HBox.margin>
+                </Label>
+              </children>
+            </HBox>
+            <HBox prefHeight="20.0" prefWidth="450.0">
+              <children>
+                <Label alignment="BASELINE_LEFT" contentDisplay="LEFT" prefHeight="20.0" prefWidth="450.0" text="MD , Phil" fx:id="qualiLabel">
+                  <font>
+                    <Font size="16.0" />
+                  </font>
+                  <HBox.margin>
+                    <Insets left="5.0" />
+                  </HBox.margin>
+                </Label>
+              </children>
+            </HBox>
+            <HBox prefHeight="20.0" prefWidth="450.0">
+              <children>
+                <Label alignment="BASELINE_LEFT" contentDisplay="LEFT" prefHeight="20.0" prefWidth="450.0" text="Professor of Peadritics" fx:id="desigLabel">
+                  <font>
+                    <Font name="System Italic" size="16.0" fx:id="x1" />
+                  </font>
+                  <HBox.margin>
+                    <Insets left="5.0" />
+                  </HBox.margin>
+                </Label>
+              </children>
+            </HBox>
+            <HBox prefHeight="20.0" prefWidth="450.0">
+              <children>
+                <Label alignment="BASELINE_LEFT" contentDisplay="LEFT" font="$x1" prefHeight="20.0" prefWidth="450.0" text="Karipal Hospital" fx:id="hospitalLabel">
+                  <HBox.margin>
+                    <Insets left="5.0" />
+                  </HBox.margin>
+                </Label>
+              </children>
+            </HBox>
+            <HBox prefHeight="20.0" prefWidth="450.0">
+              <children>
+                <Label alignment="BASELINE_LEFT" contentDisplay="LEFT" font="$x1" prefHeight="20.0" prefWidth="450.0" text="Ph : 11-22-33 / 88-77-99" fx:id="teleLabel">
+                  <HBox.margin>
+                    <Insets bottom="10.0" left="5.0" />
+                  </HBox.margin>
+                </Label>
+              </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <Label alignment="CENTER" prefHeight="20.0" prefWidth="450.0" text="Vandana House , Kaithoth Road" fx:id="addr1Label">
+              <font>
+                <Font size="12.0" fx:id="x2" />
+              </font>
+            </Label>
+            <Label alignment="CENTER" font="$x2" prefHeight="20.0" prefWidth="450.0" text="Palarivattom P O  , Cochin" fx:id="addr2Label"> />
+            <Separator prefWidth="200.0" />
+            <Label prefHeight="370.0" prefWidth="519.0" rotate="-30.0" text="SAMPLE      SAMPLE      SAMPLE" textFill="GREY">
+              <font>
+                <Font size="30.0" />
+              </font>
+              <rotationAxis>
+                <Point3D z="1.0" />
+              </rotationAxis>
+            </Label>
+            <Separator prefWidth="200.0" />
+            <Label alignment="CENTER" font="$x3" prefHeight="20.0" prefWidth="519.0" text="Consultation Details" />
+            <Label alignment="CENTER" prefHeight="20.0" prefWidth="450.0" text="Every Wednesday between 6pm to 8pm" fx:id="consultLabel">
+              <font>
+                <Font size="12.0" />
+              </font>
+            </Label>
+          </children>
+        </VBox>
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+  </children>
+</AnchorPane>
