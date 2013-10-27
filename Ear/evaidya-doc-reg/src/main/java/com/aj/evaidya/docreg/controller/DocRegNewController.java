@@ -1,6 +1,8 @@
 package com.aj.evaidya.docreg.controller;
 
 import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 
 import com.aj.evaidya.common.bo.impl.CommonControlsBoImpl;
 import com.aj.evaidya.docreg.beans.DocRegRequestBean;
@@ -81,4 +83,12 @@ public class DocRegNewController extends AbstractDocRegController {
 	protected void abstractResetFields() {
 		
 	}
+	
+	private final void previewAction(){
+		try {
+			Scene scene = (Scene)FXMLLoader.load(getClass().getResource("docRegPrescForm.fxml"));
+		} catch (Exception e) {
+		}
+	}
+
 }

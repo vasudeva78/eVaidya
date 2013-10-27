@@ -30,14 +30,17 @@ public class DocRegEditController extends AbstractDocRegController {
 		
 		nameTextField.setEditable(false);
 		qualiTextField.setEditable(false);
+		desigTextField.setEditable(false);
 		address1TextField.setEditable(false);
 		address2TextField.setEditable(false);
+		consulTextArea.setDisable(false);
 		stateChoiceBox.setDisable(true);
 		pincodeTextField.setEditable(false);
 		emailTextField.setEditable(false);
 		tel1TextField.setEditable(false);
 		tel2TextField.setEditable(false);
 		nameChoiceBox.setDisable(true);
+		hospTextField.setDisable(false);
 		
 		stateChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
 			new ChangeListener<Number>() {
@@ -144,8 +147,11 @@ public class DocRegEditController extends AbstractDocRegController {
 				
 				nameTextField.setText(docRegResponseBean.getNameText());
 				qualiTextField.setText(docRegResponseBean.getQualiText());
+				desigTextField.setText(docRegResponseBean.getDesigText());
 				address1TextField.setText(docRegResponseBean.getAddress1Text());
 				address2TextField.setText(docRegResponseBean.getAddress2Text());
+				
+				consulTextArea.setText(docRegResponseBean.getConsultText());
 								
 				int stateIdIndx = stateIdList.indexOf( docRegResponseBean.getStateId() );
 				
@@ -157,6 +163,8 @@ public class DocRegEditController extends AbstractDocRegController {
 				tel2TextField.setText(docRegResponseBean.getTel2Text());
 				
 				emailTextField.setText(docRegResponseBean.getEmail());
+				
+				hospTextField.setText(docRegResponseBean.getHospText());
 				
 				if (stateIdIndx != -1){
 										
@@ -176,13 +184,18 @@ public class DocRegEditController extends AbstractDocRegController {
 					
 					nameTextField.setEditable(false);
 					qualiTextField.setEditable(false);
+					desigTextField.setEditable(false);
 					address1TextField.setEditable(false);
 					address2TextField.setEditable(false);
+					consulTextArea.setDisable(false);
 					stateChoiceBox.setDisable(true);
 					pincodeTextField.setEditable(false);
 					emailTextField.setEditable(false);
 					tel1TextField.setEditable(false);
 					tel2TextField.setEditable(false);
+					nameChoiceBox.setDisable(true);
+					hospTextField.setDisable(false);
+					stateChoiceBox.setDisable(true);
 					
 				}
 			}
@@ -252,13 +265,18 @@ public class DocRegEditController extends AbstractDocRegController {
 		
 		nameTextField.setEditable(false);
 		qualiTextField.setEditable(false);
+		desigTextField.setEditable(false);
 		address1TextField.setEditable(false);
 		address2TextField.setEditable(false);
+		consulTextArea.setDisable(false);
 		stateChoiceBox.setDisable(true);
 		pincodeTextField.setEditable(false);
 		emailTextField.setEditable(false);
 		tel1TextField.setEditable(false);
 		tel2TextField.setEditable(false);
+		nameChoiceBox.setDisable(true);
+		hospTextField.setDisable(false);
+		stateChoiceBox.setDisable(true);
 		
 	}
 

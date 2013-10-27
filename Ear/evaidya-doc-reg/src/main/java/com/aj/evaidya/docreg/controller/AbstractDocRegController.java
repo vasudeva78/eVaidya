@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,6 +27,20 @@ import com.aj.evaidya.docreg.bo.DocRegBo;
 import com.google.inject.Inject;
 
 public abstract class AbstractDocRegController implements Initializable {
+	
+	private static final String EMAIL_PATTERN = 
+			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	
+	private static final Pattern namePattern = Pattern.compile("[a-zA-Z ]*");
+	private static final Pattern qualiPattern = Pattern.compile("[a-zA-Z -().,]*");
+	private static final Pattern desigPattern = Pattern.compile("[a-zA-Z -().,]*");
+	private static final Pattern addrPattern = Pattern.compile("[a-zA-Z0-9 ,-/#]*");
+	private static final Pattern consultPattern = Pattern.compile("[a-zA-Z0-9 -():.,]*");
+	private static final Pattern pincodePattern = Pattern.compile("[0-9]*");
+	private static final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);
+	private static final Pattern telPattern = Pattern.compile("[0-9 -]*");
+	private static final Pattern hospPattern = Pattern.compile("[a-zA-Z -().,]*");
 	
 	protected CommonBo commonBo;
 	
@@ -62,10 +77,6 @@ public abstract class AbstractDocRegController implements Initializable {
 		this.docRegBo = docRegBo;
 	}
 		
-	private static final String EMAIL_PATTERN = 
-			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-	
 	@FXML
 	protected Label statusLabel;
 	
@@ -181,7 +192,7 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, nameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(namePattern, statusLabel, nameTextField , "Only Letters allowed ...") ) {
 			return;
 		}
 
@@ -189,7 +200,7 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, qualiTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols - ( ) . , allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(qualiPattern , statusLabel, qualiTextField , "Only Letters and Symbols - ( ) . , allowed ...") ) {
 			return;
 		}
 		
@@ -197,7 +208,7 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, desigTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols - ( ) . , allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(desigPattern, statusLabel, desigTextField , "Only Letters and Symbols - ( ) . , allowed ...") ) {
 			return;
 		}
 		
@@ -205,11 +216,11 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		}
 		
-		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address1TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(addrPattern, statusLabel, address1TextField , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
 
-		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address2TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(addrPattern, statusLabel, address2TextField , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
 			
@@ -217,7 +228,7 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextAreaForInvalidLetters(statusLabel, consulTextArea , "[a-zA-Z0-9 -():.,]*" , "Only Numbers , Letters and Symbols - ( ) : . , allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextAreaForInvalidLetters(consultPattern,statusLabel, consulTextArea , "Only Numbers , Letters and Symbols - ( ) : . , allowed ...") ) {
 			return;
 		}
 		
@@ -225,11 +236,11 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		}
 
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, pincodeTextField , "[0-9]*" , "Only Digits allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(pincodePattern, statusLabel, pincodeTextField , "Only Digits allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, emailTextField , EMAIL_PATTERN , "Valid Email Id allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(emailPattern, statusLabel, emailTextField , "Valid Email Id allowed ...") ) {
 			return;
 		}
 		
@@ -237,11 +248,11 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		}
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, tel1TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(telPattern, statusLabel, tel1TextField , "Only Digits and Symbol - allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, tel2TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(telPattern, statusLabel, tel2TextField , "Only Digits and Symbol - allowed ...") ) {
 			return;
 		}
 		
@@ -249,7 +260,7 @@ public abstract class AbstractDocRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, hospTextField , "[a-zA-Z -().,]*" , "Only Letters and Symbols , - ( ) . allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(hospPattern, statusLabel, hospTextField , "Only Letters and Symbols , - ( ) . allowed ...") ) {
 			return;
 		}
 		
