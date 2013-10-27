@@ -105,9 +105,9 @@ public final class CommonControlsBoImpl {
 		
 	}
    
-	public static boolean checkTextFieldForInvalidLetters (Label statusLabel, TextField textField ,String regExp ,String errMessage) {
+	public static boolean checkTextFieldForInvalidLetters (Pattern pattern, Label statusLabel, TextField textField ,String errMessage) {
 		
-		if ( !Pattern.compile( regExp ).matcher( textField.getText().trim() ).matches() ){
+		if ( !pattern.matcher( textField.getText().trim() ).matches() ){
 			CommonControlsBoImpl.showErrorMessage(statusLabel, textField , errMessage );
 			
 			return false;
@@ -116,9 +116,9 @@ public final class CommonControlsBoImpl {
 		return true;
 	}
 	
-	public static boolean checkTextAreaForInvalidLetters (Label statusLabel, TextArea textArea ,String regExp ,String errMessage) {
+	public static boolean checkTextAreaForInvalidLetters (Pattern pattern, Label statusLabel, TextArea textArea ,String errMessage) {
 		
-		if ( !Pattern.compile( regExp ).matcher( textArea.getText().trim() ).matches() ){
+		if ( !pattern.matcher( textArea.getText().trim() ).matches() ){
 			CommonControlsBoImpl.showErrorMessage(statusLabel, textArea , errMessage );
 			
 			return false;
