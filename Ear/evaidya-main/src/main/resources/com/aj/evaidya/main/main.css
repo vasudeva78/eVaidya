@@ -3585,6 +3585,12 @@ Only the properties with values that are different from the TextBox are specifie
 	-fx-cursor: hand;
 }
 
+#consulTextArea{
+	-fx-font-family: Open;
+	-fx-text-fill: darkslategrey;
+	-fx-font-size: 1.3em; /* 16px */
+}
+
 #resultTextArea{
 	-fx-font-family: Open;
 	-fx-font-size: 1.25em; /* 15px */
