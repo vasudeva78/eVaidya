@@ -2,6 +2,7 @@ package com.aj.evaidya.patreg.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,6 +19,15 @@ import com.google.inject.Inject;
 
 
 public abstract class AbstractPatRegController implements Initializable {
+	
+	protected static final Pattern namePattern = Pattern.compile("[a-zA-Z ]*");
+	private static final Pattern ddYYYYPattern = Pattern.compile("[0-9]*");
+	private static final Pattern ddDigitPattern = Pattern.compile("\\d{2}"); 
+	private static final Pattern yyyyDigitPattern = Pattern.compile("\\d{4}");
+	private static final Pattern addrPattern = Pattern.compile("[a-zA-Z0-9 ,-/#]*");
+	private static final Pattern statePattern = Pattern.compile("[a-zA-Z ]*");
+	private static final Pattern pincodePattern = Pattern.compile("[0-9]*");
+	private static final Pattern telPattern = Pattern.compile("[0-9 -]*");
 	
 	protected CommonBo commonBo;
 
@@ -151,7 +161,7 @@ public abstract class AbstractPatRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, nameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(namePattern, statusLabel, nameTextField , "Only Letters allowed ...") ) {
 			return;
 		}
 
@@ -159,11 +169,11 @@ public abstract class AbstractPatRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, dateTextField , "[0-9]*" , "Only Digits allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(ddYYYYPattern, statusLabel, dateTextField , "Only Digits allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, dateTextField , "\\d{2}" , "Only 2 Digits allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(ddDigitPattern, statusLabel, dateTextField , "Only 2 Digits allowed ...") ) {
 			return;
 		}
 		
@@ -175,11 +185,11 @@ public abstract class AbstractPatRegController implements Initializable {
 			return;
 		}
 		
-		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, yearTextField , "[0-9]*" , "Only Digits allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(ddYYYYPattern, statusLabel, yearTextField , "Only Digits allowed ...") ){
 			return;
 		}
 		
-		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, yearTextField , "\\d{4}" , "Only 4 Digits allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(yyyyDigitPattern, statusLabel, yearTextField , "Only 4 Digits allowed ...") ){
 			return;
 		}
 
@@ -191,11 +201,11 @@ public abstract class AbstractPatRegController implements Initializable {
 			return;
 		}
 		
-		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address1TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(addrPattern, statusLabel, address1TextField , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
 		
-		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, address2TextField , "[a-zA-Z0-9 ,-/#]*" , "Only Letters and Symbols , - / # allowed ...") ){
+		if( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(addrPattern, statusLabel, address2TextField , "Only Letters and Symbols , - / # allowed ...") ){
 			return;
 		}
 			
@@ -203,11 +213,11 @@ public abstract class AbstractPatRegController implements Initializable {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, stateTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statePattern, statusLabel, stateTextField , "Only Letters allowed ...") ) {
 			return;
 		}
 
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, pincodeTextField , "[0-9]*" , "Only Digits allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(pincodePattern, statusLabel, pincodeTextField , "Only Digits allowed ...") ) {
 			return;
 		}
 		
@@ -215,11 +225,11 @@ public abstract class AbstractPatRegController implements Initializable {
 			return;
 		}
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, tel1TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(telPattern, statusLabel, tel1TextField , "Only Digits and Symbol - allowed ...") ) {
 			return;
 		}
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, tel2TextField , "[0-9 -]*" , "Only Digits and Symbol - allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(telPattern, statusLabel, tel2TextField , "Only Digits and Symbol - allowed ...") ) {
 			return;
 		}
 		
@@ -227,7 +237,7 @@ public abstract class AbstractPatRegController implements Initializable {
 			return;
 		}
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, fatNameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(namePattern, statusLabel, fatNameTextField , "Only Letters allowed ...") ) {
 			return;
 		}
 		

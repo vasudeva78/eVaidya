@@ -171,7 +171,7 @@ public class PatRegEditController extends AbstractPatRegController {
 			return;
 		};
 		
-		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(statusLabel, nameTextField , "[a-zA-Z ]*" , "Only Letters allowed ...") ) {
+		if ( !CommonControlsBoImpl.checkTextFieldForInvalidLetters(namePattern, statusLabel, nameTextField , "Only Letters allowed ...") ) {
 			return;
 		}
 		

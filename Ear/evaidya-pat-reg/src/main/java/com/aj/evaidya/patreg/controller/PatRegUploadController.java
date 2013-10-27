@@ -7,8 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javafx.concurrent.Task;
@@ -30,6 +33,14 @@ import com.aj.evaidya.patreg.beans.PatRegResponseBean;
 public class PatRegUploadController extends AbstractPatRegController {
 	
 	private static final Logger logger = Logger.getLogger(PatRegUploadController.class);
+	
+	private static final Pattern nameRegex = Pattern.compile( "[a-zA-Z ]*" );
+	private static final Pattern dobRegex = Pattern.compile( "[0-9]{1,2}-[a-zA-Z]{3}-[0-9]{4}" );
+	private static final Pattern addressRegex = Pattern.compile( "[a-zA-Z0-9 ,-/#]*" );
+	private static final Pattern stateRegex = Pattern.compile( "[a-zA-Z ]*" );
+	private static final Pattern pinCodeRegex = Pattern.compile( "[0-9]*" );
+	private static final Pattern telRegex = Pattern.compile( "[0-9 -]*" );
+	private static final Pattern dateRegex = Pattern.compile("-");
 	
 	@FXML
 	private Label fileLocLabel;
@@ -156,8 +167,11 @@ public class PatRegUploadController extends AbstractPatRegController {
 					int excelRowNum = Integer.parseInt( patRegRequestBean.getExcelRowNum() );
 					
 					// logger.debug("excelRowNum => "+excelRowNum);
+					
+					long start = System.nanoTime();
 					 
 					boolean isLastRow = false;
+					
 					for(int i = 1;i<=excelRowNum;i++){
 						 
 						 updateMessage( ((int) ((i/ excelRowNum) * 100))+" %");
@@ -195,9 +209,9 @@ public class PatRegUploadController extends AbstractPatRegController {
 							 patRegRequestBean.setNameText( patRegResponseBean.getNameText() );
 							 String patDob = patRegResponseBean.getDateOfBirth();
 							 
-							 String dd = patDob.split("-")[0];
-							 String mmm = patDob.split("-")[1];
-							 String yyyy = patDob.split("-")[2];
+							 String dd = dateRegex.split(patDob)[0];
+							 String mmm = dateRegex.split(patDob)[1];
+							 String yyyy = dateRegex.split(patDob)[2];
 							 
 							 if (dd.length() != 2){
 								 dd = "0".concat(dd);
@@ -247,6 +261,9 @@ public class PatRegUploadController extends AbstractPatRegController {
 						 					 
 						 // Thread.sleep(250);
 					 }
+					
+					System.out.println("total time taken => "+TimeUnit.MILLISECONDS.convert( (System.nanoTime()-start ) , TimeUnit.NANOSECONDS));
+					
 				}  catch (Exception e) {
 					logger.error("uploadTask error ",e);
 				}
@@ -369,16 +386,19 @@ public class PatRegUploadController extends AbstractPatRegController {
 	}
 	
 	public final void sampleAction() throws Exception {
-		// Copy to current directory
-		InputStream is = getClass().getResourceAsStream("/samples.xls");
-		OutputStream os = new FileOutputStream(new File(".","samples.xls"));
 		
-		IOUtils.copy(is, os);
+		File sampleFile = new File(".","samples.xls");
 		
-		IOUtils.closeSilently(is);
-		IOUtils.closeSilently(os);
-		Thread.sleep(2);
+		if(!sampleFile.exists()){
+			
+			// Copy to current directory
+			try(InputStream is = getClass().getResourceAsStream("/samples.xls")){
+				Files.copy(is, FileSystems.getDefault().getPath(".","samples.xls"));
+			}
 		
+			Thread.sleep(2);
+		}
+				
 		Desktop.getDesktop().open( new File( new File(".").getCanonicalFile() , "samples.xls" ) );
 	}
 	
@@ -404,7 +424,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 			return false;
 		}
 				
-		if ( !Pattern.compile( "[a-zA-Z ]*" ).matcher( patRegResponseBean.getNameText() ).matches() ){
+		if ( !nameRegex.matcher( patRegResponseBean.getNameText() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 1 ] : Patient Name ::".concat(" Only Letters Allowed ")) );
 			return false;
 		}
@@ -416,7 +436,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 		
 		// Validate patient date of birth
 		
-		if ( !Pattern.compile( "[0-9]{1,2}-[a-zA-Z]{3}-[0-9]{4}" ).matcher( patRegResponseBean.getDateOfBirth() ).matches() ){
+		if ( !dobRegex.matcher( patRegResponseBean.getDateOfBirth() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 2 ] : Date Of Birth ::".concat(" Invalid Format. Example for Correct format is 12-May-1977 ")) );
 			return false;
 		}
@@ -425,7 +445,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 		
 		try {
 			cal.clear();
-			cal.set( Integer.parseInt( dtStr.split("-")[2] ), monthIndex( dtStr.split("-")[1].toLowerCase() ), Integer.parseInt(dtStr.split("-")[0] )) ;
+			cal.set( Integer.parseInt( dateRegex.split(dtStr)[2] ), monthIndex( dateRegex.split(dtStr)[1].toLowerCase() ), Integer.parseInt(dateRegex.split(dtStr)[0] )) ;
 			cal.getTime();
 		} catch (Exception e) {
 			
@@ -452,12 +472,12 @@ public class PatRegUploadController extends AbstractPatRegController {
 			return false;
 		}
 			
-		if ( !Pattern.compile( "[a-zA-Z0-9 ,-/#]*" ).matcher( patRegResponseBean.getAddress1Text() ).matches() ){
+		if ( !addressRegex.matcher( patRegResponseBean.getAddress1Text() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 3 ] : Address 1 ::".concat(" Only Letters and Symbols , - / # Allowed" )) );
 			return false;
 		}
 		
-		if ( !Pattern.compile( "[a-zA-Z0-9 ,-/#]*" ).matcher( patRegResponseBean.getAddress2Text() ).matches() ){
+		if ( !addressRegex.matcher( patRegResponseBean.getAddress2Text() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1)).concat( " ] Column[ 4 ] : Address 2 ::".concat(" Only Letters and Symbols , - / # Allowed" )) );
 			return false;
 		}
@@ -467,12 +487,12 @@ public class PatRegUploadController extends AbstractPatRegController {
 			return false;
 		}
 		
-		if ( !Pattern.compile( "[a-zA-Z ]*" ).matcher( patRegResponseBean.getStateText() ).matches() ){
+		if ( !stateRegex.matcher( patRegResponseBean.getStateText() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 5 ] : State ::".concat(" Only Letters Allowed" )) );
 			return false;
 		}
 		
-		if ( !Pattern.compile( "[0-9]*" ).matcher( patRegResponseBean.getPincode() ).matches() ){
+		if ( !pinCodeRegex.matcher( patRegResponseBean.getPincode() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 6 ] : Pin Code ::".concat( " Only Digits Allowed" )) );
 			return false;
 		}
@@ -492,12 +512,12 @@ public class PatRegUploadController extends AbstractPatRegController {
 			return false;
 		}
 		
-		if ( !Pattern.compile( "[0-9 -]*" ).matcher( patRegResponseBean.getTel1Text() ).matches() ){
+		if ( !telRegex.matcher( patRegResponseBean.getTel1Text() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 8 ] : Telephone 1 ::".concat(" Only Digits and Symbol - Allowed")) );
 			return false;
 		}
 		
-		if ( !Pattern.compile( "[0-9 -]*" ).matcher( patRegResponseBean.getTel2Text() ).matches() ){
+		if ( !telRegex.matcher( patRegResponseBean.getTel2Text() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 9 ] : Telephone 2 ::".concat(" Only Digits and Symbol - Allowed")) );
 			return false;
 		}
@@ -507,7 +527,7 @@ public class PatRegUploadController extends AbstractPatRegController {
 			return false;
 		}
 		
-		if ( !Pattern.compile( "[a-zA-Z ]*" ).matcher( patRegResponseBean.getFatNameText() ).matches() ){
+		if ( !nameRegex.matcher( patRegResponseBean.getFatNameText() ).matches() ){
 			patRegResponseBean.setMessage("Row [ ".concat(String.valueOf( excelRowNum + 1 )).concat( " ] Column[ 10 ] : Father's Name ::".concat(" Only Letters Allowed")) );
 			return false;
 		}
