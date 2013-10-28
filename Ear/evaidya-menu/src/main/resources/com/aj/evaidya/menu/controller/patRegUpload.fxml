@@ -12,6 +12,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
+
 <GridPane alignment="CENTER" hgap="5.0" style="-fx-background-color: white;-fx-background-radius: 70px;" vgap="5.0" xmlns:fx="http://javafx.com/fxml"
 AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="13.0">
   <children>
